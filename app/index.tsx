@@ -1,6 +1,15 @@
-import { Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { useEffect } from "react";
+import { Text, View , Image, StyleSheet} from "react-native";
 
 export default function Index() {
+    const router = useRouter();
+    useEffect(()=>{
+      const timer = setTimeout(()=>{
+        router.push("LoginScreen");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }, [router])
   return (
     <View
       style={{
@@ -9,7 +18,17 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
+     <Image style={styles.image} source={require('../assets/images/bee_jobs_light_blue.png')}/>
     </View>
   );
 }
+const styles = StyleSheet.create({
+  container: {
+  },
+  image: {
+    width: '100%',
+    height: '100%'
+  },
+})
+
+
