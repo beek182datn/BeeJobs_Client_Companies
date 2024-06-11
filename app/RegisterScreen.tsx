@@ -13,19 +13,30 @@ import { useRouter } from "expo-router";
 // import CheckBox from '@react-native-community/checkbox';
 
 const RegisterScreen = () => {
+  // su dung cho dang ky
   const [accout_name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [passwd, setPassword] = useState("");
+  //an hien mat khau
   const [showPassword, setShowPassword] = useState(false);
-  const router = useRouter();
-  const [showMissingInfoAlert, setShowMissingInfoAlert] = useState(false);
+  // su dung cho hop thoai canh bao
+  const [showAlert, setShowAlert] = useState(false);
   const [message, setMessage] = useState('');
   const [color, setColor] = useState('');
+
+  const router = useRouter();
+
 
   const isValidEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
+
+  const clear = () => {
+    setName("");
+    setEmail("");
+    setPassword("");
+  }
 
   const handleRegister = async () => {
     if (
@@ -33,17 +44,16 @@ const RegisterScreen = () => {
       email.trim() === "" ||
       passwd.trim() === ""
     ) {
-      //alert("Xin Vui lòng điền đầy đủ vào những ô trống cần thiết.");
-      setMessage('Vui lòng nhập đầy đủ thông tin')
+      setMessage('Hãy nhập đầy đủ thông tin')
       setColor('red');
-      setShowMissingInfoAlert(true);
+      setShowAlert(true);
       return;
     }
 
     if (!isValidEmail(email)) {
       setMessage('Email không hợp lệ')
       setColor('red');
-      setShowMissingInfoAlert(true);
+      setShowAlert(true);
       return;
     }
 
@@ -54,24 +64,27 @@ const RegisterScreen = () => {
           accout_name: accout_name,
           email: email,
           passwd: passwd,
+          type: 'DN'
         }
       );
-      console.log("Đăng ký thành công:", response.data);
+      console.log(response.data);
+      if (response.data.status !== 200) {
+        setMessage(response.data.msg);
+        setShowAlert(true);
+        setColor('red');
+        clear();
+        return
+      }
+
       setMessage('Đăng ký thành công');
-      setShowMissingInfoAlert(true);
+      setShowAlert(true);
       setColor('green');
-      // Reset form fields
-      setName("");
-      setEmail("");
-      setPassword("");
-      setShowPassword(false);
-      // Show success alert
     } catch (error) {
       console.error("Lỗi đăng ký:", error);
-      setMessage('Đăng ký thất bại');
-      setShowMissingInfoAlert(true);
+      setMessage('Lỗi khi đăng ký');
+      setShowAlert(true);
       setColor('red');
-      // alert("Đã xảy ra lỗi trong quá trình đăng ký. Vui lòng thử lại sau.");
+      clear();
     }
   };
 
@@ -88,7 +101,7 @@ const RegisterScreen = () => {
         />
       </View>
       <View style={styles.inputContainer}>
-        <Ionicons name="person" size={20} color="#A9A9A9" style={styles.icon} />
+        <Ionicons name="mail" size={20} color="#A9A9A9" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Email"
@@ -97,7 +110,7 @@ const RegisterScreen = () => {
         />
       </View>
       <View style={styles.inputContainer}>
-        <Ionicons name="person" size={20} color="#A9A9A9" style={styles.icon} />
+        <Ionicons name="lock-closed" size={20} color="#A9A9A9" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Mật khẩu"
@@ -107,7 +120,7 @@ const RegisterScreen = () => {
         />
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
           <Ionicons
-            name={showPassword ? "eye-off" : "eye"}
+            name={showPassword ? "eye" : "eye-off"}
             size={20}
             color="#A9A9A9"
             style={styles.icon}
@@ -142,8 +155,8 @@ const RegisterScreen = () => {
       <AlertComponent
         color={color}
         message={message}
-        visible={showMissingInfoAlert}
-        onClose={() => setShowMissingInfoAlert(false)}
+        visible={showAlert}
+        onClose={() => setShowAlert(false)}
       />
     </View>
   );
