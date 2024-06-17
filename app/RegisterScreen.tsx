@@ -64,7 +64,7 @@ const RegisterScreen = () => {
           accout_name: accout_name,
           email: email,
           passwd: passwd,
-          type: 'DN'
+          type_role: 'DN'
         }
       );
       console.log(response.data);
