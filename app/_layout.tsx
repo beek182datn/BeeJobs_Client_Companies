@@ -8,6 +8,7 @@ export default function RootLayout() {
       <Stack.Screen name="RegisterScreen" options={{headerShown: false}}/>
       <Stack.Screen name="(tab_home)" options={{headerShown: false}}/>
       <Stack.Screen name="Details" options={{headerShown: false}}/>
+      <Stack.Screen name="AddNewJobs" options={{headerShown: false}}/>
     </Stack>
   );
 }
