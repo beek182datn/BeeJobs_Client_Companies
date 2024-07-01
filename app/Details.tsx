@@ -1,6 +1,6 @@
 
 import { StyleSheet, Text, View, ScrollView, Dimensions, Animated, Image, FlatList, TouchableOpacity } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -14,11 +14,22 @@ export default function Details() {
   const flatListRef = useRef(null);
   const scrollX = useRef(new Animated.Value(0)).current;
   const images = [
-    { id: '1', src: require('../assets/images/BeeJobs.png') },
-    { id: '2', src: require('../assets/images/BeeJobs_1.png') },
-    { id: '3', src: require('../assets/images/BeeJobs_2.png') },
-    { id: '4', src: require('../assets/images/BeeJobs_3.png') },
+    { id: '1', src: require('../assets/images/Beejob_ket_noi_viec_lam_01.png') },
+    { id: '2', src: require('../assets/images/Beejob_ket_noi_viec_lam_02.png') },
+    { id: '3', src: require('../assets/images/Beejob_ket_noi_viec_lam_03.png') },
+    { id: '4', src: require('../assets/images/Beejob_ket_noi_viec_lam.png') },
   ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      goToNextImage();
+    }, 3000); // Chuyển đổi ảnh mỗi 3 giây
+
+    return () => clearInterval(interval); // Clear interval khi component bị unmount
+  }, [currentIndex]);
+
+
+
 
   const handleScroll = (event) => {
     const contentOffset = event.nativeEvent.contentOffset.x;
@@ -193,8 +204,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   image: {
-    width: width * 0.8, // Điều chỉnh kích thước ảnh
-    height: 150, // Điều chỉnh kích thước ảnh
+    width: width * 0.8,
+    height: 250,
     resizeMode: 'contain', // Ảnh sẽ không bị cắt và hiển thị toàn bộ
     borderRadius: 10, // Điều chỉnh border radius
   
@@ -205,6 +216,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: '#333',
     margin: 5,
+   
   },
   indicatorContainer: {
     flexDirection: 'row',
