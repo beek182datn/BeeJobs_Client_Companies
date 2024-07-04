@@ -1,5 +1,15 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  Platform,
+  ScrollView,
+  TouchableWithoutFeedback,
+} from "react-native";
 import React, { useState } from "react";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 export default function Details() {
   const [title, setTitle] = useState("");
@@ -11,9 +21,24 @@ export default function Details() {
   const [benefits, setBenefits] = useState("");
   const [location, setLocation] = useState("");
   const [deadline, setDeadline] = useState("");
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [date, setDate] = useState(new Date());
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShowDatePicker(Platform.OS == "ios");
+    setDate(currentDate);
+    setDeadline(currentDate.toLocaleDateString());
+  };
+
+  const showDatepicker = () => {
+    setShowDatePicker(true);
+  };
 
   return (
     <View style={styles.container}>
+
+      <ScrollView contentContainerStyle = {styles.scrollContent}>
       <Text style={styles.label}>Tiêu đề:</Text>
       <TextInput
         style={styles.input}
@@ -78,22 +103,43 @@ export default function Details() {
         onChangeText={setLocation}
         placeholder="Nhập vị trí..."
       />
-      <Text style={styles.label}>Thời hạn:</Text>
-      <TextInput
-        style={styles.input}
-        value={deadline}
-        onChangeText={setDeadline}
-        placeholder="Nhập thời hạn..."
-      />
-      <TouchableOpacity style={styles.button} onPress={() => console.log("Save button pressed")}>
-        <Text style={styles.buttonText}>Save</Text>
-      </TouchableOpacity>
+      <View>
+        <Text style={styles.label}>Thời hạn:</Text>
+        <TouchableOpacity onPress={showDatepicker} style={styles.input}>
+          <TextInput
+            value={deadline}
+            placeholder="Nhập thời hạn..."
+            editable={false}
+          />
+        </TouchableOpacity>
+      </View>
+
+      {showDatePicker && (
+        <DateTimePicker
+          value={date}
+          mode="date"
+          display="default"
+          onChange={onChange}
+        />
+      )}
+      </ScrollView>
+      
+
+<View style={styles.buttonContainer}>
+  <TouchableWithoutFeedback onPress={() => console.log("Save button pressed")}>
+    <View style={styles.button}>
+      <Text style={styles.buttonText}>Save</Text>
+    </View>
+  </TouchableWithoutFeedback>
+</View>
+
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 20,
   },
   label: {
@@ -110,19 +156,21 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   buttonContainer: {
-    marginTop: 20,
+   
     borderRadius: 5,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   button: {
-    backgroundColor: '#2196F3',
+    backgroundColor: "#2196F3",
     padding: 10,
     marginTop: 20,
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
-  }
+  }, scrollContent: {
+    flexGrow: 1, // Đảm bảo ScrollView có thể mở rộng khi cần thiết
+  },
 });
