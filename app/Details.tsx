@@ -14,7 +14,7 @@ export default function Details() {
   const flatListRef = useRef(null);
   const scrollX = useRef(new Animated.Value(0)).current;
   const images = [
-    { id: '1', src: require('../assets/images/Beejob_ket_noi_viec_lam_01.png') },
+    { id: '1' , src: require('../assets/images/Beejob_ket_noi_viec_lam_01.png') },
     { id: '2', src: require('../assets/images/Beejob_ket_noi_viec_lam_02.png') },
     { id: '3', src: require('../assets/images/Beejob_ket_noi_viec_lam_03.png') },
     { id: '4', src: require('../assets/images/Beejob_ket_noi_viec_lam.png') },
@@ -58,13 +58,6 @@ export default function Details() {
     setCurrentIndex(nextIndex);
     flatListRef.current.scrollToIndex({ index: nextIndex, animated: true });
   };
-
-  const goToPreviousImage = () => {
-    const prevIndex = (currentIndex - 1 + images.length) % images.length;
-    setCurrentIndex(prevIndex);
-    flatListRef.current.scrollToIndex({ index: prevIndex, animated: true });
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -122,25 +115,21 @@ export default function Details() {
       </ScrollView>
 
       <View style={styles.sliderContainer}>
-        <TouchableOpacity style={styles.button} onPress={goToPreviousImage}>
-          <Text style={styles.buttonText}>{"<"}</Text>
-        </TouchableOpacity>
+
         <FlatList
           ref={flatListRef}
           data={images}
           horizontal
           showsHorizontalScrollIndicator={false}
           pagingEnabled
-          onMomentumScrollEnd={handleScroll} // Sử dụng onMomentumScrollEnd thay vì onScroll
+          onMomentumScrollEnd={handleScroll} 
           contentContainerStyle={styles.imageContainer}
           renderItem={({ item }) => (
             <Image source={item.src} style={styles.image} />
           )}
           keyExtractor={item => item.id}
         />
-        <TouchableOpacity style={styles.button} onPress={goToNextImage}>
-          <Text style={styles.buttonText}>{">"}</Text>
-        </TouchableOpacity>
+    
         {renderIndicator()}
       </View>
     </SafeAreaView>
@@ -199,15 +188,17 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 2,
     backgroundColor: '#fff',
-    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    
   },
   image: {
-    width: width * 0.8,
-    height: 250,
-    resizeMode: 'contain', // Ảnh sẽ không bị cắt và hiển thị toàn bộ
-    borderRadius: 10, // Điều chỉnh border radius
+    width: width * 0.9,
+    height: 200,
+    resizeMode: 'cover', 
+    borderRadius: 10, 
+
+   
   
   },
   indicator: {
@@ -241,7 +232,8 @@ const styles = StyleSheet.create({
   },  imageContainer: {
     flexGrow: 1,
     justifyContent: 'center', // Căn giữa theo chiều ngang
-    alignItems: 'center', // Căn giữa theo chiều dọc
+    
+   
   },
 });
 
