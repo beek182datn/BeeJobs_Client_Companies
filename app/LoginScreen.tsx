@@ -79,6 +79,7 @@ const LoginScreen = () => {
                     placeholder="Tài khoản hoặc Email"
                     value={username}
                     onChangeText={setUsername}
+                     placeholderTextColor="#A9A9A9"
                 />
             </View>
             <View style={styles.inputContainer}>
@@ -89,6 +90,7 @@ const LoginScreen = () => {
                     secureTextEntry={!showPassword}
                     value={passwd}
                     onChangeText={setPassword}
+                    placeholderTextColor="#A9A9A9"
                 />
                 <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
                     <Ionicons

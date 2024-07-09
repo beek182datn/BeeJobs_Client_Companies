@@ -60,6 +60,7 @@ export default function Details() {
             onChangeText={setTitle}
             placeholder="Nhập tiêu đề..."
             multiline
+            placeholderTextColor="#A9A9A9"
           />
     </View>
    
@@ -72,6 +73,7 @@ export default function Details() {
         onChangeText={setForm}
         placeholder="Nhập hình thức..."
         multiline
+        placeholderTextColor="#A9A9A9"
       />
     </View>
 
@@ -83,6 +85,7 @@ export default function Details() {
             onChangeText={handelNumberInputQuantity}
             placeholder="Nhập số lượng tuyển dụng..."
             keyboardType="numeric"
+            placeholderTextColor="#A9A9A9"
       />
      </View>
       
@@ -94,6 +97,7 @@ export default function Details() {
             onChangeText={setRequirements}
             placeholder="Nhập yêu cầu..."
             multiline
+            placeholderTextColor="#A9A9A9"
       />
       </View>
     
@@ -106,6 +110,7 @@ export default function Details() {
             onChangeText={handleNumberInputPrice}
             placeholder="Lương..."
             keyboardType="numeric"
+            placeholderTextColor="#A9A9A9"
       />
 
       </View>
@@ -118,6 +123,7 @@ export default function Details() {
           onChangeText={setBenefits}
           placeholder="Nhập lợi ích..."
           multiline
+          placeholderTextColor="#A9A9A9"
         />
       </View>
 
@@ -129,7 +135,7 @@ export default function Details() {
           value={location}
           onChangeText={setLocation}
           placeholder="Nhập vị trí..."
-         
+         placeholderTextColor="#A9A9A9"
           />
        </View>
        
@@ -141,6 +147,7 @@ export default function Details() {
             value={deadline}
             placeholder="Nhập thời hạn..."
             editable={false}
+            placeholderTextColor="#A9A9A9"
           />
         </TouchableOpacity>
       </View>
@@ -154,6 +161,7 @@ export default function Details() {
         placeholder="Nhập mô tả..."
         multiline
         numberOfLines={4}
+        placeholderTextColor="#A9A9A9"
       />
     </View>
 

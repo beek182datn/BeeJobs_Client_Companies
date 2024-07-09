@@ -87,7 +87,7 @@ export default function Profile() {
         <Icon name="chevron-forward-outline" size={25} style={styles.icon} />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.textIcon}>
+      <TouchableOpacity style={styles.textIcon} onPress={()=> router.push("HelpCenter")}>
         <Icon name="call-outline" size={25} style={styles.icon} />
         <Text style={styles.underlinedText}>Trợ giúp</Text>
         <Icon name="chevron-forward-outline" size={25} style={styles.icon} />

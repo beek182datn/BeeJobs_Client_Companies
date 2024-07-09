@@ -89,6 +89,7 @@ export default function Jobs() {
         placeholder="Search jobs..."
         value={search}
         onChangeText={setSearch}
+        placeholderTextColor="#A9A9A9"
       />
       <FlatList
         data={filteredJobs}
