@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
-
+import Icon from 'react-native-vector-icons/Ionicons'; 
 export default function Details() {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
@@ -23,6 +23,18 @@ export default function Details() {
   const [deadline, setDeadline] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
+
+
+  const handelNumberInputQuantity = (text) =>{
+    const numericText = text.replace(/[^0-9]/g, '');
+    setNumber_of_recruitments(numericText);
+    
+  }
+  const handleNumberInputPrice =(text) =>{
+    const numericText = text.replace(/[^0-9]/g, '');
+    setSalary(numericText);
+  }
+
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -39,80 +51,112 @@ export default function Details() {
     <View style={styles.container}>
 
       <ScrollView contentContainerStyle = {styles.scrollContent}>
-      <Text style={styles.label}>Tiêu đề:</Text>
-      <TextInput
-        style={styles.input}
-        value={title}
-        onChangeText={setTitle}
-        placeholder="Nhập tiêu đề..."
-      />
 
-      <Text style={styles.label}>Mô tả:</Text>
-      <TextInput
-        style={styles.input}
-        value={desc}
-        onChangeText={setDesc}
-        placeholder="Nhập mô tả..."
-      />
+      <View style={styles.inputContainer}>
+          <Icon name="document-text-outline" size={25} style={styles.icon} />
+          <TextInput
+            style={[styles.input, styles.descInput]}
+            value={title}
+            onChangeText={setTitle}
+            placeholder="Nhập tiêu đề..."
+            multiline
+          />
+    </View>
+   
 
-      <Text style={styles.label}>Hình thức:</Text>
-      <TextInput
-        style={styles.input}
+    <View style= {styles.inputContainer}>
+       <Icon name= "albums-outline" size={25} style={styles.icon} />
+       <TextInput
+         style={[styles.input, styles.descInput]}
         value={form}
         onChangeText={setForm}
         placeholder="Nhập hình thức..."
+        multiline
       />
+    </View>
 
-      <Text style={styles.label}>Số lượng tuyển dụng:</Text>
-      <TextInput
-        style={styles.input}
-        value={number_of_recruitments}
-        onChangeText={setNumber_of_recruitments}
-        placeholder="Nhập số lượng tuyển dụng..."
-        keyboardType="numeric"
+     <View style= {styles.inputContainer}>
+        <Icon name= "people-outline" size={25} style={styles.icon} />
+        <TextInput
+             style={[styles.input, styles.descInput]}
+            value={number_of_recruitments}
+            onChangeText={handelNumberInputQuantity}
+            placeholder="Nhập số lượng tuyển dụng..."
+            keyboardType="numeric"
       />
-
-      <Text style={styles.label}>Yêu cầu:</Text>
-      <TextInput
-        style={styles.input}
-        value={requirements}
-        onChangeText={setRequirements}
-        placeholder="Nhập yêu cầu..."
+     </View>
+      
+      <View style= {styles.inputContainer}>
+          <Icon name="document-attach-outline" size={20} style={styles.icon} />
+         <TextInput
+            style={[styles.input, styles.descInput]}
+            value={requirements}
+            onChangeText={setRequirements}
+            placeholder="Nhập yêu cầu..."
+            multiline
       />
-      <Text style={styles.label}>Lương:</Text>
-      <TextInput
-        style={styles.input}
-        value={salary}
-        onChangeText={setSalary}
-        placeholder="Lương..."
-        keyboardType="numeric"
-      />
-
-      <Text style={styles.label}>Lợi ích:</Text>
-      <TextInput
-        style={styles.input}
-        value={benefits}
-        onChangeText={setBenefits}
-        placeholder="Nhập lợi ích..."
-      />
-
-      <Text style={styles.label}>Vị trí:</Text>
-      <TextInput
-        style={styles.input}
-        value={location}
-        onChangeText={setLocation}
-        placeholder="Nhập vị trí..."
-      />
-      <View>
-        <Text style={styles.label}>Thời hạn:</Text>
-        <TouchableOpacity onPress={showDatepicker} style={styles.input}>
+      </View>
+    
+    
+      <View style={styles.inputContainer}>
+          <Icon name="cash-outline" size={20} style={styles.icon} />
           <TextInput
+             style={[styles.input, styles.descInput]}
+            value={salary}
+            onChangeText={handleNumberInputPrice}
+            placeholder="Lương..."
+            keyboardType="numeric"
+      />
+
+      </View>
+      
+      <View style={styles.inputContainer}>
+        <Icon name="gift-outline" size={20} style={styles.icon} />
+        <TextInput
+           style={[styles.input, styles.descInput]}
+          value={benefits}
+          onChangeText={setBenefits}
+          placeholder="Nhập lợi ích..."
+          multiline
+        />
+      </View>
+
+
+      <View style={styles.inputContainer}>
+        <Icon name="location-outline" size={20} style={styles.icon} />
+        <TextInput
+           style={[styles.input, styles.descInput]}
+          value={location}
+          onChangeText={setLocation}
+          placeholder="Nhập vị trí..."
+         
+          />
+       </View>
+       
+      <View style={styles.inputContainer}>
+          <Icon name="calendar-outline" color="#FFFFFF	" size={20} style={styles.icon} />
+          <TouchableOpacity onPress={showDatepicker}  style={[styles.input, styles.descInput]}>
+          <TextInput
+            style={[styles.input, styles.descInput]}
             value={deadline}
             placeholder="Nhập thời hạn..."
             editable={false}
           />
         </TouchableOpacity>
       </View>
+
+      <View style={styles.inputContainer}>
+      <Icon name= "clipboard-outline" color="grey"  size={25} style={styles.icon} />
+      <TextInput
+        style={[styles.input, styles.inputDecoription]}
+        value={desc}
+        onChangeText={setDesc}
+        placeholder="Nhập mô tả..."
+        multiline
+        numberOfLines={4}
+      />
+    </View>
+
 
       {showDatePicker && (
         <DateTimePicker
@@ -124,6 +168,7 @@ export default function Details() {
       )}
       </ScrollView>
       
+
 
 <View style={styles.buttonContainer}>
   <TouchableWithoutFeedback onPress={() => console.log("Save button pressed")}>
@@ -141,6 +186,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+
   },
   label: {
     fontSize: 16,
@@ -148,12 +194,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   input: {
+    flex: 1,
     height: 40,
-    borderColor: "gray",
+    paddingLeft: 35,
+    borderRadius: 10,
     borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginTop: 5,
+   
+    
   },
   buttonContainer: {
    
@@ -172,5 +219,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
   }, scrollContent: {
     flexGrow: 1, // Đảm bảo ScrollView có thể mở rộng khi cần thiết
-  },
+  },inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+    borderColor :'gray',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    
+  }, icon:{
+    marginLeft : 4,
+    position: 'absolute',
+    left: 10,
+    
+   
+  }, descInput: {
+    height: 60,
+ 
+
+  },inputDecoription: {
+      height: 100
+  }
 });

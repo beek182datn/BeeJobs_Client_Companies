@@ -8,7 +8,7 @@ export default function RootLayout() {
       <Stack.Screen name="RegisterScreen" options={{headerShown: false}}/>
       <Stack.Screen name="(tab_home)" options={{headerShown: false}}/>
       <Stack.Screen name="Details" options={{headerShown: false}}/>
-      <Stack.Screen name="AddNewJobs" />
+      <Stack.Screen name="AddNewJobs" options={{headerTitle: "Thêm công việc mới", headerTitleStyle: {fontSize: 19, fontWeight: "bold"}}} />
     </Stack>
   );
 }

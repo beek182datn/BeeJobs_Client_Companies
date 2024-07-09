@@ -17,7 +17,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="Home"
         options={{
-          title: 'Home',
+          title: 'Trang chủ',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
           ),
@@ -27,18 +27,18 @@ export default function TabLayout() {
     <Tabs.Screen
         name="Jobs"
         options={{
-          title: 'Jobs',
+          title: 'Công việc',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'journal' : 'journal-outline'} color={color} />
+            <TabBarIcon name={focused ? 'bag' : 'bag-outline'} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="Profile"
         options={{
-          title: 'Profile',
+          title: 'Hồ sơ',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <TabBarIcon name={focused ? "person" : "person-outline"} color={color} />
           ),
         }}
       />

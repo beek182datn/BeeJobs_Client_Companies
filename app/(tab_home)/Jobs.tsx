@@ -55,10 +55,19 @@ export default function Jobs() {
     </TouchableOpacity>
   );
 
+  const removeVietNameseTones = (str) =>{
+    return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // Loại bỏ dấu
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D')
+    .toLowerCase();
+  };
+
   const searchJobs = (text) => {
-    const formattedSearch = text.trim().toLowerCase();
+    const formattedSearch = removeVietNameseTones(text.trim());
     return jobs.filter((job) => {
-      const formattedTitle = job.title.trim().toLowerCase();
+      const formattedTitle = removeVietNameseTones(job.title.trim());
       return formattedTitle.includes(formattedSearch);
     });
   };
