@@ -9,7 +9,12 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import { useRouter } from "expo-router";
+
+
 export default function Profile() {
+  const router = useRouter();
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.profileContainer}>
@@ -23,92 +28,122 @@ export default function Profile() {
         </View>
       </View>
 
+      <Text
+        style={{
+          fontSize: 16,
+          fontWeight: "bold",
+          alignSelf: "flex-start",
+          marginLeft: 20,
+          marginBottom: 10,
+        }}
+      >
+        Cài đặt tài khoản
+      </Text>
 
-      <Text style= {{fontSize: 16, fontWeight: "bold", alignSelf: "flex-start", marginLeft: 20, marginBottom: 10}}>Cài đặt tài khoản</Text>
-
-      <View style={styles.textIcon}>
+      <TouchableOpacity style={styles.textIcon}>
         <Icon name="key-outline" size={25} style={styles.icon} />
         <Text style={styles.underlinedText}>Đổi mật khẩu</Text>
         <Icon name="chevron-forward-outline" size={25} style={styles.icon} />
-      </View>
-      <View style={styles.textIcon}>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.textIcon}>
         <Icon name="albums-outline" size={25} style={styles.icon} />
-        <Text style={styles.underlinedText}>Xem thông tin chi tiết tài khoản</Text>
+        <Text style={styles.underlinedText}>
+          Xem thông tin chi tiết tài khoản
+        </Text>
         <Icon name="chevron-forward-outline" size={25} style={styles.icon} />
-      </View>
+      </TouchableOpacity>
 
+      <Text
+        style={{
+          fontSize: 16,
+          fontWeight: "bold",
+          alignSelf: "flex-start",
+          marginLeft: 20,
+          marginBottom: 10,
+          marginTop: 10,
+        }}
+      >
+        Thông tin dịch vụ
+      </Text>
 
-      <Text style= {{fontSize: 16, fontWeight: "bold", alignSelf: "flex-start", marginLeft: 20, marginBottom: 10, marginTop: 10}}>Thông tin dịch vụ</Text>
+     
+        <TouchableOpacity style={styles.textIcon} onPress={()=> router.push("CompanyIntroduction")}>
+          <Icon name="business-outline" size={25} style={styles.icon} />
+          <Text style={styles.underlinedText}>Về BeeJobs</Text>
+          <Icon name="chevron-forward-outline" size={25} style={styles.icon} />
+        </TouchableOpacity>
+      
 
-      <View style={styles.textIcon}>
-        <Icon name="business-outline" size={25} style={styles.icon} />
-        <Text style={styles.underlinedText}>Về BeeJobs</Text>
-        <Icon name="chevron-forward-outline" size={25} style={styles.icon} />
-      </View>
-
-      <View style={styles.textIcon}>
+      <TouchableOpacity style={styles.textIcon}>
         <Icon name="document-text-outline" size={25} style={styles.icon} />
         <Text style={styles.underlinedText}>Điều khoản dịch vụ</Text>
         <Icon name="chevron-forward-outline" size={25} style={styles.icon} />
-      </View>
+      </TouchableOpacity>
 
-      <View style={styles.textIcon}>
+      <TouchableOpacity style={styles.textIcon}>
         <Icon name="document-lock-outline" size={25} style={styles.icon} />
         <Text style={styles.underlinedText}>Chính sách bảo mật</Text>
         <Icon name="chevron-forward-outline" size={25} style={styles.icon} />
-      </View>
+      </TouchableOpacity>
 
-      <View style={styles.textIcon}>
+      <TouchableOpacity style={styles.textIcon}>
         <Icon name="call-outline" size={25} style={styles.icon} />
         <Text style={styles.underlinedText}>Trợ giúp</Text>
         <Icon name="chevron-forward-outline" size={25} style={styles.icon} />
-      </View>
+      </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.buttonLogout}
         onPress={() => "Đã bấm vào đây"}
       >
         <Text style={styles.textLogout}>Đăng xuất</Text>
-        <Icon name="enter-outline" size={25}  />
+        <Icon name="enter-outline" size={25}color="white" />
       </TouchableOpacity>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
   buttonLogout: {
     marginTop: 20,
     backgroundColor: "#0099FF",
     height: 45,
-    width: 300,
+    width: "100%",
     justifyContent: "center",
     borderRadius: 20,
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
   },
   textLogout: {
     textAlign: "center",
+    color: "white",
+    marginRight: 10
   },
-  container: {
-    flex: 1,
-    alignItems: "center",
-  },
+
   imageProfile: {
     width: 60,
     height: 60,
     borderRadius: 30,
     borderWidth: 3,
-    borderColor: "#0099FF"
-   
+    borderColor: "#0099FF",
   },
   profileContainer: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 20,
-    width: 360,
+    width: "100%",
     height: 100,
     backgroundColor: "#EEEEEE",
     borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical :10
   },
   textContainer: {
     marginLeft: 20,
@@ -116,12 +151,13 @@ const styles = StyleSheet.create({
   },
   icon: {
     width: 25,
-    color: "#BBBBBB"
+    marginRight : 10,
+    color: "#BBBBBB",
   },
   textIcon: {
     flexDirection: "row",
     alignItems: "center",
-    width: 410,
+    width: "100%",
     height: 40,
     borderBottomWidth: 1,
     borderBottomColor: "#AAAAAA",
