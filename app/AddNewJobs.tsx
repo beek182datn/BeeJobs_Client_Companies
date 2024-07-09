@@ -208,10 +208,10 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   button: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "#0099FF",
     padding: 10,
     marginTop: 20,
-    borderRadius: 5,
+    borderRadius: 15,
     alignItems: "center",
   },
   buttonText: {

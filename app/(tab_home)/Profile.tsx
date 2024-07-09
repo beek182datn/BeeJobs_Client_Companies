@@ -75,13 +75,13 @@ export default function Profile() {
         </TouchableOpacity>
       
 
-      <TouchableOpacity style={styles.textIcon}>
+      <TouchableOpacity style={styles.textIcon} onPress={()=> router.push("TermsOfService")}>
         <Icon name="document-text-outline" size={25} style={styles.icon} />
         <Text style={styles.underlinedText}>Điều khoản dịch vụ</Text>
         <Icon name="chevron-forward-outline" size={25} style={styles.icon} />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.textIcon}>
+      <TouchableOpacity style={styles.textIcon} onPress={()=> router.push("PrivacyPolicy")}>
         <Icon name="document-lock-outline" size={25} style={styles.icon} />
         <Text style={styles.underlinedText}>Chính sách bảo mật</Text>
         <Icon name="chevron-forward-outline" size={25} style={styles.icon} />

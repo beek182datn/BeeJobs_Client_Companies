@@ -8,8 +8,17 @@ export default function RootLayout() {
       <Stack.Screen name="RegisterScreen" options={{headerShown: false}}/>
       <Stack.Screen name="(tab_home)" options={{headerShown: false}}/>
       <Stack.Screen name="Details" options={{headerShown: false}}/>
-      <Stack.Screen name="AddNewJobs" options={{headerTitle: "Thêm công việc mới", headerTitleStyle: {fontSize: 19, fontWeight: "bold"}}} />
-      <Stack.Screen name="CompanyIntroduction" options={{headerTitle: "Về BeeJobs", headerTitleStyle: {fontSize: 19, fontWeight: "bold"}}} />
+      <Stack.Screen name="AddNewJobs" options={{headerTitle: "Thêm công việc mới", headerTitleStyle: {fontSize: 19, fontWeight: "bold" ,alignSelf: "center",}}} />
+      <Stack.Screen name="CompanyIntroduction" options={{headerTitle: "Về BeeJobs", headerTitleStyle: {fontSize: 19, fontWeight: "bold"}, headerStyle: {
+      backgroundColor: "#fff", 
+    },}} />
+      <Stack.Screen name="TermsOfService" options={{headerTitle: "Điều khoản dịch vụ", headerTitleStyle: {fontSize: 19, fontWeight: "bold" },  headerStyle: {
+      backgroundColor: "#fff", 
+    },}} />
+
+    <Stack.Screen name="PrivacyPolicy" options={{headerTitle: "Chính sách bảo mật", headerTitleStyle: {fontSize: 19, fontWeight: "bold" },  headerStyle: {
+      backgroundColor: "#fff", 
+    },}} />
     </Stack>
   );
 }

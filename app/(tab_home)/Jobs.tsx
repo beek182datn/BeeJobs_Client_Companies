@@ -96,9 +96,9 @@ export default function Jobs() {
         keyExtractor={(item) => item._id.toString()}
         contentContainerStyle={styles.list}
       />
-      <View style={styles.buttonContainer}>
-        <Button title="Add New Job" onPress={() => router.push("AddNewJobs")} />
-      </View>
+      <TouchableOpacity style={styles.buttonContainer} onPress={() => router.push("AddNewJobs")}>
+        <Text style={styles.textButton}>Add New Job</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -142,10 +142,21 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   buttonContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 20,
     padding: 10,
     position: "absolute",
-    bottom: 0,
+    bottom: 20, // Thay đổi vị trí bottom nếu cần thiết
     left: 0,
     right: 0,
+    backgroundColor: "#0099FF",
+    width: "100%",
+    alignSelf: "center", // Đảm bảo nút được căn giữa theo chiều ngang
+  },
+  textButton: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#fff",
   },
 });
