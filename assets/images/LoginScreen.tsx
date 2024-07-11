@@ -66,7 +66,7 @@ const LoginScreen = () => {
           
             router.push("/Home");
         } else {
-            router.push("/CheckEmployerAuth");
+            router.push("/EmployerAuth");
         }
 
         if (rememberMe) {

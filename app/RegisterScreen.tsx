@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect  } from "react";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  BackHandler,
+  Image,
+  Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AlertComponent from "@/components/AlertComponent";
@@ -56,6 +59,7 @@ const RegisterScreen = () => {
       setShowAlert(true);
       return;
     }
+    
 
     try {
       const response: AxiosResponse = await axios.post(
@@ -79,6 +83,7 @@ const RegisterScreen = () => {
       setMessage('Đăng ký thành công');
       setShowAlert(true);
       setColor('green');
+      router.push({ pathname: "OtpScreen", params: { email: email} });
     } catch (error) {
       console.error("Lỗi đăng ký:", error);
       setMessage('Lỗi khi đăng ký');
@@ -86,10 +91,24 @@ const RegisterScreen = () => {
       setColor('red');
       clear();
     }
+    // router.push({ pathname: "OtpScreen", params: { email: email} });
   };
+
+  useEffect(() => {
+    const backAction = () => {
+      router.replace("LoginScreen");
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    return () => backHandler.remove();
+  }, []);
 
   return (
     <View style={styles.container}>
+      <Image style= {styles.logo} source={require('../assets/images/BeeJobs_logo1.png')}/>
+      <Text style={styles.wellcome}>Chào mừng bạn đến với BeeJobs</Text>
       <Text style={styles.title}>Đăng ký</Text>
       <View style={styles.inputContainer}>
         <Ionicons name="person" size={20} color="#A9A9A9" style={styles.icon} />
@@ -120,7 +139,7 @@ const RegisterScreen = () => {
         />
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
           <Ionicons
-            name={showPassword ? "eye" : "eye-off"}
+            name={showPassword ? "eye-off" : "eye"}
             size={20}
             color="#A9A9A9"
             style={styles.icon}
@@ -146,7 +165,7 @@ const RegisterScreen = () => {
         Bạn đã có tài khoản?
         <Text
           style={styles.signinText}
-          onPress={() => router.push("LoginScreen")}
+          onPress={() => router.replace("LoginScreen")}
         >
           {" "}
           Đăng nhập
@@ -174,17 +193,24 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "center",
     marginBottom: 30,
+    color:"#ff4500"
+  },
+  wellcome: {
+    fontSize: 20,
+    fontWeight: "bold",
+    alignSelf: "center",
+    marginBottom: 20,
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
     borderColor: "#A9A9A9",
-    borderRadius: 25,
+    borderRadius: 15,
     marginBottom: 20,
     paddingHorizontal: 15,
     backgroundColor: "#f9f9f9",
-    padding: 10,
+    padding: 1,
   },
   input: {
     flex: 1,
@@ -198,9 +224,11 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#007BFF",
     paddingVertical: 15,
-    borderRadius: 25,
+    width: Dimensions.get("screen").width/1.5 ,
+    borderRadius: 15,
     alignItems: "center",
     marginBottom: 20,
+    alignSelf: "center",
   },
   buttonText: {
     color: "#fff",
@@ -236,6 +264,12 @@ const styles = StyleSheet.create({
   },
   rememberMeCheckboxChecked: {
     backgroundColor: "#007aff",
+  },
+  logo: {
+    width: "50%",
+    height: 70,
+    alignSelf: "center",
+    marginBottom:20,
   },
 });
 

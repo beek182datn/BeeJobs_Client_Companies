@@ -8,6 +8,11 @@ export default function RootLayout() {
       <Stack.Screen name="RegisterScreen" options={{ headerShown: false }} />
       <Stack.Screen name="(tab_home)" options={{ headerShown: false }} />
       <Stack.Screen name="Details" options={{ headerShown: false }} />
+      <Stack.Screen name="OtpScreen" options={{headerShown: false}}/>
+      <Stack.Screen name="EmployerAuth" options={{headerShown: false}}/>
+      <Stack.Screen name="CheckEmployerAuth" options={{headerShown: false}}/>
+      <Stack.Screen name="FogotPassScreen" options={{headerShown: false}}/>
+      <Stack.Screen name="OtpFogotPassScreen" options={{headerShown: false}}/>
       <Stack.Screen
         name="AddNewJobs"
         options={{
