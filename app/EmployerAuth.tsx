@@ -7,12 +7,14 @@ import {
   StyleSheet,
   BackHandler,
   ScrollView,
+  Alert,
   Image,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
 import mime from 'react-native-mime-types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const EmployerAuth = () => {
   const [companyName, setCompanyName] = useState('');
@@ -26,8 +28,7 @@ const EmployerAuth = () => {
   const [color, setColor] = useState('');
   const [certificationError, setCertificationError] = useState<boolean>(false);
   const router = useRouter();
-  const idUser = "6670567110abac06104f6819";
-
+  
   // Refs for focusing on inputs
   const companyNameRef = useRef<TextInput>(null);
   const companyAddressRef = useRef<TextInput>(null);
@@ -121,6 +122,8 @@ const EmployerAuth = () => {
         }
       }
 
+      const idUser = await AsyncStorage.getItem('idUser');
+
       const response = await axios.post('http://beejobs.io.vn:14307/api/companies/create/'+idUser, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -130,7 +133,17 @@ const EmployerAuth = () => {
       if (response.status === 200) {
         setColor('green');
         setMessage('Đăng ký công ty thành công');
-        router.push('/Home');
+        Alert.alert(
+          'Thông báo',
+          'Đăng ký công ty thành công. Vui lòng chờ phê duyệt để được đăng tin tuyển dụng.',
+          [
+            {
+              text: 'OK',
+              onPress: () => router.push('/Home'),
+            },
+          ],
+          { cancelable: false }
+        );
       } else {
         setMessage(response.data.message);
         setColor('red');

@@ -46,7 +46,7 @@ const LoginScreen = () => {
             username: username,
             passwd: passwd,
         });
-
+        
         if (response.data.status !== 200) {
             setMessage(response.data.msg);
             setColor("red");
@@ -56,14 +56,12 @@ const LoginScreen = () => {
         }
 
         const userId = response.data.user_info.id_user;
+        await AsyncStorage.setItem('idUser',userId );
         console.log(userId);
-        
         const checkCompanyResponse = await axios.get(`http://beejobs.io.vn:14307/api/companies/checkCompany/${userId}`);
-
         if (checkCompanyResponse.data.registered) {
           await AsyncStorage.setItem('company_id', checkCompanyResponse.data.data._id);
           console.log(checkCompanyResponse.data.data._id);
-          
             router.push("/Home");
         } else {
             router.push("/CheckEmployerAuth");
@@ -76,7 +74,6 @@ const LoginScreen = () => {
           await AsyncStorage.removeItem('username');
           await AsyncStorage.removeItem('passwd');
         }
-
         setMessage("Đăng nhập thành công");
         setColor("green");
         setShowAlert(true);
