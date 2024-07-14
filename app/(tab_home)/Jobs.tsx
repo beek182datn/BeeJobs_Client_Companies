@@ -4,23 +4,27 @@ import {
   Text,
   View,
   FlatList,
-  Button,
   TextInput,
-  TouchableHighlight,
-  TouchableOpacity
+  TouchableOpacity,
+  Modal,
+  ScrollView,
+  Platform,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
 import { useRouter } from "expo-router";
-
 
 export default function Jobs() {
   const id_Company = "66618678d2005e278ba2cb95";
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
   const router = useRouter();
+  const scrollViewRef = useRef();
+
   useEffect(() => {
     const fetchJobs = async () => {
       try {
@@ -44,24 +48,51 @@ export default function Jobs() {
     });
   };
 
+  const handleItemPress = (item) => {
+    setSelectedJob(item);
+    setModalVisible(true);
+  };
+
+  const handleEdit = () => {
+    setModalVisible(false);
+    // Cập nhật công việc (thực hiện yêu cầu chỉnh sửa ở đây)
+    // ...
+  };
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(
+        `http://beejobs.io.vn:14307/api/jobs/deleteJobById/${selectedJob._id}`
+      );
+      setJobs(jobs.filter((job) => job._id !== selectedJob._id));
+    } catch (err) {
+      console.error("Lỗi khi xóa công việc", err);
+    } finally {
+      setModalVisible(false);
+    }
+  };
+
   const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={()=> handleDetail(item)}>
-      <View style={styles.itemContainer}>
+    <View style={styles.itemContainer}>
+      <TouchableOpacity onPress={() => handleItemPress(item)}>
         <Text style={styles.title}>Title: {item.title}</Text>
         <Text>Form: {item.form}</Text>
         <Text>Deadline: {item.deadline}</Text>
         <Text>Salary: {item.salary}</Text>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => handleDetail(item)}>
+        <Text style={styles.viewDetails}>View Details</Text>
+      </TouchableOpacity>
+    </View>
   );
 
-  const removeVietNameseTones = (str) =>{
+  const removeVietNameseTones = (str) => {
     return str
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "") // Loại bỏ dấu
-    .replace(/đ/g, 'd')
-    .replace(/Đ/g, 'D')
-    .toLowerCase();
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "") // Loại bỏ dấu
+      .replace(/đ/g, "d")
+      .replace(/Đ/g, "D")
+      .toLowerCase();
   };
 
   const searchJobs = (text) => {
@@ -71,12 +102,18 @@ export default function Jobs() {
       return formattedTitle.includes(formattedSearch);
     });
   };
-  // Lọc danh sách công việc nếu có chuỗi tìm kiếm, nếu không thì hiển thị  toàn bộ danh sách
+
   const filteredJobs = search ? searchJobs(search) : jobs;
+
+  const scrollToEnd = () => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd({ animated: true });
+    }
+  };
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#0000ff" />
       </SafeAreaView>
     );
@@ -97,9 +134,123 @@ export default function Jobs() {
         keyExtractor={(item) => item._id.toString()}
         contentContainerStyle={styles.list}
       />
-      <TouchableOpacity style={styles.buttonContainer} onPress={() => router.push("AddNewJobs")}>
+      <TouchableOpacity
+        style={styles.buttonContainer}
+        onPress={() => router.push("AddNewJobs")}
+      >
         <Text style={styles.textButton}>Add New Job</Text>
       </TouchableOpacity>
+
+      {selectedJob && (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              {/* <ScrollView
+                contentContainerStyle={styles.scrollViewContent}
+                ref={scrollViewRef}
+                onContentSizeChange={scrollToEnd}
+              > */}
+                <TextInput
+                  style={styles.modalTextInput}
+                  value={selectedJob.title}
+                  onChangeText={(text) =>
+                    setSelectedJob({ ...selectedJob, title: text })
+                  }
+                />
+                <TextInput
+                  style={styles.modalTextInput}
+                  value={selectedJob.desc}
+                  onChangeText={(text) =>
+                    setSelectedJob({ ...selectedJob, desc: text })
+                  }
+                />
+                <TextInput
+                  style={styles.modalTextInput}
+                  value={selectedJob.form}
+                  onChangeText={(text) =>
+                    setSelectedJob({ ...selectedJob, form: text })
+                  }
+                />
+                <TextInput
+                  style={styles.modalTextInput}
+                  value={selectedJob.number_of_recruitments}
+                  onChangeText={(text) =>
+                    setSelectedJob({
+                      ...selectedJob,
+                      number_of_recruitments: text,
+                    })
+                  }
+                />
+                <TextInput
+                  style={styles.modalTextInput}
+                  value={selectedJob.requirements}
+                  onChangeText={(text) =>
+                    setSelectedJob({ ...selectedJob, requirements: text })
+                  }
+                />
+                <TextInput
+                  style={styles.modalTextInput}
+                  value={selectedJob.salary}
+                  onChangeText={(text) =>
+                    setSelectedJob({ ...selectedJob, salary: text })
+                  }
+                />
+                <TextInput
+                  style={styles.modalTextInput}
+                  value={selectedJob.benefits}
+                  onChangeText={(text) =>
+                    setSelectedJob({ ...selectedJob, benefits: text })
+                  }
+                />
+                <TextInput
+                  style={styles.modalTextInput}
+                  value={selectedJob.location}
+                  onChangeText={(text) =>
+                    setSelectedJob({ ...selectedJob, location: text })
+                  }
+                />
+                <View style={styles.text}>
+                <TextInput
+                  style={styles.modalTextInput}
+                  value={selectedJob.deadline}
+                  onChangeText={(text) =>
+                    setSelectedJob({ ...selectedJob, deadline: text })
+                  }
+                />
+                </View>
+             
+            {/* </ScrollView> */}
+              <View style={styles.buttonRow}>
+                <TouchableOpacity
+                  style={[styles.modalButton, styles.modalButtonClose]}
+                  onPress={handleDelete}
+                >
+                  <Text style={styles.modalButtonText}>Delete</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.modalButton}
+                  onPress={handleEdit}
+                >
+                  <Text style={styles.modalButtonText}>Edit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.modalButton}
+                  onPress={() => setModalVisible(false)}
+                >
+                  <Text style={styles.modalButtonText}>Close</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
     </SafeAreaView>
   );
 }
@@ -107,6 +258,8 @@ export default function Jobs() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },text: {
+    width: "70%"
   },
   loadingContainer: {
     flex: 1,
@@ -137,27 +290,76 @@ const styles = StyleSheet.create({
     elevation: 2,
     alignSelf: "stretch",
     width: "93%",
-  },
-  title: {
+  },  title: {
     fontSize: 16,
     fontWeight: "bold",
+  },
+  viewDetails: {
+    color: "#0099FF",
+    marginTop: 10,
+    
   },
   buttonContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 20,
-    padding: 10,
-    position: "absolute",
-    bottom: 20, // Thay đổi vị trí bottom nếu cần thiết
-    left: 0,
-    right: 0,
     backgroundColor: "#0099FF",
-    width: "100%",
-    alignSelf: "center", // Đảm bảo nút được căn giữa theo chiều ngang
+    padding: 15,
+    margin: 10,
+    borderRadius: 10,
+    alignItems: "center",
   },
   textButton: {
-    fontSize: 16,
-    fontWeight: "bold",
     color: "#fff",
+    fontWeight: "bold",
+  },
+  centeredView: {
+        flex: 1,
+        backgroundColor: '#DDDDDD',
+        opacity: 0.9,
+        padding: 20,
+        marginTop: 50,
+        
+
+  },
+  modalView: {
+    backgroundColor: 'white',
+    margin: 20,
+    padding: 20,
+    flex: 1,
+  
+    borderRadius: 20
+  },
+  scrollViewContent: {
+    alignItems: "center",
+    paddingBottom: 20, 
+  },
+  modalTextInput: {
+    width: '100%',
+    marginBottom: 8,
+    marginTop: 8,
+    borderRadius: 5,
+   borderWidth: 1,
+   padding: 5,
+    height: 40
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
+    marginTop: 40,
+    
+  },
+  modalButton: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    width: "30%",
+  },
+  modalButtonClose: {
+    backgroundColor: "#FF6347",
+  },
+  modalButtonText: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
+
