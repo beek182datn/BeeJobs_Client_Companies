@@ -7,7 +7,19 @@ export default function RootLayout() {
       <Stack.Screen name="LoginScreen" options={{ headerShown: false }} />
       <Stack.Screen name="RegisterScreen" options={{ headerShown: false }} />
       <Stack.Screen name="(tab_home)" options={{ headerShown: false }} />
-      <Stack.Screen name="Details" options={{ headerShown: false }} />
+      <Stack.Screen name="Details" options={{
+          headerTitle: "Chi tiết công việc",
+          headerTitleStyle: {
+            fontSize: 19,
+            fontWeight: "bold",
+            alignSelf: "center",
+          },
+        }} />
+      <Stack.Screen name="OtpScreen" options={{headerShown: false}}/>
+      <Stack.Screen name="EmployerAuth" options={{headerShown: false}}/>
+      <Stack.Screen name="CheckEmployerAuth" options={{headerShown: false}}/>
+      <Stack.Screen name="FogotPassScreen" options={{headerShown: false}}/>
+      <Stack.Screen name="OtpFogotPassScreen" options={{headerShown: false}}/>
       <Stack.Screen
         name="AddNewJobs"
         options={{

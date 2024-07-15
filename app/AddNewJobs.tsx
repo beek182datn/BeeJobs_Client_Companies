@@ -13,6 +13,10 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import Icon from 'react-native-vector-icons/Ionicons'; 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DatePicker from "@react-native-community/datepicker";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from "expo-router";
+
+
 export default function Details() {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
@@ -25,6 +29,8 @@ export default function Details() {
   const [deadline, setDeadline] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
+  const router = useRouter();
+
 
   const handelNumberInputQuantity = (text) =>{
     const numericText = text.replace(/[^0-9]/g, '');
@@ -46,6 +52,42 @@ export default function Details() {
   const showDatepicker = () => {
     setShowDatePicker(true);
   };
+
+
+  const handleSave = async () =>{
+      const addJobs = {
+        title,
+        desc,
+        form,
+        number_of_recruitments,
+        requirements,
+        salary,
+        benefits,
+        location,
+        deadline
+      }
+
+      try{
+        const companyId = await AsyncStorage.getItem('company_id');
+        const response = await fetch(`http://beejobs.io.vn:14307/api/jobs/create/${companyId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(addJobs),
+        });
+
+        if(response.ok){
+          const result = await response.json();
+          router.push("Jobs")
+          console.log("Them jobs thanh cong", result);
+        }else{
+          console.error("err jobs", response.status, response.statusText);
+        }
+      }catch(err){
+          console.error("Loi add jobs", err);
+      }
+  }
 
 
   return (
@@ -185,7 +227,7 @@ export default function Details() {
       </KeyboardAwareScrollView>
 
       <View style={styles.buttonContainer}>
-        <TouchableWithoutFeedback onPress={() => console.log("Save button pressed")}>
+        <TouchableWithoutFeedback onPress={handleSave}>
           <View style={styles.button}>
             <Text style={styles.buttonText}>Save</Text>
           </View>
