@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,6 +8,7 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Modal,
+  BackHandler
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Icon from 'react-native-vector-icons/Ionicons'; 
@@ -88,7 +89,16 @@ export default function Details() {
           console.error("Loi add jobs", err);
       }
   }
+  useEffect(() => {
+    const backAction = () => {
+      router.replace("Jobs");
+      return true;
+    };
 
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    return () => backHandler.remove();
+  }, []);
 
   return (
     <View style={styles.container}>

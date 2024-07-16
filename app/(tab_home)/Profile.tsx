@@ -4,13 +4,15 @@ import {
   TouchableHighlight,
   View,
   Image,
+  BackHandler
 } from "react-native";
-import React from "react";
+
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect } from "react";
 
 
 export default function Profile() {
@@ -28,6 +30,19 @@ export default function Profile() {
   const handleApplyJob = ()=> {
     router.push("ListApplyForJob");
   }
+
+
+  useEffect(() => {
+    const backAction = () => {
+      router.replace("Home");
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    return () => backHandler.remove();
+  }, []);
+
 
   return (
     <SafeAreaView style={styles.container}>

@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import axios from 'axios';
+import { useLocalSearchParams } from 'expo-router';
 
 const ListApplyForJob = () => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const jobId = "6689f2f5bea188d1509e4820";
+
+  const { jobId } = useLocalSearchParams(); 
+
 
   useEffect(() => {
     const fetchApplications = async () => {
@@ -130,3 +133,7 @@ const styles = StyleSheet.create({
 });
 
 export default ListApplyForJob;
+
+
+
+

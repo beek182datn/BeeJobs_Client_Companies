@@ -1,63 +1,37 @@
 
-import { StyleSheet, Text, View, ScrollView, Dimensions, Animated, Image, FlatList, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, ScrollView, Dimensions, Animated, Image, FlatList, TouchableOpacity , BackHandler} from "react-native";
 import React, { useRef, useState, useEffect } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useRouter } from "expo-router";
 
 const { width } = Dimensions.get('window');
 
 export default function Details() {
   const { data } = useLocalSearchParams();
   const item = data ? JSON.parse(data) : {};
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const flatListRef = useRef(null);
-  const scrollX = useRef(new Animated.Value(0)).current;
-  const images = [
-    { id: '1' , src: require('../assets/images/Beejob_ket_noi_viec_lam_01.png') },
-    { id: '2', src: require('../assets/images/Beejob_ket_noi_viec_lam_02.png') },
-    { id: '3', src: require('../assets/images/Beejob_ket_noi_viec_lam_03.png') },
-    { id: '4', src: require('../assets/images/Beejob_ket_noi_viec_lam.png') },
-  ];
+  const router = useRouter();
+
+  const handleApplyInfoPress = () => {
+    router.push({
+      pathname: 'ListApplyForJob',
+      params: { jobId: item._id }
+    });
+  };
+
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      goToNextImage();
-    }, 3000); // Chuyển đổi ảnh mỗi 3 giây
+    const backAction = () => {
+      router.replace("Jobs");
+      return true;
+    };
 
-    return () => clearInterval(interval); // Clear interval khi component bị unmount
-  }, [currentIndex]);
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
 
+    return () => backHandler.remove();
+  }, []);
 
-
-
-  const handleScroll = (event) => {
-    const contentOffset = event.nativeEvent.contentOffset.x;
-    const index = Math.round(contentOffset / width);
-    setCurrentIndex(index);
-  };
-
-  const renderIndicator = () => {
-    return (
-      <View style={styles.indicatorContainer}>
-        {images.map((_, index) => (
-          <View
-            key={index}
-            style={[
-              styles.indicator,
-              { opacity: currentIndex === index ? 1 : 0.3 }
-            ]}
-          />
-        ))}
-      </View>
-    );
-  };
-
-  const goToNextImage = () => {
-    const nextIndex = (currentIndex + 1) % images.length;
-    setCurrentIndex(nextIndex);
-    flatListRef.current.scrollToIndex({ index: nextIndex, animated: true });
-  };
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -114,24 +88,13 @@ export default function Details() {
         </View>
       </ScrollView>
 
-      <View style={styles.sliderContainer}>
 
-        <FlatList
-          ref={flatListRef}
-          data={images}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          pagingEnabled
-          onMomentumScrollEnd={handleScroll} 
-          contentContainerStyle={styles.imageContainer}
-          renderItem={({ item }) => (
-            <Image source={item.src} style={styles.image} />
-          )}
-          keyExtractor={item => item.id}
-        />
-    
-        {renderIndicator()}
-      </View>
+
+<TouchableOpacity style={styles.applyButton} onPress={handleApplyInfoPress}>
+  <Text style={styles.applyButtonText}>Thông tin ứng tuyển</Text>
+</TouchableOpacity>
+
+
     </SafeAreaView>
   );
 }
@@ -234,6 +197,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center', // Căn giữa theo chiều ngang
     
    
+  }, applyButton: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    right: 20,
+    backgroundColor: '#007bff',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  applyButtonText: {
+    color: '#fff',
+    fontSize: 18,
   },
 });
 
