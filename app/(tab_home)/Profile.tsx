@@ -10,10 +10,24 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 export default function Profile() {
   const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.clear();
+      router.replace("LoginScreen"); 
+    } catch (error) {
+      console.error("Error clearing AsyncStorage:", error);
+    }
+  };
+
+  const handleApplyJob = ()=> {
+    router.push("ListApplyForJob");
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -87,7 +101,7 @@ export default function Profile() {
         <Icon name="chevron-forward-outline" size={25} style={styles.icon} />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.textIcon} onPress={()=> router.push("HelpCenter")}>
+      <TouchableOpacity style={styles.textIcon} onPress={()=> router.push("ListApplyForJob")}>
         <Icon name="call-outline" size={25} style={styles.icon} />
         <Text style={styles.underlinedText}>Trợ giúp</Text>
         <Icon name="chevron-forward-outline" size={25} style={styles.icon} />
@@ -95,7 +109,7 @@ export default function Profile() {
 
       <TouchableOpacity
         style={styles.buttonLogout}
-        onPress={() => "Đã bấm vào đây"}
+        onPress={handleLogout}
       >
         <Text style={styles.textLogout}>Đăng xuất</Text>
         <Icon name="enter-outline" size={25}color="white" />

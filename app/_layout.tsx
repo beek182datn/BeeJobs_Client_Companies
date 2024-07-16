@@ -20,6 +20,7 @@ export default function RootLayout() {
       <Stack.Screen name="CheckEmployerAuth" options={{headerShown: false}}/>
       <Stack.Screen name="FogotPassScreen" options={{headerShown: false}}/>
       <Stack.Screen name="OtpFogotPassScreen" options={{headerShown: false}}/>
+      <Stack.Screen name="ListApplyForJob" options={{headerShown: false}}/>
       <Stack.Screen
         name="AddNewJobs"
         options={{
