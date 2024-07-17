@@ -30,6 +30,7 @@ export default function Details() {
   const [deadline, setDeadline] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
+  const [errors, setErrors] = useState({});
   const router = useRouter();
 
 
@@ -56,6 +57,22 @@ export default function Details() {
 
 
   const handleSave = async () =>{
+      const newErrors = {};
+      if (!title) newErrors.title = "Hãy nhập tiêu đề";
+      if (!desc) newErrors.desc = "Hãy nhập mô tả";
+      if (!form) newErrors.form = "Hãy nhập hình thức";
+      if (!number_of_recruitments) newErrors.number_of_recruitments = "Hãy nhập sô lượng";
+      if (!requirements) newErrors.requirements = "Hãy nhập yêu cầu";
+      if (!salary) newErrors.salary = "Hãy nhập lương";
+      if (!benefits) newErrors.benefits = "Hãy nhập lợi ích";
+      if (!location) newErrors.location = "Hãy nhập vị trí";
+      if (!deadline) newErrors.deadline = "Hãy nhập hạn hồ sơ";
+
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
+        return;
+      }
+
       const addJobs = {
         title,
         desc,
@@ -112,92 +129,98 @@ export default function Details() {
         <View style={styles.inputContainer}>
           <Icon name="document-text-outline" size={25} style={styles.icon} />
           <TextInput
-            style={[styles.input, styles.descInput]}
+            style={[styles.input, styles.descInput, errors.title && styles.inputError]}
             value={title}
             onChangeText={setTitle}
             placeholder="Nhập tiêu đề..."
             multiline
             placeholderTextColor="#A9A9A9"
           />
+          {errors.title && <Text style={styles.errorText}>{errors.title}</Text>}
         </View>
 
         <View style={styles.inputContainer}>
           <Icon name="albums-outline" size={25} style={styles.icon} />
           <TextInput
-            style={[styles.input, styles.descInput]}
+            style={[styles.input, styles.descInput, errors.form && styles.inputError]}
             value={form}
             onChangeText={setForm}
             placeholder="Nhập hình thức..."
             multiline
             placeholderTextColor="#A9A9A9"
           />
+           {errors.form && <Text style={styles.errorText}>{errors.form}</Text>}
         </View>
 
         <View style={styles.inputContainer}>
           <Icon name="people-outline" size={25} style={styles.icon} />
           <TextInput
-            style={[styles.input, styles.descInput]}
+            style={[styles.input, styles.descInput, errors.number_of_recruitments && styles.inputError]}
             value={number_of_recruitments}
             onChangeText={handelNumberInputQuantity}
             placeholder="Nhập số lượng tuyển dụng..."
             keyboardType="numeric"
             placeholderTextColor="#A9A9A9"
           />
+           {errors.number_of_recruitments && <Text style={styles.errorText}>{errors.number_of_recruitments}</Text>}
         </View>
         
         <View style={styles.inputContainer}>
           <Icon name="document-attach-outline" size={20} style={styles.icon} />
           <TextInput
-            style={[styles.input, styles.descInput]}
+            style={[styles.input, styles.descInput, errors.requirements && styles.inputError]}
             value={requirements}
             onChangeText={setRequirements}
             placeholder="Nhập yêu cầu..."
             multiline
             placeholderTextColor="#A9A9A9"
           />
+          {errors.requirements && <Text style={styles.errorText}>{errors.requirements}</Text>}
         </View>
         
         <View style={styles.inputContainer}>
           <Icon name="cash-outline" size={20} style={styles.icon} />
           <TextInput
-            style={[styles.input, styles.descInput]}
+            style={[styles.input, styles.descInput,  errors.salary && styles.inputError]}
             value={salary}
             onChangeText={handleNumberInputPrice}
             placeholder="Lương..."
             keyboardType="numeric"
             placeholderTextColor="#A9A9A9"
           />
+
+            {errors.salary && <Text style={styles.errorText}>{errors.salary}</Text>}
         </View>
         
         <View style={styles.inputContainer}>
           <Icon name="gift-outline"  size={20} style={styles.icon} />
           <TextInput
-            style={[styles.input, styles.descInput]}
+            style={[styles.input, styles.descInput, errors.benefits && styles.inputError]}
             value={benefits}
             onChangeText={setBenefits}
             placeholder="Nhập lợi ích..."
             multiline
             placeholderTextColor="#A9A9A9"
           />
+           {errors.benefits && <Text style={styles.errorText}>{errors.benefits}</Text>}
         </View>
 
         <View style={styles.inputContainer}>
           <Icon name="location-outline" size={20} style={styles.icon} />
           <TextInput
-            style={[styles.input, styles.descInput]}
+            style={[styles.input, styles.descInput, errors.location && styles.inputError]}
             value={location}
             onChangeText={setLocation}
             placeholder="Nhập vị trí..."
             placeholderTextColor="#A9A9A9"
           />
+          {errors.location && <Text style={styles.errorText}>{errors.location}</Text>}
         </View>
         
-
-
         <View style={styles.inputContainer}>
-          <Icon name="clipboard-outline"  size={25} style={styles.icon} />
+          <Icon name="clipboard-outline" size={25} style={styles.icon} />
           <TextInput
-            style={[styles.input, styles.inputDescription]}
+            style={[styles.input, styles.inputDescription, errors.desc && styles.inputError]}
             value={desc}
             onChangeText={setDesc}
             placeholder="Nhập mô tả..."
@@ -205,25 +228,16 @@ export default function Details() {
             numberOfLines={4}
             placeholderTextColor="#A9A9A9"
           />
+          {errors.desc && <Text style={styles.errorText}>{errors.desc}</Text>}
         </View>
-
-
 
         <View style={styles.inputContainer}>
-          <Icon name="calendar-outline"  size={20} style={styles.icon} />
-          <TouchableOpacity onPress={showDatepicker} style={[styles.input, styles.descInput]}>
-            {/* <TextInput
-              style={[styles.input, styles.descInput]}
-              value={deadline}
-              placeholder="Nhập thời hạn..."
-              editable={false}
-              placeholderTextColor="#A9A9A9"
-            /> */}
+          <Icon name="calendar-outline" size={20} style={styles.icon} />
+          <TouchableOpacity onPress={showDatepicker} style={[styles.input, styles.descInput, errors.deadline && styles.inputError]}>
             <Text style={{ color: deadline ? "#000" : "#A9A9A9" }}>{deadline || "Nhập thời hạn..."}</Text>
           </TouchableOpacity>
+          {errors.deadline && <Text style={styles.errorText}>{errors.deadline}</Text>}
         </View>
-
-   
 
         {showDatePicker && (
           <DateTimePicker
@@ -251,6 +265,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+  }, inputError: {
+    borderColor: 'red',
+  }, errorText: {
+    color: 'red',
+    marginLeft: 10,
   },
   label: {
     fontSize: 16,

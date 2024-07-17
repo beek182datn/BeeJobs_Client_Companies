@@ -13,11 +13,11 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect } from "react";
-
+import { useNavigation } from "@react-navigation/native";
 
 export default function Profile() {
   const router = useRouter();
-
+  const navigation = useNavigation();
   const handleLogout = async () => {
     try {
       await AsyncStorage.clear();
@@ -30,18 +30,6 @@ export default function Profile() {
   const handleApplyJob = ()=> {
     router.push("ListApplyForJob");
   }
-
-
-  useEffect(() => {
-    const backAction = () => {
-      router.replace("Home");
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
-
-    return () => backHandler.remove();
-  }, []);
 
 
   return (
