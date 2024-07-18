@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { useLocalSearchParams } from 'expo-router';
+import { useRouter } from "expo-router";
 
 const ListApplyForJob = () => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const { jobId } = useLocalSearchParams(); 
-
+  const router = useRouter();
+  
 
   useEffect(() => {
     const fetchApplications = async () => {
@@ -28,8 +30,8 @@ const ListApplyForJob = () => {
   }, [jobId]);
 
   const handleViewProfile = (cv) => {
-    // Logic to navigate to worker's profile or view their details
     console.log(`View profile of worker ${cv}`);
+    router.push({ pathname: "ReadCv", params: { cvUrl: "http://beejobs.io.vn:14307" + cv } });
   };
 
   const handleRateWorker = (workerId) => {
@@ -45,7 +47,7 @@ const ListApplyForJob = () => {
       <Text style={styles.appliedAt}>Ứng tuyển lúc: {new Date(item.applied_at).toLocaleDateString()}</Text>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button1} onPress={() => handleViewProfile("http://beejobs.io.vn:14307"+item.cv)}>
+        <TouchableOpacity style={styles.button1} onPress={() => handleViewProfile(item.cv)}>
           <Text style={styles.buttonText}>Xem hồ sơ</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => handleRateWorker(item.worker_id)}>
