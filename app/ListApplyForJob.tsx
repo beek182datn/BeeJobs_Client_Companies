@@ -7,21 +7,28 @@ import { useRouter } from "expo-router";
 const ListApplyForJob = () => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [noApplications, setNoApplications] = useState(false);
 
   const { jobId } = useLocalSearchParams(); 
   const router = useRouter();
-  
+
 
   useEffect(() => {
     const fetchApplications = async () => {
       try {
         const response = await axios.get(`http://beejobs.io.vn:14307/api/applyJobs/getApylyJobsByIdJob/${jobId}`);
-        setApplications(response.data.data);
-        console.log(response.data.data);
-        
-        setLoading(false);
+        if (response.status === 200 && response.data.data.length > 0) {
+          setApplications(response.data.data);
+        } else {
+          setNoApplications(true);
+        }
       } catch (error) {
-        console.error('Error fetching applications:', error);
+        if (error.response && error.response.status === 404) {
+          setNoApplications(true);
+        } else {
+          console.error('Error fetching applications:', error);
+        }
+      } finally {
         setLoading(false);
       }
     };
@@ -47,7 +54,7 @@ const ListApplyForJob = () => {
       <Text style={styles.appliedAt}>Ứng tuyển lúc: {new Date(item.applied_at).toLocaleDateString()}</Text>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button1} onPress={() => handleViewProfile(item.cv)}>
+        <TouchableOpacity style={styles.button1} onPress={() => handleViewProfile("http://beejobs.io.vn:14307"+item.cv)}>
           <Text style={styles.buttonText}>Xem hồ sơ</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => handleRateWorker(item.worker_id)}>
@@ -65,6 +72,14 @@ const ListApplyForJob = () => {
     );
   }
 
+  if (noApplications) {
+    return (
+      <View style={styles.noApplicationsContainer}>
+        <Text>Chưa có người ứng tuyển</Text>
+      </View>
+    );
+  }
+
   return (
     <FlatList
       data={applications}
@@ -77,6 +92,11 @@ const ListApplyForJob = () => {
 
 const styles = StyleSheet.create({
   loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noApplicationsContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -135,7 +155,6 @@ const styles = StyleSheet.create({
 });
 
 export default ListApplyForJob;
-
 
 
 

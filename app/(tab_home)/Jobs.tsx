@@ -26,6 +26,7 @@ export default function Jobs() {
   const [modalVisible, setModalVisible] = useState(false);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [date, setDate] = useState(new Date());
+  const [errors, setErrors] = useState({});
   const router = useRouter();
   const scrollViewRef = useRef();
 
@@ -59,7 +60,29 @@ export default function Jobs() {
   };
 
   const handleEdit = async () => {
+    const { title, desc, form, number_of_recruitments, requirements, salary, benefits, location, deadline } = selectedJob;
+    
+    const newErrors = {};
+    if (!title) newErrors.title = "Hãy nhập tiêu đề";
+    if (!desc) newErrors.desc = "Hãy nhập mô tả";
+    if (!form) newErrors.form = "Hãy nhập hình thức";
+    if (!number_of_recruitments) newErrors.number_of_recruitments = "Hãy nhập sô lượng";
+    if (!requirements) newErrors.requirements = "Hãy nhập yêu cầu";
+    if (!salary) newErrors.salary = "Hãy nhập lương";
+    if (!benefits) newErrors.benefits = "Hãy nhập lợi ích";
+    if (!location) newErrors.location = "Hãy nhập vị trí";
+    if (!deadline) newErrors.deadline = "Hãy nhập hạn hồ sơ";
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      return;
+    }
+
+
+
     try {
+
       const companyId = await AsyncStorage.getItem('company_id');
       const response = await axios.put(
         `http://beejobs.io.vn:14307/api/jobs/edit/${companyId}/${selectedJob._id}`,
@@ -209,37 +232,40 @@ export default function Jobs() {
                 <View style={styles.inputRow}>
                   <Text style={styles.label}>Tiêu đề</Text>
                   <TextInput
-                    style={styles.modalTextInput}
+                    style={[styles.modalTextInput, errors.title && styles.inputError]}
                     value={selectedJob.title}
                     onChangeText={(text) =>
                       setSelectedJob({ ...selectedJob, title: text })
                     }
                   />
+                    {errors.title && <Text style={styles.errorText}>{errors.title}</Text>}
                 </View>
                 <View style={styles.inputRow}>
                   <Text style={styles.label}>Mô tả</Text>
                   <TextInput
-                    style={styles.modalTextInput}
+                   style={[styles.modalTextInput, errors.desc && styles.inputError]}
                     value={selectedJob.desc}
                     onChangeText={(text) =>
                       setSelectedJob({ ...selectedJob, desc: text })
                     }
                   />
+                  {errors.desc && <Text style={styles.errorText}>{errors.desc}</Text>}
                 </View>
                 <View style={styles.inputRow}>
                   <Text style={styles.label}>Hình thức</Text>
                   <TextInput
-                    style={styles.modalTextInput}
+                    style={[styles.modalTextInput, errors.form && styles.inputError]}
                     value={selectedJob.form}
                     onChangeText={(text) =>
                       setSelectedJob({ ...selectedJob, form: text })
                     }
                   />
+                   {errors.form && <Text style={styles.errorText}>{errors.form}</Text>}
                 </View>
                 <View style={styles.inputRow}>
                   <Text style={styles.label}>Số lượng tuyển dụng</Text>
                   <TextInput
-                    style={styles.modalTextInput}
+                     style={[styles.modalTextInput, errors.number_of_recruitments && styles.inputError]}
                     value={selectedJob.number_of_recruitments}
                     onChangeText={(text) =>
                       setSelectedJob({
@@ -248,54 +274,60 @@ export default function Jobs() {
                       })
                     }
                   />
+                  {errors.number_of_recruitments && <Text style={styles.errorText}>{errors.number_of_recruitments}</Text>}
                 </View>
                 <View style={styles.inputRow}>
                   <Text style={styles.label}>Yêu cầu</Text>
                   <TextInput
-                    style={styles.modalTextInput}
+                   style={[styles.modalTextInput, errors.requirements && styles.inputError]}
                     value={selectedJob.requirements}
                     onChangeText={(text) =>
                       setSelectedJob({ ...selectedJob, requirements: text })
                     }
                   />
+                  {errors.requirements && <Text style={styles.errorText}>{errors.requirements}</Text>}
                 </View>
                 <View style={styles.inputRow}>
                   <Text style={styles.label}>Lương</Text>
                   <TextInput
-                    style={styles.modalTextInput}
+                     style={[styles.modalTextInput, errors.salary && styles.inputError]}
                     value={selectedJob.salary}
                     onChangeText={(text) =>
                       setSelectedJob({ ...selectedJob, salary: text })
                     }
                   />
+                   {errors.salary && <Text style={styles.errorText}>{errors.salary}</Text>}
                 </View>
                 <View style={styles.inputRow}>
                   <Text style={styles.label}>Những lợi ích</Text>
                   <TextInput
-                    style={styles.modalTextInput}
+                      style={[styles.modalTextInput, errors.benefits && styles.inputError]}
                     value={selectedJob.benefits}
                     onChangeText={(text) =>
                       setSelectedJob({ ...selectedJob, benefits: text })
                     }
                   />
+                  {errors.benefits && <Text style={styles.errorText}>{errors.benefits}</Text>}
                 </View>
                 <View style={styles.inputRow}>
                   <Text style={styles.label}>Vị trí</Text>
                   <TextInput
-                    style={styles.modalTextInput}
+                    style={[styles.modalTextInput, errors.location && styles.inputError]}
                     value={selectedJob.location}
                     onChangeText={(text) =>
                       setSelectedJob({ ...selectedJob, location: text })
                     }
                   />
+                  {errors.location && <Text style={styles.errorText}>{errors.location}</Text>}
                 </View>
                 <View style={styles.inputRow}>
                   <Text style={styles.label}>Hạn nộp hồ sơ</Text>
                   <TouchableOpacity onPress={showDatePicker}>
-                    <Text style={styles.modalTextInput}>
+                    <Text  style={[styles.modalTextInput, errors.deadline && styles.inputError]}>
                       {selectedJob.deadline}
                     </Text>
                   </TouchableOpacity>
+                  {errors.deadline && <Text style={styles.errorText}>{errors.deadline}</Text>}
                   {isDatePickerVisible && (
                     <DateTimePicker
                       value={date}
@@ -338,6 +370,11 @@ export default function Jobs() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  }, inputError: {
+    borderColor: 'red',
+  }, errorText: {
+    color: 'red',
+    marginLeft: 10,
   },
   loadingContainer: {
     flex: 1,
