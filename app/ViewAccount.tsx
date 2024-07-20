@@ -24,9 +24,6 @@ export default function ViewAccount() {
   
       if (response.ok) {
         const data = await response.json();
-        console.log("API Response Data:", data); // Kiểm tra cấu trúc dữ liệu
-  
-        // Kiểm tra dữ liệu có đúng như mong đợi không
         if (data && data.data) {
           setAccountDetails(data.data);
         } else {
@@ -41,7 +38,6 @@ export default function ViewAccount() {
       setLoading(false);
     }
   };
-  
 
   useEffect(() => {
     const backAction = () => {
@@ -62,7 +58,6 @@ export default function ViewAccount() {
     );
   }
 
-  // Kiểm tra xem accountDetails có tồn tại không trước khi render
   if (!accountDetails) {
     return (
       <View style={styles.loadingContainer}>
@@ -85,7 +80,7 @@ export default function ViewAccount() {
         <Text style={styles.header}>{accountDetails.company_name}</Text>
       </View>
       <View style={styles.detailContainer}>
-        <Text style={styles.label}>Address:</Text>
+        <Text style={styles.label}>Địa chỉ:</Text>
         <Text style={styles.value}>{accountDetails.company_address}</Text>
       </View>
       <View style={styles.detailContainer}>
@@ -93,18 +88,34 @@ export default function ViewAccount() {
         <Text style={styles.value}>{accountDetails.company_website}</Text>
       </View>
       <View style={styles.detailContainer}>
-        <Text style={styles.label}>Scale:</Text>
+        <Text style={styles.label}>Quy mô:</Text>
         <Text style={styles.value}>{accountDetails.company_scale}</Text>
       </View>
       <View style={styles.detailContainer}>
-        <Text style={styles.label}>Tax Code:</Text>
+        <Text style={styles.label}>Mã số thuế:</Text>
         <Text style={styles.value}>{accountDetails.taxcode}</Text>
+      </View>
+      <View style={styles.detailContainer}>
+        <Text style={styles.label}>Mô tả:</Text>
+        <Text style={styles.value}>{accountDetails.company_desc}</Text>
+      </View>
+      <Text style= {[styles.label, {marginLeft: 20}]}>Giấy chứng nhận</Text>
+      <View style={styles.certificationContainer}>
+   
+        {accountDetails.company_certification ? (
+          <Image
+            style={styles.certification}
+            source={{ uri: `http://beejobs.io.vn:14307${accountDetails.company_certification}` }}
+          />
+        ) : (
+          <Text>No certification available</Text>
+        )}
       </View>
       <TouchableOpacity
         style={styles.button}
         onPress={() => router.push("EditAccount")}
       >
-        <Text style={styles.buttonText}>Edit Company</Text>
+        <Text style={styles.buttonText}>Sửa thông tin</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -121,12 +132,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerContainer: {
+    marginTop: 25,
     alignItems: 'center',
     marginBottom: 20,
     padding: 20,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
+    borderRadius: 20,
+    borderWidth: 1
   },
   logo: {
     width: 100,
@@ -155,6 +169,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#555',
   },
+  certificationContainer: {
+    alignItems: 'center', 
+    marginVertical: 20,
+  },
+  certification: {
+    width: 150, 
+    height: 150, 
+    borderRadius: 15, 
+    marginBottom: 8,
+  },
   button: {
     backgroundColor: '#007bff',
     paddingVertical: 15,
@@ -170,3 +194,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
