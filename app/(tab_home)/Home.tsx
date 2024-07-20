@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, SafeAreaView } from 'react-native';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
 
 interface CompanyInfo {
   company_logo?: string;
@@ -18,13 +19,13 @@ const Home = () => {
   const [accountStatus, setAccountStatus] = useState('');
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const companyId = await AsyncStorage.getItem('company_id');
+  const fetchData = async () => {
+    try {
+      const companyId = await AsyncStorage.getItem('company_id');
+      if (companyId) {
         const response = await axios.get(`http://beejobs.io.vn:14307/api/companies/getCompanyById/${companyId}`);
         
-        setCompanyInfo(response.data.data); // Chỉnh sửa tại đây
+        setCompanyInfo(response.data.data);
         console.log(response.data.data);
         
         setAccountStatus(response.data.data.active ? 'Đã phê duyệt' : 'Chưa phê duyệt');
@@ -32,20 +33,23 @@ const Home = () => {
         const jobResponse = await axios.get(`http://beejobs.io.vn:14307/api/jobs/getJobsByIdCompany/${companyId}`);
         const jobs = jobResponse.data.data;
         setTotalJobs(jobs.length);
-      } catch (error) {
-        console.error("Lỗi khi tải dữ liệu:", error);
       }
-    };
+    } catch (error) {
+      console.error("Lỗi khi tải dữ liệu:", error);
+    }
+  };
 
-    fetchData();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchData();
+    }, [])
+  );
 
   return (
     <SafeAreaView style={styles.container}>
-      
       {companyInfo.company_logo && (
-          <Image source={{ uri:"http://beejobs.io.vn:14307/"+ companyInfo.company_logo }} style={styles.logo} />
-        )}
+        <Image source={{ uri:"http://beejobs.io.vn:14307/"+ companyInfo.company_logo }} style={styles.logo} />
+      )}
       <View style={styles.header}>
         <Text style={styles.companyName}>{companyInfo.company_name}</Text>
         <Text style={styles.welcomeText}>Chào mừng bạn đến với BeeJobs!</Text>
