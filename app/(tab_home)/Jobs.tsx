@@ -47,6 +47,29 @@ export default function Jobs() {
     fetchJobs();
   }, []);
 
+
+  const handlecheckactive = async () => {
+    const companyId = await AsyncStorage.getItem('company_id');
+      if (companyId) {
+        const response = await axios.get(`http://beejobs.io.vn:14307/api/companies/getCompanyById/${companyId}`);
+        if(!response.data.data.active){
+          Alert.alert(
+            'Thông báo',
+            'Doanh nghiệp của bạn chưa được phê duyệt, vui lòng thử lại sau.',
+            [
+              {
+                text: 'OK',
+              },
+            ],
+            { cancelable: false }
+          );
+          return;
+        }else{
+          router.push("AddNewJobs");
+        }
+      }
+  };
+
   const handleDetail = (item) => {
     router.push({
       pathname: "Details",
@@ -208,7 +231,7 @@ export default function Jobs() {
       />
       <TouchableOpacity
         style={styles.buttonContainer}
-        onPress={() => router.push("AddNewJobs")}
+        onPress={handlecheckactive}
       >
         <Text style={styles.textButton}>Add New Job</Text>
       </TouchableOpacity>

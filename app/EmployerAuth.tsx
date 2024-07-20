@@ -137,6 +137,9 @@ const EmployerAuth = () => {
       });
 
       if (response.status === 200) {
+        const companyId = response.data.data._id;
+        console.log("Registed Company ID: "+companyId);
+        await AsyncStorage.setItem('company_id', companyId);
         setColor('green');
         setMessage('Đăng ký công ty thành công');
         Alert.alert(

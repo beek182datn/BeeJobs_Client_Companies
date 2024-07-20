@@ -8,7 +8,8 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Modal,
-  BackHandler
+  BackHandler,
+  Alert,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Icon from 'react-native-vector-icons/Ionicons'; 
@@ -16,6 +17,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import DatePicker from "@react-native-community/datepicker";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from "expo-router";
+import axios from 'axios';
 
 
 export default function Details() {
@@ -57,6 +59,8 @@ export default function Details() {
 
 
   const handleSave = async () =>{
+
+
       const newErrors = {};
       if (!title) newErrors.title = "Hãy nhập tiêu đề";
       if (!desc) newErrors.desc = "Hãy nhập mô tả";
