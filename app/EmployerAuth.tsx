@@ -21,6 +21,7 @@ const EmployerAuth = () => {
   const [companyAddress, setCompanyAddress] = useState('');
   const [companyLogo, setCompanyLogo] = useState<string | null>(null);
   const [companyScale, setCompanyScale] = useState('');
+  const [companyDesc, setCompanyDesc] = useState('');
   const [companyWebsite, setCompanyWebsite] = useState('');
   const [companyCertification, setCompanyCertification] = useState<string | null>(null);
   const [taxCode, setTaxCode] = useState('');
@@ -35,6 +36,7 @@ const EmployerAuth = () => {
   const CompanyScaleRef = useRef<TextInput>(null);
   const CompanyWebRel = useRef<TextInput>(null);
   const taxCodeRef = useRef<TextInput>(null);
+  const CompanyDescRef = useRef<TextInput>(null);
 
   const handleImagePicker = async (setter: React.Dispatch<React.SetStateAction<string | null>>) => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -58,14 +60,17 @@ const EmployerAuth = () => {
   const handleSubmit = async () => {
     setCertificationError(false);
 
-    if (!companyName || !companyAddress || !companyScale || !companyWebsite || !taxCode || !companyCertification) {
+    if (!companyName || !companyAddress || !companyScale || !companyWebsite || !taxCode || !companyCertification || !companyDesc) {
       setMessage('Hãy nhập đầy đủ thông tin bắt buộc');
       setColor('red');
       
 
       if (!companyName) {
         companyNameRef.current?.focus();
-      } else if (!companyAddress) {
+      }else if (!companyDesc) {
+        CompanyDescRef.current?.focus();
+      }
+       else if (!companyAddress) {
         companyAddressRef.current?.focus();
       }
       else if (!companyScale) {
@@ -88,6 +93,7 @@ const EmployerAuth = () => {
     try {
       const formData = new FormData();
       formData.append('company_name', companyName);
+      formData.append('company_desc', companyDesc);
       formData.append('company_address', companyAddress);
       formData.append('company_scale', companyScale);
       formData.append('company_website', companyWebsite);
@@ -177,6 +183,16 @@ const EmployerAuth = () => {
           placeholder="Nhập tên công ty"
           value={companyName}
           onChangeText={setCompanyName}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Giới thiệu về công ty *</Text>
+        <TextInput
+          ref={CompanyDescRef}
+          style={styles.input}
+          placeholder="Nhập giới thiệu"
+          value={companyDesc}
+          onChangeText={setCompanyDesc}
         />
       </View>
       <View style={styles.inputContainer}>
