@@ -46,7 +46,7 @@ const LoginScreen = () => {
             username: username,
             passwd: passwd,
         });
-        
+        console.log("token", response.data.token);
         if (response.data.status !== 200) {
             setMessage(response.data.msg);
             setColor("red");

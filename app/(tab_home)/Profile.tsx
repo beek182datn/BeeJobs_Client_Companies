@@ -57,13 +57,13 @@ export default function Profile() {
         Cài đặt tài khoản
       </Text>
 
-      <TouchableOpacity style={styles.textIcon}>
+      <TouchableOpacity style={styles.textIcon} onPress={()=> router.push("ChangePassword")}>
         <Icon name="key-outline" size={25} style={styles.icon} />
         <Text style={styles.underlinedText}>Đổi mật khẩu</Text>
         <Icon name="chevron-forward-outline" size={25} style={styles.icon} />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.textIcon}>
+      <TouchableOpacity style={styles.textIcon} onPress={()=> router.push("ViewAccount")}>
         <Icon name="albums-outline" size={25} style={styles.icon} />
         <Text style={styles.underlinedText}>
           Xem thông tin chi tiết tài khoản

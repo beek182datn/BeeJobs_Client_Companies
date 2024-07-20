@@ -63,6 +63,7 @@ const ListApplyForJob = () => {
       </View>
     </View>
   );
+  
 
   if (loading) {
     return (
