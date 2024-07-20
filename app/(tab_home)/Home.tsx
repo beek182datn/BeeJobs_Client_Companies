@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, SafeAreaView, ScrollView, RefreshControl } from 'react-native';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
-import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
+import { useFocusEffect } from '@react-navigation/native';
 
 interface CompanyInfo {
   company_logo?: string;
@@ -17,6 +17,7 @@ const Home = () => {
   const [totalJobs, setTotalJobs] = useState(0);
   const [appliedJobs, setAppliedJobs] = useState(0);
   const [accountStatus, setAccountStatus] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
   const router = useRouter();
 
   const fetchData = async () => {
@@ -24,7 +25,6 @@ const Home = () => {
       const companyId = await AsyncStorage.getItem('company_id');
       if (companyId) {
         const response = await axios.get(`http://beejobs.io.vn:14307/api/companies/getCompanyById/${companyId}`);
-        
         setCompanyInfo(response.data.data);
         console.log(response.data.data);
         
@@ -45,33 +45,45 @@ const Home = () => {
     }, [])
   );
 
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    fetchData().then(() => setRefreshing(false));
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
-      {companyInfo.company_logo && (
-        <Image source={{ uri:"http://beejobs.io.vn:14307/"+ companyInfo.company_logo }} style={styles.logo} />
-      )}
-      <View style={styles.header}>
+      <ScrollView
+        contentContainerStyle={styles.scrollView}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <View style={styles.header}>
+          <Text style={styles.welcomeText}>Chào mừng bạn đến với BeeJobs!</Text>
+          {companyInfo.company_logo && (
+            <Image source={{ uri: "http://beejobs.io.vn:14307/" + companyInfo.company_logo }} style={styles.logo} />
+          )}
+        </View>
         <Text style={styles.companyName}>{companyInfo.company_name}</Text>
-        <Text style={styles.welcomeText}>Chào mừng bạn đến với BeeJobs!</Text>
-      </View>
-      <View style={styles.statusContainer}>
-        <Text style={[styles.statusText, { color: accountStatus === 'Đã phê duyệt' ? 'green' : 'red' }]}>
-          Trạng thái tài khoản: {accountStatus}
-        </Text>
-        {accountStatus === 'Đã phê duyệt' && (
-          <Ionicons name="checkmark-circle" size={24} color="green" style={styles.icon} />
-        )}
-      </View>
-      
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/JobPosts')}>
-          <Text style={styles.buttonText}>Tổng số tin đã đăng: {totalJobs}</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/AppliedJobs')}>
-          <Text style={styles.buttonText}>Tin đã có đơn ứng tuyển: {appliedJobs}</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={styles.statusContainer}>
+          <Text style={[styles.statusText, { color: accountStatus === 'Đã phê duyệt' ? 'green' : 'red' }]}>
+            Trạng thái tài khoản: {accountStatus}
+          </Text>
+          {accountStatus === 'Đã phê duyệt' && (
+            <Ionicons name="checkmark-circle" size={24} color="green" style={styles.icon} />
+          )}
+        </View>
+
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity style={styles.button} onPress={() => router.push('/JobPosts')}>
+            <Text style={styles.buttonText}>Tổng số tin đã đăng: {totalJobs}</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.button} onPress={() => router.push('/AppliedJobs')}>
+            <Text style={styles.buttonText}>Tin đã có đơn ứng tuyển: {appliedJobs}</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -82,22 +94,28 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#fff',
   },
+  scrollView: {
+    flexGrow: 1,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 10,
+    justifyContent: 'space-between',
   },
   logo: {
-    marginTop:15,
-    alignSelf:"flex-end",
+    margin: 15,
+    alignSelf: "flex-end",
     width: 50,
     height: 50,
     borderRadius: 25,
   },
   companyName: {
+    flexWrap: 'wrap',
+    width: '100%',
     fontSize: 24,
     fontWeight: 'bold',
-    margin: 10,
+    margin: 5,
   },
   statusContainer: {
     flexDirection: 'row',
