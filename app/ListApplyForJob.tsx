@@ -16,6 +16,10 @@ const ListApplyForJob = () => {
     { key: 'reviewed', title: 'Đã đánh giá' },
   ]);
 
+  const [titleJob, setTitleJob] = useState("");
+  const [totalApply, setTotalApply] = useState("");
+  const [numberRe, setNumberRe] = useState("");
+
   const getStatusStyle = (status) => {
     switch (status) {
       case 'Đã xem':
@@ -36,8 +40,16 @@ const ListApplyForJob = () => {
 
   const fetchApplications = useCallback(async () => {
     try {
+
+      const getInforJob = await axios.get(`http://beejobs.io.vn:14307/api/jobs/getJobById/${jobId}`);
+      if(getInforJob.status === 200){
+        setTitleJob(getInforJob.data.data.title);
+        setNumberRe(getInforJob.data.data.number_of_recruitments);
+      }
+
       const response = await axios.get(`http://beejobs.io.vn:14307/api/applyJobs/getApylyJobsByIdJob/${jobId}`);
       if (response.status === 200 && response.data.data.length > 0) {
+        setTotalApply(response.data.data.length);
         const pendingApplications = response.data.data.filter(app => app.status === 'pending');
         const reviewedApplications = response.data.data.filter(app => app.status !== 'pending');
         setApplicationsPending(pendingApplications);
@@ -147,7 +159,12 @@ const ListApplyForJob = () => {
   });
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.containerheader}>
+      <Text style={styles.titlejob}>{titleJob}</Text>
+      <Text style={styles.textjob}>Số lượng tuyển: {numberRe}</Text>
+      <Text style={styles.textjob}>Số hồ sơ đã ứng tuyển: {totalApply}</Text>
+    </View>
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -198,11 +215,33 @@ const ListApplyForJob = () => {
           </View>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+
+  containerheader: {
+    padding: 20,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  titlejob: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#333',
+    alignSelf: 'center',
+  },
+  textjob: {
+    fontSize: 17,
+    marginVertical: 3,
+    color: '#555',
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -217,7 +256,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   itemContainer: {
-    marginTop: 20,
+    marginTop: 10,
     padding: 15,
     marginBottom: 10,
     backgroundColor: '#f8f8f8',
@@ -335,11 +374,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   tabBar: {
-    marginTop:20,
     backgroundColor: '#0099FF',
     elevation: 4,
-    borderTopLeftRadius:15,
-    borderTopRightRadius:15,
   },
   tabLabel: {
     fontSize: 16,
