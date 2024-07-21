@@ -21,7 +21,7 @@ const handleImagePicker = async (setter) => {
   });
 
   if (!result.canceled && result.assets && result.assets.length > 0) {
-    setter(result.assets[0].uri); // Lưu URI thay vì base64
+    setter(result.assets[0].uri); 
   }
 };
 
@@ -74,13 +74,18 @@ export default function EditAccount() {
         Alert.alert("Lỗi", `Không thể lấy thông tin tài khoản: ${response.statusText}`);
       }
     } catch (error) {
-      Alert.alert("Lỗi", `Đã xảy ra lỗi: ${error.message}`);
+     // Alert.alert("Lỗi", `Đã xảy ra lỗi: ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSave = async () => {
+    const handleSave = async () => {
+    if (companyName !== originalCompanyName && !newCertification) {
+      Alert.alert("Thông báo", "Vui lòng cập nhật lại giấy tờ khi thay đổi tên công ty");
+      return;
+    }
+  
     const companyId = await AsyncStorage.getItem('company_id');
     const userId = await AsyncStorage.getItem('idUser');
   
@@ -91,7 +96,7 @@ export default function EditAccount() {
     formData.append('company_scale', companyScale);
     formData.append('taxcode', taxCode);
     formData.append('company_desc', companyDesc);
-  
+    formData.append('active', 'false');
     if (newLogo) {
       const response = await fetch(newLogo);
       const blob = await response.blob();
@@ -127,6 +132,9 @@ export default function EditAccount() {
     };
     xhr.send(formData);
   };
+  
+
+
   
   useEffect(() => {
     const backAction = () => {
