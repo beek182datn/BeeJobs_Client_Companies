@@ -36,6 +36,7 @@ const ListApplyForJob = () => {
   };
 
   const { jobId } = useLocalSearchParams();
+  
   const router = useRouter();
 
   const fetchApplications = useCallback(async () => {
@@ -48,12 +49,18 @@ const ListApplyForJob = () => {
       }
 
       const response = await axios.get(`http://beejobs.io.vn:14307/api/applyJobs/getApylyJobsByIdJob/${jobId}`);
-      if (response.status === 200 && response.data.data.length > 0) {
-        setTotalApply(response.data.data.length);
-        const pendingApplications = response.data.data.filter(app => app.status === 'pending');
-        const reviewedApplications = response.data.data.filter(app => app.status !== 'pending');
-        setApplicationsPending(pendingApplications);
-        setApplicationsReviewed(reviewedApplications);
+      if (response.status === 200) {
+        if (response.data.data.length > 0) {
+          setTotalApply(response.data.data.length);
+          const pendingApplications = response.data.data.filter(app => app.status === 'pending');
+          const reviewedApplications = response.data.data.filter(app => app.status !== 'pending');
+          setApplicationsPending(pendingApplications);
+          setApplicationsReviewed(reviewedApplications);
+        } else {
+          setTotalApply("0");
+          setApplicationsPending([]);
+          setApplicationsReviewed([]);
+        }
       }
     } catch (error) {
       console.error('Error fetching applications:', error);
