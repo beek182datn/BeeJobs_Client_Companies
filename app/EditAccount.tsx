@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, Alert, TextInput, ScrollView, BackHandler, Image, Button } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, Alert, TextInput, ScrollView, BackHandler, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
-import mime from 'mime';
 import { useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const handleImagePicker = async (setter) => {
   const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -74,13 +74,14 @@ export default function EditAccount() {
         Alert.alert("Lỗi", `Không thể lấy thông tin tài khoản: ${response.statusText}`);
       }
     } catch (error) {
-     // Alert.alert("Lỗi", `Đã xảy ra lỗi: ${error.message}`);
+    //  Alert.alert("Lỗi", `Đã xảy ra lỗi: ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
 
-    const handleSave = async () => {
+  const handleSave = async () => {
+    const isCompanyNameChanged = companyName !== originalCompanyName;
     if (companyName !== originalCompanyName && !newCertification) {
       Alert.alert("Thông báo", "Vui lòng cập nhật lại giấy tờ khi thay đổi tên công ty");
       return;
@@ -96,7 +97,7 @@ export default function EditAccount() {
     formData.append('company_scale', companyScale);
     formData.append('taxcode', taxCode);
     formData.append('company_desc', companyDesc);
-    formData.append('active', 'false');
+    formData.append('active', isCompanyNameChanged ? 'false' : 'true');
     if (newLogo) {
       const response = await fetch(newLogo);
       const blob = await response.blob();
@@ -128,14 +129,11 @@ export default function EditAccount() {
       }
     };
     xhr.onerror = () => {
-      Alert.alert("Lỗi", "Đã xảy ra lỗi");
+    //  Alert.alert("Lỗi", "Đã xảy ra lỗi");
     };
     xhr.send(formData);
   };
-  
 
-
-  
   useEffect(() => {
     const backAction = () => {
       router.replace("ViewAccount");
@@ -156,24 +154,21 @@ export default function EditAccount() {
   }
 
   return (
+   
     <ScrollView style={styles.container}>
       <View style={styles.headerContainer}>
-        {newLogo ? (
-          <Image
-            style={styles.logo}
-            source={{ uri: newLogo }}
-          />
-        ) : companyLogo ? (
-          <Image
-            style={styles.logo}
-            source={{ uri: `http://beejobs.io.vn:14307${companyLogo}` }}
-          />
-        ) : (
-          <Text>Không có logo</Text>
-        )}
-        <TouchableOpacity style={styles.changeButton} onPress={() => handleImagePicker(setNewLogo)}>
-          <Text style={styles.buttonText}>Thay đổi Logo</Text>
-        </TouchableOpacity>
+        <View style={styles.logoContainer}>
+          {newLogo ? (
+            <Image style={styles.logo} source={{ uri: newLogo }} />
+          ) : companyLogo ? (
+            <Image style={styles.logo} source={{ uri: `http://beejobs.io.vn:14307${companyLogo}` }} />
+          ) : (
+            <Text>Không có logo</Text>
+          )}
+          <TouchableOpacity style={styles.changeButton} onPress={() => handleImagePicker(setNewLogo)}>
+            <Text style={styles.buttonText}>Thay đổi Logo</Text>
+          </TouchableOpacity>
+        </View>
         <Text style={styles.header}>Chỉnh sửa thông tin công ty</Text>
       </View>
       <View style={styles.detailContainer}>
@@ -181,6 +176,7 @@ export default function EditAccount() {
         <TextInput
           style={styles.input}
           value={companyName}
+          multiline
           onChangeText={(text) => {
             setCompanyName(text);
             if (text !== originalCompanyName) {
@@ -194,6 +190,7 @@ export default function EditAccount() {
         <TextInput
           style={styles.input}
           value={companyAddress}
+          multiline
           onChangeText={setCompanyAddress}
         />
       </View>
@@ -202,6 +199,7 @@ export default function EditAccount() {
         <TextInput
           style={styles.input}
           value={companyWebsite}
+          multiline
           onChangeText={setCompanyWebsite}
         />
       </View>
@@ -210,6 +208,7 @@ export default function EditAccount() {
         <TextInput
           style={styles.input}
           value={companyScale}
+          multiline
           onChangeText={setCompanyScale}
         />
       </View>
@@ -218,29 +217,27 @@ export default function EditAccount() {
         <TextInput
           style={styles.input}
           value={taxCode}
+    
           onChangeText={setTaxCode}
         />
       </View>
       <View style={styles.detailContainer}>
         <Text style={styles.label}>Mô tả công ty:</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, styles.multilineInput]}
           value={companyDesc}
+          multiline
+          numberOfLines={4}
+
           onChangeText={setCompanyDesc}
         />
       </View>
       <View style={styles.detailContainer}>
         <View style={styles.certificationContainer}>
           {newCertification ? (
-            <Image
-              style={styles.certification}
-              source={{ uri: newCertification }}
-            />
+            <Image style={styles.certification} source={{ uri: newCertification }} />
           ) : companyCertification ? (
-            <Image
-              style={styles.certification}
-              source={{ uri: `http://beejobs.io.vn:14307${companyCertification}` }}
-            />
+            <Image style={styles.certification} source={{ uri: `http://beejobs.io.vn:14307${companyCertification}` }} />
           ) : (
             <Text>Không có chứng nhận</Text>
           )}
@@ -250,9 +247,10 @@ export default function EditAccount() {
         </TouchableOpacity>
       </View>
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>Lưu</Text>
+        <Text style={styles.saveButtonTex}>Lưu</Text>
       </TouchableOpacity>
     </ScrollView>
+
   );
 }
 
@@ -260,21 +258,32 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: '#f9f9f9', 
   },
   headerContainer: {
+    marginTop: 10,
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
+    backgroundColor: '#007bff',
+    padding: 20,
+    borderRadius: 10,
+  },
+  logoContainer: {
+    alignItems: 'center',
   },
   logo: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    marginBottom: 8,
+    marginBottom: 10,
+    borderWidth: 2,
+    borderColor: '#fff',
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: '#fff', 
+    marginTop: 10,
   },
   detailContainer: {
     marginBottom: 16,
@@ -290,6 +299,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     padding: 8,
     fontSize: 16,
+    backgroundColor: '#fff',
   },
   certificationContainer: {
     alignItems: 'center',
@@ -300,33 +310,41 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 8,
     marginBottom: 8,
+    borderWidth: 2,
+    borderColor: '#ddd',
   },
   changeButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#fff', 
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#007bff', 
     marginTop: 10,
   },
   buttonText: {
-    color: '#fff',
+    color: '#007bff', 
     fontSize: 16,
     fontWeight: 'bold',
   },
   saveButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#E0EEE0',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#007bff', 
     marginTop: 20, 
     width: '50%', 
     alignSelf: 'center', 
-    marginBottom: 40
+    marginBottom: 40,
+
+    
   },
   saveButtonText: {
-    color: '#fff',
+    color: '#007bff', // Blue text color for save button
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -334,7 +352,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
-  },
+    backgroundColor: '#f9f9f9',
+  },saveButtonTex:{
+    color: "#007bff",
+    fontSize: 20
+  },multilineInput:{
+    minHeight: 100,
+    textAlignVertical: 'top',
+  }
 });
+
 

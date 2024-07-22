@@ -1,5 +1,4 @@
-
-import { StyleSheet, Text, View, ScrollView, Dimensions, Animated, Image, FlatList, TouchableOpacity , BackHandler} from "react-native";
+import { StyleSheet, Text, View, ScrollView, Dimensions, Animated, Image, FlatList, TouchableOpacity, BackHandler } from "react-native";
 import React, { useRef, useState, useEffect } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -20,7 +19,6 @@ export default function Details() {
     });
   };
 
-
   useEffect(() => {
     const backAction = () => {
       router.replace("Jobs");
@@ -37,64 +35,60 @@ export default function Details() {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.card}>
           <View style={styles.item}>
-            <Icon name="tag" size={20} color="#333" style={styles.icon} />
+            <Icon name="tag" size={20} color="#007bff" style={styles.icon} />
             <Text style={styles.title}>Tiêu đề: {item.title}</Text>
           </View>
           <View style={styles.divider} />
           <View style={styles.item}>
-            <Icon name="file-text" size={20} color="#333" style={styles.icon} />
+            <Icon name="file-text" size={20} color="#007bff" style={styles.icon} />
             <Text style={styles.text}>Mô tả: {item.desc}</Text>
           </View>
           <View style={styles.divider} />
           <View style={styles.item}>
-            <Icon name="list-alt" size={20} color="#333" style={styles.icon} />
+            <Icon name="list-alt" size={20} color="#007bff" style={styles.icon} />
             <Text style={styles.text}>Hình thức: {item.form}</Text>
           </View>
           <View style={styles.divider} />
           <View style={styles.item}>
-            <Icon name="users" size={20} color="#333" style={styles.icon} />
+            <Icon name="users" size={20} color="#007bff" style={styles.icon} />
             <Text style={styles.text}>Số lượng tuyển: {item.number_of_recruitments}</Text>
           </View>
           <View style={styles.divider} />
           <View style={styles.item}>
-            <Icon name="check-circle" size={20} color="#333" style={styles.icon} />
+            <Icon name="check-circle" size={20} color="#007bff" style={styles.icon} />
             <Text style={styles.text}>Yêu cầu: {item.requirements}</Text>
           </View>
           <View style={styles.divider} />
           <View style={styles.item}>
-            <Icon name="money" size={20} color="#333" style={styles.icon} />
+            <Icon name="money" size={20} color="#007bff" style={styles.icon} />
             <Text style={styles.text}>Lương: {item.salary}</Text>
           </View>
           <View style={styles.divider} />
           <View style={styles.item}>
-            <Icon name="gift" size={20} color="#333" style={styles.icon} />
+            <Icon name="gift" size={20} color="#007bff" style={styles.icon} />
             <Text style={styles.text}>Lợi ích: {item.benefits}</Text>
           </View>
           <View style={styles.divider} />
           <View style={styles.item}>
-            <Icon name="map-marker" size={20} color="#333" style={styles.icon} />
+            <Icon name="map-marker" size={20} color="#007bff" style={styles.icon} />
             <Text style={styles.text}>Vị trí: {item.location}</Text>
           </View>
           <View style={styles.divider} />
           <View style={styles.item}>
-            <Icon name="calendar" size={20} color="#333" style={styles.icon} />
+            <Icon name="calendar" size={20} color="#007bff" style={styles.icon} />
             <Text style={styles.text}>Thời hạn: {item.deadline}</Text>
           </View>
           <View style={styles.divider} />
           <View style={styles.item}>
-            <Icon name="clock-o" size={20} color="#333" style={styles.icon} />
+            <Icon name="clock-o" size={20} color="#007bff" style={styles.icon} />
             <Text style={styles.text}>Ngày tạo: {item.created_at}</Text>
           </View>
         </View>
       </ScrollView>
 
-
-
-<TouchableOpacity style={styles.applyButton} onPress={handleApplyInfoPress}>
-  <Text style={styles.applyButtonText}>Thông tin ứng tuyển</Text>
-</TouchableOpacity>
-
-
+      <TouchableOpacity style={styles.applyButton} onPress={handleApplyInfoPress}>
+        <Text style={styles.applyButtonText}>Thông tin ứng tuyển</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -102,114 +96,64 @@ export default function Details() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#f2f2f2',
   },
   scrollContainer: {
     padding: 20,
   },
   card: {
     backgroundColor: '#ffffff',
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
-    padding: 15,
-    marginBottom: 150,
+    borderRadius: 15,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    elevation: 5,
+    padding: 20,
+    marginBottom: 80,
   },
   item: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 12,
   },
   icon: {
-    marginRight: 10
+    marginRight: 12,
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 22,
+    fontWeight: '600',
     color: '#333',
   },
   text: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#555',
-    margin: 10
+    margin: 8,
   },
   divider: {
-    height: 1,
-    backgroundColor: '#ddd',
-    marginVertical: 10,
+    height: 1.5,
+    backgroundColor: '#e0e0e0',
+    marginVertical: 12,
   },
-  sliderContainer: {
-    marginLeft: 10,
-    padding: 10,
-    position: 'absolute',
-    bottom: 0,
-    width: '95%',
-    height: 200,
-    borderRadius: 20,
-    borderWidth: 2,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    
-  },
-  image: {
-    width: width * 0.9,
-    height: 200,
-    resizeMode: 'cover', 
-    borderRadius: 10, 
-
-   
-  
-  },
-  indicator: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#333',
-    margin: 5,
-   
-  },
-  indicatorContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    bottom: 10,
-    width: '100%',
-  },
-  button: {
-    width: 30,
-    height: 30,
-    backgroundColor: '#333',
-    borderRadius: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-  },  imageContainer: {
-    flexGrow: 1,
-    justifyContent: 'center', // Căn giữa theo chiều ngang
-    
-   
-  }, applyButton: {
+  applyButton: {
     position: 'absolute',
     bottom: 20,
     left: 20,
     right: 20,
     backgroundColor: '#007bff',
-    padding: 15,
-    borderRadius: 10,
+    paddingVertical: 15,
+    borderRadius: 30,
     alignItems: 'center',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 5,
   },
   applyButtonText: {
-    color: '#fff',
+    color: '#ffffff',
     fontSize: 18,
+    fontWeight: '700',
   },
 });
 

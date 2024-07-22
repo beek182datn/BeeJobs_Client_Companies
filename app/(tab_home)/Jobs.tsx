@@ -86,15 +86,15 @@ export default function Jobs() {
     const { title, desc, form, number_of_recruitments, requirements, salary, benefits, location, deadline } = selectedJob;
     
     const newErrors = {};
-    if (!title) newErrors.title = "Hãy nhập tiêu đề";
-    if (!desc) newErrors.desc = "Hãy nhập mô tả";
-    if (!form) newErrors.form = "Hãy nhập hình thức";
-    if (!number_of_recruitments) newErrors.number_of_recruitments = "Hãy nhập sô lượng";
-    if (!requirements) newErrors.requirements = "Hãy nhập yêu cầu";
-    if (!salary) newErrors.salary = "Hãy nhập lương";
-    if (!benefits) newErrors.benefits = "Hãy nhập lợi ích";
-    if (!location) newErrors.location = "Hãy nhập vị trí";
-    if (!deadline) newErrors.deadline = "Hãy nhập hạn hồ sơ";
+    if (!title.trim()) newErrors.title = "Hãy nhập tiêu đề";
+    if (!desc.trim()) newErrors.desc = "Hãy nhập mô tả";
+    if (!form.trim()) newErrors.form = "Hãy nhập hình thức";
+    if (!number_of_recruitments.trim()) newErrors.number_of_recruitments = "Hãy nhập số lượng";
+    if (!requirements.trim()) newErrors.requirements = "Hãy nhập yêu cầu";
+    if (!salary.trim()) newErrors.salary = "Hãy nhập lương";
+    if (!benefits.trim()) newErrors.benefits = "Hãy nhập lợi ích";
+    if (!location.trim()) newErrors.location = "Hãy nhập vị trí";
+    if (!deadline.trim()) newErrors.deadline = "Hãy nhập hạn hồ sơ";
 
     setErrors(newErrors);
 
@@ -102,10 +102,7 @@ export default function Jobs() {
       return;
     }
 
-
-
     try {
-
       const companyId = await AsyncStorage.getItem('company_id');
       const response = await axios.put(
         `http://beejobs.io.vn:14307/api/jobs/edit/${companyId}/${selectedJob._id}`,
@@ -170,13 +167,13 @@ export default function Jobs() {
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
       <TouchableOpacity onPress={() => handleItemPress(item)}>
-        <Text style={styles.title}>Title: {item.title}</Text>
-        <Text>Form: {item.form}</Text>
-        <Text>Deadline: {item.deadline}</Text>
-        <Text>Salary: {item.salary}</Text>
+        <Text style={styles.title}>Tiêu đề: {item.title}</Text>
+        <Text>Hình thức: {item.form}</Text>
+        <Text>Hạn nộp hồ sơ: {item.deadline}</Text>
+        <Text>Lương: {item.salary}</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => handleDetail(item)}>
-        <Text style={styles.viewDetails}>View Details</Text>
+        <Text style={styles.viewDetails}>Xem chi tiết</Text>
       </TouchableOpacity>
     </View>
   );
@@ -218,7 +215,7 @@ export default function Jobs() {
     <SafeAreaView style={styles.container}>
       <TextInput
         style={styles.searchInput}
-        placeholder="Search jobs..."
+        placeholder="Tìm kiếm công việc..."
         value={search}
         onChangeText={setSearch}
         placeholderTextColor="#A9A9A9"
@@ -233,7 +230,7 @@ export default function Jobs() {
         style={styles.buttonContainer}
         onPress={handlecheckactive}
       >
-        <Text style={styles.textButton}>Add New Job</Text>
+        <Text style={styles.textButton}>Thêm công việc mới</Text>
       </TouchableOpacity>
 
       {selectedJob && (
@@ -245,8 +242,17 @@ export default function Jobs() {
             setModalVisible(!modalVisible);
           }}
         >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
+
+<TouchableOpacity
+    style={styles.centeredView}
+    onPress={() => setModalVisible(false)}
+  >
+    <TouchableOpacity
+      style={styles.modalView}
+      activeOpacity={1} 
+      onPress={() => {}}
+    >
+         
               <ScrollView
                 contentContainerStyle={styles.scrollViewContent}
                 ref={scrollViewRef}
@@ -271,245 +277,266 @@ export default function Jobs() {
                     onChangeText={(text) =>
                       setSelectedJob({ ...selectedJob, desc: text })
                     }
-                  />
-                  {errors.desc && <Text style={styles.errorText}>{errors.desc}</Text>}
-                </View>
-                <View style={styles.inputRow}>
-                  <Text style={styles.label}>Hình thức</Text>
-                  <TextInput
-                    style={[styles.modalTextInput, errors.form && styles.inputError]}
-                    value={selectedJob.form}
-                    onChangeText={(text) =>
-                      setSelectedJob({ ...selectedJob, form: text })
-                    }
-                  />
-                   {errors.form && <Text style={styles.errorText}>{errors.form}</Text>}
-                </View>
-                <View style={styles.inputRow}>
-                  <Text style={styles.label}>Số lượng tuyển dụng</Text>
-                  <TextInput
-                     style={[styles.modalTextInput, errors.number_of_recruitments && styles.inputError]}
-                    value={selectedJob.number_of_recruitments}
-                    onChangeText={(text) =>
-                      setSelectedJob({
-                        ...selectedJob,
-                        number_of_recruitments: text,
-                      })
-                    }
-                  />
-                  {errors.number_of_recruitments && <Text style={styles.errorText}>{errors.number_of_recruitments}</Text>}
-                </View>
-                <View style={styles.inputRow}>
-                  <Text style={styles.label}>Yêu cầu</Text>
-                  <TextInput
-                   style={[styles.modalTextInput, errors.requirements && styles.inputError]}
-                    value={selectedJob.requirements}
-                    onChangeText={(text) =>
-                      setSelectedJob({ ...selectedJob, requirements: text })
-                    }
-                  />
-                  {errors.requirements && <Text style={styles.errorText}>{errors.requirements}</Text>}
-                </View>
-                <View style={styles.inputRow}>
-                  <Text style={styles.label}>Lương</Text>
-                  <TextInput
-                     style={[styles.modalTextInput, errors.salary && styles.inputError]}
-                    value={selectedJob.salary}
-                    onChangeText={(text) =>
-                      setSelectedJob({ ...selectedJob, salary: text })
-                    }
-                  />
-                   {errors.salary && <Text style={styles.errorText}>{errors.salary}</Text>}
-                </View>
-                <View style={styles.inputRow}>
-                  <Text style={styles.label}>Những lợi ích</Text>
-                  <TextInput
-                      style={[styles.modalTextInput, errors.benefits && styles.inputError]}
-                    value={selectedJob.benefits}
-                    onChangeText={(text) =>
-                      setSelectedJob({ ...selectedJob, benefits: text })
-                    }
-                  />
-                  {errors.benefits && <Text style={styles.errorText}>{errors.benefits}</Text>}
-                </View>
-                <View style={styles.inputRow}>
-                  <Text style={styles.label}>Vị trí</Text>
-                  <TextInput
-                    style={[styles.modalTextInput, errors.location && styles.inputError]}
-                    value={selectedJob.location}
-                    onChangeText={(text) =>
-                      setSelectedJob({ ...selectedJob, location: text })
-                    }
-                  />
-                  {errors.location && <Text style={styles.errorText}>{errors.location}</Text>}
-                </View>
-                <View style={styles.inputRow}>
-                  <Text style={styles.label}>Hạn nộp hồ sơ</Text>
-                  <TouchableOpacity onPress={showDatePicker}>
-                    <Text  style={[styles.modalTextInput, errors.deadline && styles.inputError]}>
-                      {selectedJob.deadline}
-                    </Text>
-                  </TouchableOpacity>
-                  {errors.deadline && <Text style={styles.errorText}>{errors.deadline}</Text>}
-                  {isDatePickerVisible && (
-                    <DateTimePicker
-                      value={date}
-                      mode="date"
-                      display="default"
-                      onChange={handleConfirm}
-                      minimumDate={new Date()}
                     />
-                  )}
+                    {errors.desc && <Text style={styles.errorText}>{errors.desc}</Text>}
+                  </View>
+                  <View style={styles.inputRow}>
+                    <Text style={styles.label}>Hình thức</Text>
+                    <TextInput
+                      style={[styles.modalTextInput, errors.form && styles.inputError,  styles.multilineInput]}
+                      value={selectedJob.form}
+                      multiline
+                      numberOfLines={2}
+                      
+                      onChangeText={(text) =>
+                        setSelectedJob({ ...selectedJob, form: text })
+                      }
+                    />
+                    {errors.form && <Text style={styles.errorText}>{errors.form}</Text>}
+                  </View>
+                  <View style={styles.inputRow}>
+                    <Text style={styles.label}>Số lượng</Text>
+                    <TextInput
+                      style={[styles.modalTextInput, errors.number_of_recruitments && styles.inputError]}
+                      value={selectedJob.number_of_recruitments}
+                      onChangeText={(text) =>
+                        setSelectedJob({ ...selectedJob, number_of_recruitments: text })
+                      }
+                      keyboardType="numeric"
+                    />
+                    {errors.number_of_recruitments && <Text style={styles.errorText}>{errors.number_of_recruitments}</Text>}
+                  </View>
+                  <View style={styles.inputRow}>
+                    <Text style={styles.label}>Yêu cầu</Text>
+                    <TextInput
+                      style={[styles.modalTextInput, errors.requirements && styles.inputError,  styles.multilineInput]}
+                      value={selectedJob.requirements}
+                      multiline
+                      numberOfLines={2}
+                      onChangeText={(text) =>
+                        setSelectedJob({ ...selectedJob, requirements: text })
+                      }
+                    />
+                    {errors.requirements && <Text style={styles.errorText}>{errors.requirements}</Text>}
+                  </View>
+                  <View style={styles.inputRow}>
+                    <Text style={styles.label}>Lương</Text>
+                    <TextInput
+                      style={[styles.modalTextInput, errors.salary && styles.inputError]}
+                      value={selectedJob.salary}
+                      onChangeText={(text) =>
+                        setSelectedJob({ ...selectedJob, salary: text })
+                      }
+                      keyboardType="numeric"
+                    />
+                    {errors.salary && <Text style={styles.errorText}>{errors.salary}</Text>}
+                  </View>
+                  <View style={styles.inputRow}>
+                    <Text style={styles.label}>Lợi ích</Text>
+                    <TextInput
+                      style={[styles.modalTextInput, errors.benefits && styles.inputError,  styles.multilineInput]}
+                      value={selectedJob.benefits}
+                      multiline
+                      numberOfLines={2}
+                      onChangeText={(text) =>
+                        setSelectedJob({ ...selectedJob, benefits: text })
+                      }
+                    />
+                    {errors.benefits && <Text style={styles.errorText}>{errors.benefits}</Text>}
+                  </View>
+                  <View style={styles.inputRow}>
+                    <Text style={styles.label}>Vị trí</Text>
+                    <TextInput
+                      style={[styles.modalTextInput, errors.location && styles.inputError]}
+                      value={selectedJob.location}
+                      multiline
+                      onChangeText={(text) =>
+                        setSelectedJob({ ...selectedJob, location: text })
+                      }
+                    />
+                    {errors.location && <Text style={styles.errorText}>{errors.location}</Text>}
+                  </View>
+                  <View style={styles.inputRow}>
+                    <Text style={styles.label}>Hạn nộp hồ sơ</Text>
+                    <TouchableOpacity
+                      style={[styles.modalTextInput, styles.datePickerButton]}
+                      onPress={showDatePicker}
+                    >
+                      <Text>{selectedJob.deadline ? selectedJob.deadline : "Chọn ngày"}</Text>
+                    </TouchableOpacity>
+                    {isDatePickerVisible && (
+                      <DateTimePicker
+                        value={date}
+                        mode="date"
+                        display="default"
+                        onChange={handleConfirm}
+                      />
+                    )}
+                    {errors.deadline && <Text style={styles.errorText}>{errors.deadline}</Text>}
+                  </View>
+                </ScrollView>
+                <View style={styles.modalButtonsContainer}>
+                  <TouchableOpacity
+                    style={[styles.modalButton, styles.deleteButton]}
+                    onPress={confirmDelete}
+                  >
+                    <Text style={styles.modalButtonText}>Xóa</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.modalButton, styles.saveButton]}
+                    onPress={handleEdit}
+                  >
+                    <Text style={styles.modalButtonText}>Lưu</Text>
+                  </TouchableOpacity>
                 </View>
-              </ScrollView>
-              <View style={styles.buttonRow}>
-                <TouchableOpacity
-                  style={[styles.modalButton, styles.modalButtonClose]}
-                  onPress={confirmDelete}
-                >
-                  <Text style={styles.modalButtonText}>Delete</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.modalButton}
-                  onPress={handleEdit}
-                >
-                  <Text style={styles.modalButtonText}>Edit</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.modalButton}
-                  onPress={() => setModalVisible(false)}
-                >
-                  <Text style={styles.modalButtonText}>Close</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </Modal>
-      )}
-    </SafeAreaView>
-  );
-}
+          </Modal>
+        )}
+      </SafeAreaView>
+    );
+  }
+  
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: "#f5f5f5",
+      paddingHorizontal: 10,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "#f5f5f5",
+    },
+    searchInput: {
+      height: 40,
+      borderColor: "#ddd",
+      borderWidth: 1,
+      borderRadius: 5,
+      paddingHorizontal: 10,
+      marginVertical: 10,
+      backgroundColor: "#fff",
+    },
+    list: {
+      paddingBottom: 70,
+    },
+    itemContainer: {
+      backgroundColor: "#fff",
+      padding: 15,
+      marginVertical: 5,
+      borderRadius: 10,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 3,
+    },
+    title: {
+      fontSize: 16,
+      fontWeight: "bold",
+    },
+    viewDetails: {
+      color: "#1e90ff",
+      marginTop: 10,
+    },
+    buttonContainer: {
+      backgroundColor: "#007bff",
+      padding: 15,
+      borderRadius: 10,
+      position: "absolute",
+      bottom: 20,
+      right: 20,
+    },
+    textButton: {
+      color: "#fff",
+      fontSize: 16,
+      textAlign: "center",
+    },
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  }, inputError: {
-    borderColor: 'red',
-  }, errorText: {
-    color: 'red',
-    marginLeft: 10,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  searchInput: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    borderRadius: 10,
-    margin: 10,
-    paddingLeft: 10,
-  },
-  list: {
-    flexGrow: 1,
-  },
-  itemContainer: {
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
-    backgroundColor: "#f9f9f9",
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 2,
-    alignSelf: "stretch",
-    width: "93%",
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  viewDetails: {
-    color: "#0099FF",
-    marginTop: 10,
-  },
-  buttonContainer: {
-    backgroundColor: "#0099FF",
-    padding: 15,
-    margin: 10,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  textButton: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalView: {
-    backgroundColor: 'white',
-    margin: 20,
-    padding: 20,
-    flex: 1,
-    borderRadius: 20,
-    width: '90%',
-  },
-  scrollViewContent: {
-    alignItems: "center",
-    paddingBottom: 20,
-  },
-  inputRow: {
-    marginBottom: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 5,
-  },
-  label: {
-    marginTop: 10,
-    marginBottom: 10,
-    flex: 1,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  modalTextInput: {
-    flex: 2,
-    marginLeft: 10,
-    borderRadius: 5,
-    borderWidth: 1,
-    padding: 10,
-    height: 50,
-  },
-  buttonRow: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    width: "100%",
-    marginTop: 5,
-  },
-  modalButton: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-    width: "30%",
-    backgroundColor: "#2196F3",
-  },
-  modalButtonClose: {
-    backgroundColor: "#FF6347",
-  },
-  modalButtonText: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-});
+    label: {
+      fontSize: 16,
+      fontWeight: "bold",
+      marginBottom: 5,
+    },
+    modalTextInput: {
+      height: 40,
+      borderColor: "#ddd",
+      borderWidth: 1,
+      borderRadius: 5,
+      paddingHorizontal: 10,
+      backgroundColor: "#fff",
 
+    },
+    datePickerButton: {
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    inputError: {
+      borderColor: "red",
+    },
+    errorText: {
+      color: "red",
+      fontSize: 12,
+      marginTop: 5,
+    },
+    modalButtonsContainer: {
+      flexDirection: "row",
+      marginTop: 20,
+    },
+    modalButton: {
+      flex: 1,
+      padding: 10,
+      borderRadius: 5,
+      marginHorizontal: 5,
+      alignItems: "center",
+    },
+    deleteButton: {
+      backgroundColor: "#dc3545",
+    },
+    saveButton: {
+      backgroundColor: "#28a745",
+    },
+    modalButtonText: {
+      color: "#fff",
+      fontSize: 16,
+    },
+
+
+    centeredView: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "rgba(0,0,0,0.5)",
+    },
+    modalView: {
+      width: "80%", 
+      maxHeight: "80%", 
+      backgroundColor: "#fff",
+      borderRadius: 20,
+      padding: 20,
+      alignItems: "center",
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+    },
+    scrollViewContent: {
+      flexGrow: 1,
+    },
+    inputRow: {
+      marginBottom: 15,
+      width: "100%",
+    },multilineInput:{
+      minHeight: 60,
+      maxHeight: 120, 
+      textAlignVertical: 'top',
+      marginBottom: 10,
+      flexGrow: 1,
+    } 
+  });
+  
 
 
 

@@ -6,19 +6,16 @@ import {
   TextInput,
   TouchableOpacity,
   Platform,
-  TouchableWithoutFeedback,
-  Modal,
-  BackHandler,
-  Alert,
+  Dimensions,
+  BackHandler
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Icon from 'react-native-vector-icons/Ionicons'; 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import DatePicker from "@react-native-community/datepicker";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from "expo-router";
-import axios from 'axios';
 
+const { width } = Dimensions.get('window');
 
 export default function Details() {
   const [title, setTitle] = useState("");
@@ -34,7 +31,6 @@ export default function Details() {
   const [date, setDate] = useState(new Date());
   const [errors, setErrors] = useState({});
   const router = useRouter();
-
 
   const handelNumberInputQuantity = (text) =>{
     const numericText = text.replace(/[^0-9]/g, '');
@@ -57,59 +53,69 @@ export default function Details() {
     setShowDatePicker(true);
   };
 
+  const handleSave = async () => {
+    const newErrors = {};
+    if (!title.trim()) newErrors.title = "Hãy nhập tiêu đề";
+    if (!desc.trim()) newErrors.desc = "Hãy nhập mô tả";
+    if (!form.trim()) newErrors.form = "Hãy nhập hình thức";
+    if (!number_of_recruitments.trim()) newErrors.number_of_recruitments = "Hãy nhập số lượng";
+    if (!requirements.trim()) newErrors.requirements = "Hãy nhập yêu cầu";
+    if (!salary.trim()) newErrors.salary = "Hãy nhập lương";
+    if (!benefits.trim()) newErrors.benefits = "Hãy nhập lợi ích";
+    if (!location.trim()) newErrors.location = "Hãy nhập vị trí";
+    if (!deadline.trim()) newErrors.deadline = "Hãy nhập hạn hồ sơ";
 
-  const handleSave = async () =>{
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
 
+    const addJobs = {
+      title,
+      desc,
+      form,
+      number_of_recruitments,
+      requirements,
+      salary,
+      benefits,
+      location,
+      deadline
+    }
 
-      const newErrors = {};
-      if (!title) newErrors.title = "Hãy nhập tiêu đề";
-      if (!desc) newErrors.desc = "Hãy nhập mô tả";
-      if (!form) newErrors.form = "Hãy nhập hình thức";
-      if (!number_of_recruitments) newErrors.number_of_recruitments = "Hãy nhập sô lượng";
-      if (!requirements) newErrors.requirements = "Hãy nhập yêu cầu";
-      if (!salary) newErrors.salary = "Hãy nhập lương";
-      if (!benefits) newErrors.benefits = "Hãy nhập lợi ích";
-      if (!location) newErrors.location = "Hãy nhập vị trí";
-      if (!deadline) newErrors.deadline = "Hãy nhập hạn hồ sơ";
+    try {
+      const companyId = await AsyncStorage.getItem('company_id');
+      const response = await fetch(`http://beejobs.io.vn:14307/api/jobs/create/${companyId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(addJobs),
+      });
 
-      if (Object.keys(newErrors).length > 0) {
-        setErrors(newErrors);
-        return;
+      if(response.ok) {
+        const result = await response.json();
+        router.push("Jobs");
+        console.log("Thêm jobs thành công", result);
+      } else {
+        console.error("Lỗi jobs", response.status, response.statusText);
       }
-
-      const addJobs = {
-        title,
-        desc,
-        form,
-        number_of_recruitments,
-        requirements,
-        salary,
-        benefits,
-        location,
-        deadline
-      }
-
-      try{
-        const companyId = await AsyncStorage.getItem('company_id');
-        const response = await fetch(`http://beejobs.io.vn:14307/api/jobs/create/${companyId}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(addJobs),
-        });
-
-        if(response.ok){
-          const result = await response.json();
-          router.push("Jobs")
-          console.log("Them jobs thanh cong", result);
-        }else{
-          console.error("err jobs", response.status, response.statusText);
-        }
-      }catch(err){
-          console.error("Loi add jobs", err);
-      }
+    } catch(err) {
+      console.error("Lỗi thêm jobs", err);
+    }
   }
+
+  const handleCancel = () => {
+    setTitle("");
+    setDesc("");
+    setForm("");
+    setNumber_of_recruitments("");
+    setRequirements("");
+    setSalary("");
+    setBenefits("");
+    setLocation("");
+    setDeadline("");
+  };
+
   useEffect(() => {
     const backAction = () => {
       router.replace("Jobs");
@@ -153,7 +159,7 @@ export default function Details() {
             multiline
             placeholderTextColor="#A9A9A9"
           />
-           {errors.form && <Text style={styles.errorText}>{errors.form}</Text>}
+          {errors.form && <Text style={styles.errorText}>{errors.form}</Text>}
         </View>
 
         <View style={styles.inputContainer}>
@@ -166,9 +172,9 @@ export default function Details() {
             keyboardType="numeric"
             placeholderTextColor="#A9A9A9"
           />
-           {errors.number_of_recruitments && <Text style={styles.errorText}>{errors.number_of_recruitments}</Text>}
+          {errors.number_of_recruitments && <Text style={styles.errorText}>{errors.number_of_recruitments}</Text>}
         </View>
-        
+
         <View style={styles.inputContainer}>
           <Icon name="document-attach-outline" size={20} style={styles.icon} />
           <TextInput
@@ -181,23 +187,22 @@ export default function Details() {
           />
           {errors.requirements && <Text style={styles.errorText}>{errors.requirements}</Text>}
         </View>
-        
+
         <View style={styles.inputContainer}>
           <Icon name="cash-outline" size={20} style={styles.icon} />
           <TextInput
-            style={[styles.input, styles.descInput,  errors.salary && styles.inputError]}
+            style={[styles.input, styles.descInput, errors.salary && styles.inputError]}
             value={salary}
             onChangeText={handleNumberInputPrice}
             placeholder="Lương..."
             keyboardType="numeric"
             placeholderTextColor="#A9A9A9"
           />
-
-            {errors.salary && <Text style={styles.errorText}>{errors.salary}</Text>}
+          {errors.salary && <Text style={styles.errorText}>{errors.salary}</Text>}
         </View>
-        
+
         <View style={styles.inputContainer}>
-          <Icon name="gift-outline"  size={20} style={styles.icon} />
+          <Icon name="gift-outline" size={20} style={styles.icon} />
           <TextInput
             style={[styles.input, styles.descInput, errors.benefits && styles.inputError]}
             value={benefits}
@@ -206,7 +211,7 @@ export default function Details() {
             multiline
             placeholderTextColor="#A9A9A9"
           />
-           {errors.benefits && <Text style={styles.errorText}>{errors.benefits}</Text>}
+          {errors.benefits && <Text style={styles.errorText}>{errors.benefits}</Text>}
         </View>
 
         <View style={styles.inputContainer}>
@@ -220,7 +225,7 @@ export default function Details() {
           />
           {errors.location && <Text style={styles.errorText}>{errors.location}</Text>}
         </View>
-        
+
         <View style={styles.inputContainer}>
           <Icon name="clipboard-outline" size={25} style={styles.icon} />
           <TextInput
@@ -232,7 +237,7 @@ export default function Details() {
             numberOfLines={4}
             placeholderTextColor="#A9A9A9"
           />
-          {errors.desc && <Text style={styles.errorText}>{errors.desc}</Text>}
+                   {errors.desc && <Text style={styles.errorText}>{errors.desc}</Text>}
         </View>
 
         <View style={styles.inputContainer}>
@@ -255,11 +260,12 @@ export default function Details() {
       </KeyboardAwareScrollView>
 
       <View style={styles.buttonContainer}>
-        <TouchableWithoutFeedback onPress={handleSave}>
-          <View style={styles.button}>
-            <Text style={styles.buttonText}>Save</Text>
-          </View>
-        </TouchableWithoutFeedback>
+        <TouchableOpacity onPress={handleSave} style={[styles.button, styles.saveButton]}>
+          <Text style={styles.buttonText}>Lưu</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleCancel} style={[styles.button, styles.cancelButton]}>
+          <Text style={styles.buttonText}>Hủy</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -269,82 +275,82 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-  }, inputError: {
-    borderColor: 'red',
-  }, errorText: {
-    color: 'red',
-    marginLeft: 10,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginTop: 10,
-  },
-  input: {
-    flex: 1,
-    height: 40,
-    paddingLeft: 35,
-    borderRadius: 10,
-    borderWidth: 1,
-  },
-  buttonContainer: {
-    marginTop: 20, 
-    alignSelf: 'center', 
-    width: '80%', 
-  },
-  button: {
-    backgroundColor: "#0099FF",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 16,
-  },
-  scrollContent: {
-    flexGrow: 1, 
+    backgroundColor: '#F7F9FC',
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 15,
-    borderColor: 'gray',
-    borderRadius: 5,
+    borderRadius: 8,
     paddingHorizontal: 10,
+    backgroundColor: '#FFFFFF',
+    borderColor: '#DDDDDD',
+    borderWidth: 1,
+    elevation: 1,
   },
   icon: {
-    marginLeft: 4,
-    position: 'absolute',
-    left: 10,
+    marginRight: 10,
+    color: '#0099FF',
+  },
+  input: {
+    flex: 1,
+    height: 50,
+    paddingLeft: 10,
+    borderRadius: 8,
+    backgroundColor: '#FFFFFF',
+    color: '#000000',
   },
   descInput: {
-    height: 40,
     justifyContent: 'center',
   },
   inputDescription: {
     height: 100,
-  },modalView:{
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    width: '90%',
-    padding: 35,
-    alignItems: "center",
+    textAlignVertical: 'top',
+  },
+  inputError: {
+    borderColor: '#FF6F61',
+  },
+  errorText: {
+    color: '#FF6F61',
+    marginLeft: 10,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  button: {
+    flex: 1,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    alignItems: 'center',
+    elevation: 4,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2
-    }
-
-  }, centeredView:{
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      marginTop: 22
-  }
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    marginHorizontal: 10,
+  },
+  saveButton: {
+    backgroundColor: '#0099FF',
+  },
+  cancelButton: {
+    backgroundColor: '#FF6F61',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
 });
+
+
 
 
 
