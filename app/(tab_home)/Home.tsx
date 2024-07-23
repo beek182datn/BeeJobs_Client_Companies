@@ -18,6 +18,10 @@ const Home = () => {
   const [totalJobs, setTotalJobs] = useState(0);
   const [appliedJobs, setAppliedJobs] = useState(0);
   const [appliedJobsDone, setAppliedJobsDone] = useState(0);
+  const [appliedJobsFalse, setAppliedJobsFalse] = useState(0);
+  const [countJobApplied, setCountJobApplied] = useState(0);
+  const [countJobAppliedDone, setCountJobAppliedDone] = useState(0);
+  const [wokerApplied, setWokerApplied] = useState(0);
   const [accountStatus, setAccountStatus] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   const router = useRouter();
@@ -29,12 +33,32 @@ const Home = () => {
         const response = await axios.get(`http://beejobs.io.vn:14307/api/companies/getCompanyById/${companyId}`);
         setCompanyInfo(response.data.data);
         console.log(response.data.data);
-        
         setAccountStatus(response.data.data.active ? 'Đã phê duyệt' : 'Chưa phê duyệt');
 
         const jobResponse = await axios.get(`http://beejobs.io.vn:14307/api/jobs/getJobsByIdCompany/${companyId}`);
         const jobs = jobResponse.data.data;
         setTotalJobs(jobs.length);
+
+        const CountApplyiedJob = await axios.get(`http://beejobs.io.vn:14307/api/applyJobs/getApylyJobsByIdCompany/${companyId}`);
+        const countapplyforCompany = CountApplyiedJob.data.data;
+        setAppliedJobs(countapplyforCompany.length);
+
+        const CountAppliedDone = await axios.get(`http://beejobs.io.vn:14307/api/applyJobs/getApplyJobsDoneByIdCompany/${companyId}`);
+        const count = CountAppliedDone.data.data;
+        setAppliedJobsDone(count.length);
+
+        const CountAppliedFalse = await axios.get(`http://beejobs.io.vn:14307/api/applyJobs/getApplyJobsFalseByIdCompany/${companyId}`);
+        const countFalse = CountAppliedFalse.data.data;
+        setAppliedJobsFalse(countFalse.length);
+
+        const countjobapplied = await axios.get(`http://beejobs.io.vn:14307/api/jobs/getJobsAppliedByCompanyId/${companyId}`);
+        setCountJobApplied(countjobapplied.data.data);
+
+        const countjobappliedDone = await axios.get(`http://beejobs.io.vn:14307/api/jobs/getJobApplyDonedByCompanyId/${companyId}`);
+        setCountJobAppliedDone(countjobappliedDone.data.data);
+
+        const countWorkerApplied = await axios.get(`http://beejobs.io.vn:14307/api/applyJobs/getWorkerAppliedByCompanyId/${companyId}`);
+        setWokerApplied(countWorkerApplied.data.data);
       }
     } catch (error) {
       console.error("Lỗi khi tải dữ liệu:", error);
@@ -86,15 +110,15 @@ const Home = () => {
           <Text style={styles.statText}>Thống kê:</Text>
           <BarChart
             data={{
-              labels: ["Tổng số tin", "Đã ứng tuyển", "Hồ sơ trúng tuyển"],
+              labels: ["Tổng số tin", "Hồ sơ ứng tuyển", "Hồ sơ Pass", "Hồ sơ bị loại"],
               datasets: [
                 {
-                  data: [totalJobs, appliedJobs,appliedJobsDone]
+                  data: [totalJobs, appliedJobs,appliedJobsDone, appliedJobsFalse]
                 }
               ]
             }}
             width={420}
-            height={220}
+            height={240}
             chartConfig={{
               backgroundColor: "#fff",
               backgroundGradientFrom: "#ff9800",
@@ -102,7 +126,17 @@ const Home = () => {
               decimalPlaces: 0,
               color: (opacity = 1) => `rgba(3, 148, 20, ${opacity})`,
               labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              propsForBackgroundLines: {
+                strokeDasharray: "", // Đường nền liền
+                strokeWidth: 0.5, // Độ dày của đường nền
+              },
+              barPercentage: 1,
+              propsForLabels: {
+                fontWeight: 'bold',
+                fontSize: 12,
+              },
             }}
+            fromZero={true}
             style={{
               marginVertical: 8,
               borderRadius: 16
@@ -116,7 +150,17 @@ const Home = () => {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.button} onPress={() => router.push('/AppliedJobs')} activeOpacity={0.7}>
-            <Text style={styles.buttonText}>Tin đã có đơn ứng tuyển: {appliedJobs}</Text>
+            <Text style={styles.buttonText}>Tin đã có đơn ứng tuyển: {countJobApplied}</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity style={styles.button1} onPress={() => router.push('/Jobs')} activeOpacity={0.7}>
+            <Text style={styles.buttonText}>Tin đã có hồ sơ trúng tuyển: {countJobAppliedDone}</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.button1} onPress={() => router.push('/AppliedJobs')} activeOpacity={0.7}>
+            <Text style={styles.buttonText}>Số ứng viên đã ứng tuyển: {wokerApplied}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -173,6 +217,15 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     backgroundColor: '#ff6400',
+    paddingVertical: 25,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    marginHorizontal: 5,
+    alignItems: 'center',
+  },
+  button1: {
+    flex: 1,
+    backgroundColor: '#008000',
     paddingVertical: 25,
     paddingHorizontal: 20,
     borderRadius: 10,
