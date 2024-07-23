@@ -70,7 +70,7 @@ const ListApplyForJob = () => {
   }, [jobId]);
 
   useEffect(() => {
-    setLoading(true); // Đặt loading trước khi fetch
+    setLoading(true); 
     fetchApplications();
   }, [jobId, fetchApplications]);
 

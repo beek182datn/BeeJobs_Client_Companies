@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
     
   },
   saveButtonText: {
-    color: '#007bff', // Blue text color for save button
+    color: '#007bff', 
     fontSize: 16,
     fontWeight: 'bold',
   },
