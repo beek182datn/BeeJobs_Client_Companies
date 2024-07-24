@@ -1,6 +1,8 @@
-import React, { useState, useEffect} from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert , BackHandler} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, BackHandler } from 'react-native';
 import { useRouter } from "expo-router";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 
 export default function ChangePassword() {
@@ -9,35 +11,36 @@ export default function ChangePassword() {
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const router = useRouter();
 
-
-  const handleChangePassword = async () => {
+  const handleSave = async () => {
+    const userId = await AsyncStorage.getItem('idUser');
+    console.log("mk", userId);
     if (newPassword !== confirmNewPassword) {
-      Alert.alert("Error", "New passwords do not match");
+
+      Alert.alert("Lỗi", "Mật khẩu mới và xác nhận mật khẩu không khớp");
       return;
     }
 
+    const url = `http://beejobs.io.vn:14307/api/changepassword/${userId}`;
+
     try {
-      const response = await fetch('https://yourapiendpoint.com/change-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          currentPassword,
-          newPassword,
-        }),
+      const response = await axios.post(url, {
+        newPassword: newPassword,
+        currentPassword: currentPassword,
       });
 
-      if (response.ok) {
-        Alert.alert("Success", "Password changed successfully");
+      if (response.data.status === 200) {
+        Alert.alert("Thông báo", "Đổi mật khẩu thành công");
+        router.replace("Profile");
+      } else if (response.data.status === 400) {
+        Alert.alert("Lỗi", "Mật khẩu cũ không đúng");
+        return;
       } else {
-        Alert.alert("Error", "Failed to change password");
+        Alert.alert("Lỗi", "Đổi mật khẩu thất bại");
       }
     } catch (error) {
-      Alert.alert("Error", "An error occurred");
+      Alert.alert("Lỗi", "Có lỗi xảy ra. Vui lòng thử lại sau.");
     }
   };
-
 
   useEffect(() => {
     const backAction = () => {
@@ -49,7 +52,6 @@ export default function ChangePassword() {
 
     return () => backHandler.remove();
   }, []);
-
 
   return (
     <View style={styles.container}>
@@ -75,7 +77,7 @@ export default function ChangePassword() {
         value={confirmNewPassword}
         onChangeText={setConfirmNewPassword}
       />
-      <TouchableOpacity style={styles.button} onPress={handleChangePassword}>
+      <TouchableOpacity style={styles.button} onPress={handleSave}>
         <Text style={styles.buttonText}>Đổi mật khẩu</Text>
       </TouchableOpacity>
     </View>
