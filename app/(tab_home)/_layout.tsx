@@ -4,6 +4,7 @@ import React from 'react';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -19,7 +20,7 @@ export default function TabLayout() {
         options={{
           title: 'Trang chủ',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+            <Ionicons name={focused ? 'home' : 'home-outline'} size={25} color={color} />
           ),
         }}
       />
@@ -29,7 +30,16 @@ export default function TabLayout() {
         options={{
           title: 'Công việc',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'bag' : 'bag-outline'} color={color} />
+            <Ionicons name={focused ? 'bag' : 'bag-outline'} size={25} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="Messenger"
+        options={{
+          title: 'Chat',
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? 'chatbox' : 'chatbox-outline'} size={25} color={color} />
           ),
         }}
       />
@@ -38,7 +48,7 @@ export default function TabLayout() {
         options={{
           title: 'Hồ sơ',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? "person" : "person-outline"} color={color} />
+            <Ionicons name={focused ? "person" : "person-outline"} size={25} color={color} />
           ),
         }}
       />

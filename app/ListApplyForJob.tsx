@@ -74,9 +74,9 @@ const ListApplyForJob = () => {
     fetchApplications();
   }, [jobId, fetchApplications]);
 
-  const handleViewProfile = (cv) => {
-    console.log(`View profile of worker ${cv}`);
-    router.push({ pathname: "ReadCv", params: { cvUrl: "http://beejobs.io.vn:14307" + cv } });
+  const handleViewProfile = (_id) => {
+    console.log(`View profile of worker ${_id}`);
+    router.push({ pathname: "ViewProfileWorker", params: { cvUrl: _id } });
   };
 
   const handleRateWorker = (_id) => {
@@ -115,7 +115,7 @@ const ListApplyForJob = () => {
       <Text style={styles.appliedAt}>Ứng tuyển lúc: {new Date(item.applied_at).toLocaleDateString()}</Text>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button1} onPress={() => handleViewProfile(item.cv)}>
+        <TouchableOpacity style={styles.button1} onPress={() => handleViewProfile(item._id)}>
           <Text style={styles.buttonText}>Xem hồ sơ</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => handleRateWorker(item._id)}>

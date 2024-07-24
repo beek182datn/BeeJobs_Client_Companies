@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { BarChart } from 'react-native-chart-kit';
+import { LinearGradient } from 'expo-linear-gradient';
 
 interface CompanyInfo {
   company_logo?: string;
@@ -145,22 +146,58 @@ const Home = () => {
         </View>
 
         <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.button} onPress={() => router.push('/Jobs')} activeOpacity={0.7}>
-            <Text style={styles.buttonText}>Tổng số tin đã đăng: {totalJobs}</Text>
-          </TouchableOpacity>
+          <TouchableOpacity style={styles.touchable} onPress={() => router.push('/Jobs')} activeOpacity={0.7}>
+            <LinearGradient
+              colors={['#f0f0f0', '#87cefa']}
+              style={styles.button}
+              start={[0, 1]}
+              end={[1, 0]}
+            >
+            <Ionicons name="briefcase" size={25} color="#0099CC" />
+            <Text style={styles.buttonText}>Tổng số tin đã đăng</Text>
+            <Text style={styles.value}>{totalJobs}</Text>
+            </LinearGradient>
+         </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button} onPress={() => router.push('/AppliedJobs')} activeOpacity={0.7}>
-            <Text style={styles.buttonText}>Tin đã có đơn ứng tuyển: {countJobApplied}</Text>
+          <TouchableOpacity style={styles.touchable} onPress={() => router.push('/AppliedJobs')} activeOpacity={0.7}>
+            <LinearGradient
+              colors={['#f0f0f0', '#87cefa']}
+              style={styles.button}
+              start={[0, 1]}
+              end={[1, 0]}
+            >
+            <Ionicons name="shuffle" size={25} color="#0099CC" />
+            <Text style={styles.buttonText}>Tin đã có đơn ứng tuyển</Text>
+            <Text style = {styles.value}>{countJobApplied}</Text>
+            </LinearGradient>
           </TouchableOpacity>
         </View>
 
         <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.button1} onPress={() => router.push('/Jobs')} activeOpacity={0.7}>
-            <Text style={styles.buttonText}>Tin đã có hồ sơ trúng tuyển: {countJobAppliedDone}</Text>
-          </TouchableOpacity>
+          <TouchableOpacity style={styles.touchable} onPress={() => router.push('/Jobs')} activeOpacity={0.7}>
+            <LinearGradient
+              colors={['#00ff7f' ,'#f0f0f0' ]}
+              style={styles.button}
+              start={[0, 1]}
+              end={[1, 0]}
+            >
+            <Ionicons name="checkmark-done-circle" size={25} color="#0099CC" />
+            <Text style={styles.buttonText}>Tin đã có hồ sơ trúng tuyển</Text>
+            <Text style={styles.value}>{countJobAppliedDone}</Text>
+            </LinearGradient>
+         </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button1} onPress={() => router.push('/AppliedJobs')} activeOpacity={0.7}>
-            <Text style={styles.buttonText}>Số ứng viên đã ứng tuyển: {wokerApplied}</Text>
+          <TouchableOpacity style={styles.touchable} onPress={() => router.push('/AppliedJobs')} activeOpacity={0.7}>
+            <LinearGradient
+              colors={['#00ff7f' , '#f0f0f0' ]}
+              style={styles.button}
+              start={[0, 1]}
+              end={[1, 0]}
+            >
+            <Ionicons name="person-add" size={25} color="#0099CC" />
+            <Text style={styles.buttonText}>Số ứng viên đã ứng tuyển</Text>
+            <Text style = {styles.value}>{wokerApplied}</Text>
+            </LinearGradient>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -214,14 +251,22 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 15,
   },
+  touchable: {
+    flex: 1,
+    marginHorizontal: 5, // Đảm bảo khoảng cách giữa các nút
+  },
   button: {
     flex: 1,
-    backgroundColor: '#ff6400',
-    paddingVertical: 25,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    marginHorizontal: 5,
+    justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: 15,
+    borderRadius: 10,
+  },
+  buttonText: {
+    marginVertical:7,
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   button1: {
     flex: 1,
@@ -231,11 +276,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginHorizontal: 5,
     alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
   welcomeText: {
     fontSize: 18,
@@ -265,6 +305,12 @@ const styles = StyleSheet.create({
     alignSelf:"flex-end",
     margin:5,
   },
+  value:{
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color:"#0099CC"
+  }
 });
 
 export default Home;
