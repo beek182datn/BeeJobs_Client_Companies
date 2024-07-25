@@ -20,7 +20,7 @@ export default function TabLayout() {
         options={{
           title: 'Trang chủ',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'home' : 'home-outline'} size={25} color={color} />
+            <Ionicons name={focused ? 'home' : 'home-outline'} size={25} color={"#ff6400"} />
           ),
         }}
       />
@@ -30,7 +30,7 @@ export default function TabLayout() {
         options={{
           title: 'Công việc',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'bag' : 'bag-outline'} size={25} color={color} />
+            <Ionicons name={focused ? 'bag' : 'bag-outline'} size={25} color={"#ff6400"} />
           ),
         }}
       />
@@ -39,7 +39,7 @@ export default function TabLayout() {
         options={{
           title: 'Chat',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'chatbox' : 'chatbox-outline'} size={25} color={color} />
+            <Ionicons name={focused ? 'chatbox' : 'chatbox-outline'} size={25} color={"#ff6400"} />
           ),
         }}
       />
@@ -48,7 +48,7 @@ export default function TabLayout() {
         options={{
           title: 'Hồ sơ',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? "person" : "person-outline"} size={25} color={color} />
+            <Ionicons name={focused ? "person" : "person-outline"} size={25} color={"#ff6400"} />
           ),
         }}
       />

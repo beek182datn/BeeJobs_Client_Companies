@@ -118,7 +118,7 @@ const Home = () => {
                 }
               ]
             }}
-            width={420}
+            width={Dimensions.get("screen").width/1.07}
             height={240}
             chartConfig={{
               backgroundColor: "#fff",
@@ -159,7 +159,7 @@ const Home = () => {
             </LinearGradient>
          </TouchableOpacity>
 
-          <TouchableOpacity style={styles.touchable} onPress={() => router.push('/AppliedJobs')} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.touchable} activeOpacity={0.7}>
             <LinearGradient
               colors={['#f0f0f0', '#87cefa']}
               style={styles.button}
@@ -174,7 +174,7 @@ const Home = () => {
         </View>
 
         <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.touchable} onPress={() => router.push('/Jobs')} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.touchable} activeOpacity={0.7}>
             <LinearGradient
               colors={['#00ff7f' ,'#f0f0f0' ]}
               style={styles.button}
@@ -187,7 +187,7 @@ const Home = () => {
             </LinearGradient>
          </TouchableOpacity>
 
-          <TouchableOpacity style={styles.touchable} onPress={() => router.push('/AppliedJobs')} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.touchable} activeOpacity={0.7}>
             <LinearGradient
               colors={['#00ff7f' , '#f0f0f0' ]}
               style={styles.button}

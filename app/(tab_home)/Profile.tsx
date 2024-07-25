@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Image, ActivityIndicator, Alert, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Image, ActivityIndicator, Alert, SafeAreaView, ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -67,6 +67,7 @@ export default function Profile() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <ScrollView style= {styles.scrollview}>
       <View style={styles.profileContainer}>
         <Image
           style={styles.imageProfile}
@@ -126,6 +127,7 @@ export default function Profile() {
         <Text style={styles.textLogout}>Đăng xuất</Text>
         <Icon name="enter-outline" size={24} color="white" />
       </TouchableOpacity>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -215,5 +217,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginRight: 10,
   },
+  scrollview:{
+    flex:1,
+  }
 });
 

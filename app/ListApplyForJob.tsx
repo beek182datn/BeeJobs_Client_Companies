@@ -3,6 +3,7 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, Alert, SafeA
 import axios from 'axios';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import { Ionicons } from '@expo/vector-icons';
 
 const ListApplyForJob = () => {
   const [applicationsPending, setApplicationsPending] = useState([]);
@@ -104,15 +105,24 @@ const ListApplyForJob = () => {
 
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
-      <Text style={styles.workerName}>Tên ứng viên: {item.fullname}</Text>
-      <Text style={styles.phone}>Số điện thoại: {item.phone_number}</Text>
-      <View style={{ flexDirection: 'row' }}>
-      <Text style={styles.statusLabel}>Trạng thái: </Text>
+      <View style={styles.headerItem}>
+      <Ionicons name="person" size={22} color="#0099FF" />
+      <Text style ={styles.valueItem}>{item.fullname}</Text>
+      </View>
+      <View style={styles.headerItem}>
+      <Ionicons name="call" size={22} color="#5BBD2B" />
+      <Text style ={styles.valueItem}>{item.phone_number}</Text>
+      </View>
+      <View style={styles.headerItem}>
+      <Ionicons name="calendar" size={22} color="#e12828" />
+      <Text style ={styles.valueItem}>{new Date(item.applied_at).toLocaleDateString()}</Text>
+      </View>
+      <View style={{ flexDirection: 'row', marginTop:5 }}>
+      <Text style={styles.textjob}>Trạng thái: </Text>
       <Text style={[styles.statusValue, getStatusStyle(item.status)]}>
         {item.status}
       </Text>
-    </View>
-      <Text style={styles.appliedAt}>Ứng tuyển lúc: {new Date(item.applied_at).toLocaleDateString()}</Text>
+     </View>
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button1} onPress={() => handleViewProfile(item._id)}>
@@ -168,10 +178,18 @@ const ListApplyForJob = () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.containerheader}>
-      <Text style={styles.titlejob}>{titleJob}</Text>
-      <Text style={styles.textjob}>Số lượng tuyển: {numberRe}</Text>
-      <Text style={styles.textjob}>Số hồ sơ đã ứng tuyển: {totalApply}</Text>
-    </View>
+        <Text style={styles.titlejob}>{titleJob}</Text>
+        <View style={styles.headerItem}>
+          <Ionicons name="people" size={24} color="#5BBD2B" />
+          <Text style={styles.textjob}>Số lượng tuyển: </Text>
+          <Text style={styles.value}>{numberRe}</Text>
+        </View>
+        <View style={styles.headerItem}>
+          <Ionicons name="person-add" size={24} color="#5BBD2B" />
+          <Text style={styles.textjob}>Số hồ sơ đã ứng tuyển: </Text>
+          <Text style={styles.value}>{totalApply}</Text>
+        </View>
+      </View>
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -245,9 +263,17 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   textjob: {
-    fontSize: 17,
-    marginVertical: 3,
-    color: '#555',
+      marginHorizontal:7,
+      fontSize: 16,
+      fontWeight: 'bold',
+      color: '#666',
+      
+  },
+  value:{
+    marginHorizontal:7,
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: '#5BBD2B',
   },
   loadingContainer: {
     flex: 1,
@@ -274,12 +300,10 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 2,
   },
-  workerName: {
+  valueItem: {
+    marginLeft:20,
     fontSize: 18,
     fontWeight: 'bold',
-  },
-  phone: {
-    fontSize: 16,
   },
   statusLabel: {
     marginTop:5,
@@ -308,12 +332,12 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 10,
+    marginTop: 15,
   },
   button: {
     backgroundColor: '#0099FF',
     paddingVertical: 8,
-    paddingHorizontal: 15,
+    paddingHorizontal: 30,
     borderRadius: 5,
   },
   button1: {
@@ -391,6 +415,13 @@ const styles = StyleSheet.create({
   tabIndicator: {
     backgroundColor: '#fff',
   },
+
+  headerItem:{
+      marginTop:7,
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingBottom: 5,
+  }
 });
 
 export default ListApplyForJob;
