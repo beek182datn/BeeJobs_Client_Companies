@@ -1,5 +1,5 @@
 import { View, Text, FlatList, StyleSheet,BackHandler, ActivityIndicator, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, Image } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useRef  } from 'react';
 import axios from 'axios';
 import { useLocalSearchParams } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import io from 'socket.io-client';
 const socket = io('http://beejobs.io.vn:14307');
+import { useIsFocused } from '@react-navigation/native';
 
 const ChatScreen = () => {
   const { ChatID } = useLocalSearchParams(); // Lấy ChatID 
@@ -17,6 +18,8 @@ const ChatScreen = () => {
   const [error, setError] = useState("");
   const [newMessage, setNewMessage] = useState("");
   const [companyId, setCompanyId] = useState<string | null>("");
+  const flatListRef = useRef<FlatList>(null);
+  const isFocused = useIsFocused();
 
   const router = useRouter();
 
@@ -36,31 +39,35 @@ const ChatScreen = () => {
       try {
         const response = await axios.get(`http://beejobs.io.vn:14307/api/chat/getMessageByChatroomId/${ChatID}`);
         setMessages(response.data.data);
-        console.log(response.data.data);
-        
+        ;
       } catch (error) {
         setError('Lỗi khi tải tin nhắn');
       } finally {
         setLoading(false);
       }
     };
-
+    
     fetchMessages();
-    // Lắng nghe sự kiện tin nhắn mới từ WebSocket
+    
     socket.on('message', (newMessage) => {
       if (newMessage.chatRoomId === ChatID) {
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
+        fetchMessages();
       }
     });
 
     // Tham gia vào phòng chat khi kết nối
     socket.emit('joinRoom', ChatID);
-
     return () => {
-      socket.off('message'); // Dọn dẹp sự kiện khi component unmount
-      socket.emit('leaveRoom', ChatID); // Rời phòng khi component unmount
+      socket.off('message');
+      socket.emit('leaveRoom', ChatID);
     };
   }, [ChatID]);
+
+  useEffect(() => {
+    if (isFocused) {
+      flatListRef.current?.scrollToEnd({ animated: true });
+    }
+  }, [isFocused, messages]);
 
   useEffect(() => {
     const backAction = () => {
@@ -85,7 +92,6 @@ const ChatScreen = () => {
         senderId: companyId,
       });
       socket.emit('message', response.data.data);
-      setMessages((prevMessages) => [...prevMessages, response.data.data]);
       setNewMessage("");
     } catch (error) {
       console.error('Lỗi khi gửi tin nhắn:', error);
@@ -125,6 +131,7 @@ const ChatScreen = () => {
     </View>
 
       <FlatList
+        ref={flatListRef}
         data={messages}
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
@@ -140,6 +147,11 @@ const ChatScreen = () => {
             </View>
           </View>
         )}
+        onContentSizeChange={() => {
+          if (isFocused) {
+            flatListRef.current?.scrollToEnd({ animated: true });
+          }
+        }}
       />
       <View style={styles.inputContainer}>
         <TextInput
@@ -193,16 +205,19 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     borderRadius: 15,
     marginRight:7,
+    marginBottom:5,
   },
   theirMessage: {
-    marginLeft:10,
+    paddingRight:15,
+    marginLeft:7,
     backgroundColor: '#ECECEC',
     alignSelf: 'flex-start',
     borderRadius: 15,
+    marginBottom:5,
   },
   messageContent: {
-
     fontSize: 16,
+    flexShrink: 1,
   },
   messageTime: {
     fontSize: 12,
