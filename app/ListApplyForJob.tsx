@@ -76,8 +76,8 @@ const ListApplyForJob = () => {
   }, [jobId, fetchApplications]);
 
   const handleViewProfile = (_id) => {
-    console.log(`View profile of worker ${_id}`);
-    router.push({ pathname: "ViewProfileWorker", params: { cvUrl: _id } });
+    console.log(`View apply ID:  ${_id}`);
+    router.push({ pathname: "ViewProfileWorker", params: { profileID: _id } });
   };
 
   const handleRateWorker = (_id) => {
@@ -177,8 +177,14 @@ const ListApplyForJob = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.containerheader}>
+      <View style ={styles.header}>
+            <TouchableOpacity style={styles.backButton} onPress={() => router.replace("/Jobs")}>
+            <Ionicons name="arrow-back" size={25} color="black" />
+            </TouchableOpacity>
         <Text style={styles.titlejob}>{titleJob}</Text>
+        </View>
+        <View style={styles.containerheader}>
+      
         <View style={styles.headerItem}>
           <Ionicons name="people" size={24} color="#5BBD2B" />
           <Text style={styles.textjob}>Số lượng tuyển: </Text>
@@ -189,7 +195,8 @@ const ListApplyForJob = () => {
           <Text style={styles.textjob}>Số hồ sơ đã ứng tuyển: </Text>
           <Text style={styles.value}>{totalApply}</Text>
         </View>
-      </View>
+        </View>
+      
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -245,9 +252,16 @@ const ListApplyForJob = () => {
 };
 
 const styles = StyleSheet.create({
+  header:{
+    flexDirection:"row",
+    paddingBottom:15,
+    paddingHorizontal:15,
+    paddingTop:30,
+    backgroundColor:"#ADD8E6",
 
+  },
   containerheader: {
-    padding: 20,
+    paddingHorizontal: 20,
     backgroundColor: '#fff',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -259,8 +273,8 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#333',
-    alignSelf: 'center',
+    color: 'black',
+    marginLeft:25,
   },
   textjob: {
       marginHorizontal:7,
@@ -268,6 +282,9 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       color: '#666',
       
+  },
+  backButton: {
+    marginTop: 5,
   },
   value:{
     marginHorizontal:7,

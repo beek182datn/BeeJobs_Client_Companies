@@ -4,18 +4,34 @@ import axios from 'axios';
 import { useLocalSearchParams } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
+
 
 const ViewProfileWorker = () => {
-  const { cvUrl } = useLocalSearchParams();
+ 
+  const { profileID } = useLocalSearchParams(); 
+  const [storedProfileID, setStoredProfileID] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState({
+    _id: '',
+    fullname: '',
+    phone_number: '',
+    status: '',
+    applied_at: '',
+    intro_letter: '',
+    worker_id:'',
+  });
   const [modalVisible, setModalVisible] = useState(false);
   const [applyJobId, setApplyJobId] = useState(null);
   const [cv, setCv] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [companyId, setCompanyId] = useState<string | null>("");
+  const router = useRouter();
   
-
+  
   const handleRateWorker = (_id) => {
     setApplyJobId(_id);
     setModalVisible(true);
@@ -61,18 +77,30 @@ const ViewProfileWorker = () => {
     }
   };
 
-  const openPdfInBrowser = async () => {
-    setLoading(true);
+  const handleChatLive = async () => {
+    const companyId = await AsyncStorage.getItem('company_id');
+      setCompanyId(companyId);
     try {
-      await WebBrowser.openBrowserAsync("http://beejobs.io.vn:14307"+cv);
-      console.log(cv);
+      // Gửi yêu cầu tạo ChatRoom mới đến API
+      const response = await axios.post('http://beejobs.io.vn:14307/api/chat/createChatRoom', {
+        companyID : companyId,
+        userID : profile.worker_id,
+      });
+
+      if (response.status === 200 || response.status === 201) {
+        const newChatRoom = response.data.data;
+      console.log(newChatRoom);
       
-    } catch (err) {
-      console.error('Error details:', err);
-    } finally {
-      setLoading(false);
+  
+      // Điều hướng đến ChatLiveScreen với ID_ChatRoom
+      router.push({ pathname: 'ChatLiveScreen', params: { ID_ChatRoom: newChatRoom._id, worker_Name: profile.fullname } });
+      }
+      
+    } catch (error) {
+      console.error('Lỗi khi tạo phòng chat:', error);
     }
   };
+
   const openPdfInBrowser1 = async () => {
     setLoading(true);
     try {
@@ -93,23 +121,50 @@ const ViewProfileWorker = () => {
 };
 
 
-  const fetchProfile = useCallback(async () => {
-    try {
-      const response = await axios.get(`http://beejobs.io.vn:14307/api/applyJobs/getApplyJobById/${cvUrl}`);
-      setProfile(response.data.data);
-      setCv(response.data.data.cv);
-      setPhoneNumber(response.data.data.phone_number);
-    } catch (error) {
-      console.error('Error fetching applications:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, [cvUrl]);
+useEffect(() => {
+  const initializeProfileID = async () => {
+    let profileIDValue: string | null = null;
 
-  useEffect(() => {
-    setLoading(true); 
+    if (Array.isArray(profileID)) {
+      profileIDValue = profileID[0] || null;
+    } else {
+      profileIDValue = profileID || null;
+    }
+
+    if (profileIDValue) {
+      await AsyncStorage.setItem('profileID', profileIDValue);
+    } else {
+      profileIDValue = await AsyncStorage.getItem('profileID');
+    }
+
+    setStoredProfileID(profileIDValue);
+  };
+
+  initializeProfileID();
+}, [profileID]);
+
+const fetchProfile = useCallback(async () => {
+  if (!storedProfileID) return; 
+
+  setLoading(true);
+
+  try {
+    const response = await axios.get(`http://beejobs.io.vn:14307/api/applyJobs/getApplyJobById/${storedProfileID}`);
+    setProfile(response.data.data);
+    setCv(response.data.data.cv);
+    setPhoneNumber(response.data.data.phone_number);
+  } catch (error) {
+    console.error('Error fetching applications:', error);
+  } finally {
+    setLoading(false);
+  }
+}, [storedProfileID]);
+
+useEffect(() => {
+  if (storedProfileID) {
     fetchProfile();
-  }, [cvUrl, fetchProfile]);
+  }
+}, [storedProfileID, fetchProfile]);
 
   if (loading) {
     return (
@@ -129,24 +184,33 @@ const ViewProfileWorker = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.profileItem}>
-      <Ionicons name="person" size={24} color="#1e90ff" />
-        <Text style={styles.label}>Họ và tên:</Text>
-        <Text style={styles.value}>{profile.fullname}</Text>
+      <View style={styles.headerContainer}>
+            <TouchableOpacity style={styles.backButton} onPress={() => router.replace("/Jobs")}>
+            <Ionicons name="arrow-back" size={25} color="black" />
+            </TouchableOpacity>
+            <View style={styles.headerContent}>
+              <Text style={styles.title}>Chi tiết đơn ứng tuyển</Text>
+            </View>
       </View>
-      <View style={styles.profileItem}>
-      <Ionicons name="call" size={24} color="#5BBD2B" />
-        <Text style={styles.label}>Số điện thoại:</Text>
-        <Text style={styles.value}>{profile.phone_number}</Text>
-      </View>
+      <View style = {styles.bodycontain}>
+        <View style={styles.profileItem}>
+          <Ionicons name="person" size={24} color="#1e90ff" />
+          <Text style={styles.label}>Họ và tên:</Text>
+          <Text style={styles.value}>{profile.fullname}</Text>
+        </View>
+        <View style={styles.profileItem}>
+            <Ionicons name="call" size={24} color="#5BBD2B" />
+            <Text style={styles.label}>Số điện thoại:</Text>
+            <Text style={styles.value}>{profile.phone_number}</Text>
+        </View>
       
-      <View style={styles.profileItem}>
-      <Ionicons name="checkmark-done-circle" size={24} color="#ff6400" />
-        <Text style={styles.label}>Trạng thái:</Text>
-        <Text style={[styles.statusValue, getStatusStyle(profile.status)]}>
-        {profile.status}
-      </Text>
-      </View>
+        <View style={styles.profileItem}>
+          <Ionicons name="checkmark-done-circle" size={24} color="#ff6400" />
+          <Text style={styles.label}>Trạng thái:</Text>
+          <Text style={[styles.statusValue, getStatusStyle(profile.status)]}>
+            {profile.status}
+          </Text>
+        </View>
       <View style={styles.profileItem}>
       <Ionicons name="calendar" size={24} color="#e12828" />
         <Text style={styles.label}>Ngày ứng tuyển:</Text>
@@ -188,7 +252,7 @@ const ViewProfileWorker = () => {
         <Ionicons name="call" size={20} color="white" />
           <Text style={styles.buttonText}>Liên hệ ứng viên</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button3}>
+        <TouchableOpacity style={styles.button3} onPress={handleChatLive}>
         <Ionicons name="chatbubble-ellipses" size={20} color="white" />
           <Text style={styles.buttonText}>Chát với ứng viên</Text>
         </TouchableOpacity> 
@@ -227,8 +291,10 @@ const ViewProfileWorker = () => {
               <Text style={styles.modalButtonText}>Hủy</Text>
             </TouchableOpacity>
           </View>
+          
         </View>
       </Modal>
+      </View>
     </SafeAreaView>
   );
 };
@@ -242,15 +308,34 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 20,
     backgroundColor: '#fff',
   },
+  bodycontain:{
+    margin:20,
+  },
+  headerContainer: {
+    paddingTop:30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#0099FF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    paddingHorizontal: 15,
+    paddingBottom: 10,
+    marginBottom:5,
+  },
+  backButton: {
+    marginRight: 15,
+  },
+  headerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   title: {
+    marginLeft:20,
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
     color: '#333',
-    textAlign: 'center',
   },
   profileItem: {
     flexDirection: 'row',
@@ -286,6 +371,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'black',
     marginLeft: 10,
+    flexShrink: 1,
   },
   scrollView: {
     flex: 1,

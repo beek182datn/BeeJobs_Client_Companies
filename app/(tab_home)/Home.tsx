@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, SafeAreaView, ScrollView, RefreshControl, ImageBackground, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, BackHandler, ToastAndroid, SafeAreaView, ScrollView, RefreshControl, ImageBackground, Dimensions } from 'react-native';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -25,6 +25,7 @@ const Home = () => {
   const [wokerApplied, setWokerApplied] = useState(0);
   const [accountStatus, setAccountStatus] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+  const [backPressCount, setBackPressCount] = useState(0);
   const router = useRouter();
 
   const fetchData = async () => {
@@ -65,6 +66,30 @@ const Home = () => {
       console.error("Lỗi khi tải dữ liệu:", error);
     }
   };
+
+  useEffect(() => {
+    const backAction = () => {
+      if (backPressCount === 0) {
+        setBackPressCount(1);
+        ToastAndroid.show("Chạm lần nữa để thoát", ToastAndroid.SHORT);
+        setTimeout(() => {
+          setBackPressCount(0);
+        }, 2000);
+
+        return true;
+      } else {
+        BackHandler.exitApp();
+        return true;
+      }
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, [backPressCount]);
 
   useFocusEffect(
     React.useCallback(() => {

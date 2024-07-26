@@ -22,19 +22,9 @@ export default function RootLayout() {
       <Stack.Screen name="OtpFogotPassScreen" options={{headerShown: false}}/>
       <Stack.Screen name="ListApplyForJob" options={{headerShown: false}}/>
       <Stack.Screen name="ReadCv" options={{headerShown: false}}/>
-      <Stack.Screen name="ViewProfileWorker" options={{
-        headerTitle: "Chi tiết đơn ứng tuyển",
-        headerTitleStyle: {
-          fontSize: 25,
-          fontWeight: "bold",
-        },
-        headerStyle: {
-          backgroundColor: '#0099FF',
-        },
-        headerTitleAlign: 'center',
-
-      }}/>
+      <Stack.Screen name="ViewProfileWorker" options={{headerShown: false}}/>
       <Stack.Screen name="ChatScreen" options={{headerShown: false}}/>
+      <Stack.Screen name="ChatLiveScreen" options={{headerShown: false}}/>
       <Stack.Screen name="ChangePassword" options={{headerShown: false}}/>
       <Stack.Screen name="ViewAccount" options={{headerShown: false}}/>
       <Stack.Screen name="EditAccount" options={{headerShown: false}}/>
