@@ -25,6 +25,7 @@ export default function RootLayout() {
       <Stack.Screen name="ViewProfileWorker" options={{headerShown: false}}/>
       <Stack.Screen name="ChatScreen" options={{headerShown: false}}/>
       <Stack.Screen name="ChatLiveScreen" options={{headerShown: false}}/>
+      <Stack.Screen name="ResetPasswordScreen" options={{headerShown: false}}/>
       <Stack.Screen name="ChangePassword" options={{headerShown: false}}/>
       <Stack.Screen name="ViewAccount" options={{headerShown: false}}/>
       <Stack.Screen name="EditAccount" options={{headerShown: false}}/>

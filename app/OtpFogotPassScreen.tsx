@@ -1,114 +1,118 @@
-import React, { useState, useRef, useEffect  } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
-import axios, { AxiosResponse } from "axios";
-import { useRouter, useLocalSearchParams } from 'expo-router';
-
-const OtpFogotPassScreen = () => {
-  const [otp, setOtp] = useState(['', '', '', '', '', '']);
-  const inputRefs = useRef<(TextInput | null)[]>([]);
-
+import React, { useState, useRef } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  NativeSyntheticEvent,
+  TextInputKeyPressEventData,
+} from "react-native";
+import axios from "axios";
+import { useRouter, useLocalSearchParams } from "expo-router";
+const OtpFogotPassScreen: React.FC = () => {
+  const [otp, setOtp] = useState(new Array(6).fill(""));
+  // Khai báo kiểu rõ ràng cho inputRefs
+  const inputRefs = useRef<Array<TextInput | null>>([]);
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const router = useRouter();
   const params = useLocalSearchParams();
-
-  const [countdown, setCountdown] = useState(300);
-  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null); 
   const email = params.email;
-  const type = "FogotPassword"
-
-  // Countdown timer logic
-  useEffect(() => {
-    const id = setInterval(() => {
-      setCountdown(prevCountdown => prevCountdown - 1);
-    }, 1000);
-    setIntervalId(id); // Store intervalId in state
-
-    return () => clearInterval(id); // Cleanup function clears the interval
-  }, []);
-
-  // Handle when countdown reaches 0
-  useEffect(() => {
-    if (countdown === 0) {
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
-      Alert.alert('Hết thời gian', 'Vui lòng thử lại sau.');
-      router.push("FogotPassScreen"); // Redirect screen
-    }
-  }, [countdown, intervalId, router]);
-
-  const handleChange = (value: string, index: number) => {
-    if (value.length > 1) {
-      return;
-    }
-
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
-
-    if (value !== '' && index < 5) {
-      inputRefs.current[index + 1]?.focus();
-    }
-  };
-
-  const handleBackspace = (value: string, index: number) => {
-    if (value === '' && index > 0) {
-      inputRefs.current[index - 1]?.focus();
-    }
-  };
+  const type = "FogotPassword";
 
   const handleSubmit = async () => {
-    const otpValue = otp.join('');
+    const otpValue = otp.join("");
     if (otpValue.length === 6) {
       try {
-        const response = await axios.post('http://beejobs.io.vn:14307/api/usersverifyotp', {
-          email: email,
-          otp: otpValue,
-          type: type
-        });
+        const response = await axios.post(
+          "http://beejobs.io.vn:14307/api/usersverifyotp",
+          {
+            email: email,
+            otp: otpValue,
+            type: type,
+          }
+        );
 
         if (response.data.status === 200) {
-          Alert.alert('Xác thực thành công', response.data.msg);
-          router.push("ChangePassScreen")
+          Alert.alert("Xác thực thành công", response.data.msg);
+          if (intervalId) {
+            clearInterval(intervalId);
+          }
+          const user_id = response.data.id_User;
+          router.push({
+            pathname: "ResetPasswordScreen",
+            params: { user_id: user_id },
+          });
+          //console.log( 'IDID: ' + user_id);
         } else {
-          Alert.alert('Error', response.data.msg);
+          Alert.alert("Error", response.data.msg);
         }
       } catch (error) {
-        Alert.alert('Error', 'An error occurred while verifying the OTP');
+        Alert.alert("Error", "An error occurred while verifying the OTP");
       }
     } else {
-      Alert.alert('Error', 'Please enter a valid 6-character OTP');
+      Alert.alert("Error", "Please enter a valid 6-character OTP");
     }
-  }
+  };
 
-   // Format countdown timer to mm:ss
-   const formatTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  const handleChangeOtp = (text: string, index: number) => {
+    const newOtp = [...otp];
+    newOtp[index] = text;
+    setOtp(newOtp);
+    if (text) {
+      // Move to next input if current input is not empty and it's not the last input
+      if (index < otp.length - 1) {
+        inputRefs.current[index + 1]?.focus();
+      }
+    } else {
+      // Move to previous input if current input is empty and it's not the first input
+      // if (index > 0) {
+      //   inputRefs.current[index - 1]?.focus();
+      // }
+    }
+  };
+
+  const handleKeyPress = (
+    e: NativeSyntheticEvent<TextInputKeyPressEventData>,
+    index: number
+  ) => {
+    if (e.nativeEvent.key === "Backspace" && otp[index] === "") {
+      // Move to previous input if Backspace is pressed and current input is empty
+      if (index > 0) {
+        inputRefs.current[index - 1]?.focus();
+      }
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Xác nhận OTP</Text>
-      <Text style={styles.countdownText}>Hết hạn sau: {formatTime(countdown)}</Text>
+      <Text style={styles.title}>Xác minh OTP</Text>
+      <Text style={styles.instruction}>
+        Nhập mã OTP gồm 6 ký tự mà chúng tôi đã gửi đến email hoặc số điện thoại
+        của bạn.
+      </Text>
       <View style={styles.otpContainer}>
         {otp.map((digit, index) => (
           <TextInput
             key={index}
+            ref={(el) => (inputRefs.current[index] = el)}
             style={styles.otpInput}
-            keyboardType="default"
-            maxLength={1}
             value={digit}
-            onChangeText={(value) => handleChange(value, index)}
-            onKeyPress={({ nativeEvent }) =>
-              nativeEvent.key === 'Backspace' ? handleBackspace(digit, index) : null
-            }
-            ref={(ref) => (inputRefs.current[index] = ref)}
+            onChangeText={(text) => handleChangeOtp(text, index)}
+            onKeyPress={(e) => handleKeyPress(e, index)}
+            maxLength={1}
           />
         ))}
       </View>
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Xác nhận OTP</Text>
+        <Text style={styles.buttonText}>Xác minh</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => router.push("FogotPassScreen")}
+      >
+        <Text style={styles.backButtonText}>Quay lại</Text>
       </TouchableOpacity>
     </View>
   );
@@ -117,49 +121,62 @@ const OtpFogotPassScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
   },
   title: {
     fontSize: 30,
-    fontWeight: 'bold',
+    fontWeight: "bold",
+    alignSelf: "center",
     marginBottom: 30,
   },
-  countdownText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color:"red",
+  instruction: {
+    fontSize: 16,
+    color: "#A9A9A9",
+    textAlign: "center",
     marginBottom: 20,
   },
   otpContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '80%',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
   },
   otpInput: {
-    width: 50,
+    borderWidth: 1,
+    borderColor: "#A9A9A9",
+    borderRadius: 5,
+    width: 40,
     height: 50,
-    borderWidth: 2,
-    borderColor: '#ccc',
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 18,
-    borderRadius: 10,
+    backgroundColor: "#f9f9f9",
   },
   button: {
-    backgroundColor: '#007BFF',
+    backgroundColor: "#007BFF",
     paddingVertical: 15,
-    paddingHorizontal: 40,
-    borderRadius: 15,
-    marginTop: 30,
+    borderRadius: 25,
+    alignItems: "center",
+    marginBottom: 20,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
-  
+  backButton: {
+    backgroundColor: "#f9f9f9",
+    paddingVertical: 15,
+    borderRadius: 25,
+    alignItems: "center",
+    borderColor: "#007BFF",
+    borderWidth: 1,
+  },
+  backButtonText: {
+    color: "#007BFF",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
 });
 
 export default OtpFogotPassScreen;

@@ -80,6 +80,10 @@ const ViewProfileWorker = () => {
   const handleChatLive = async () => {
     const companyId = await AsyncStorage.getItem('company_id');
       setCompanyId(companyId);
+      console.log("idcompany: ", companyId);
+      console.log("iduser: ", profile.worker_id);
+      
+      
     try {
       // Gửi yêu cầu tạo ChatRoom mới đến API
       const response = await axios.post('http://beejobs.io.vn:14307/api/chat/createChatRoom', {

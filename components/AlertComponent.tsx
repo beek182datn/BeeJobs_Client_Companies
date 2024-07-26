@@ -46,10 +46,10 @@ const AlertComponent = ({ message, visible, color, duration = 1500, onClose }: A
 const styles = StyleSheet.create({
   alertContainer: {
     position: 'absolute',
-    top: 20,
+    bottom: 50, // Thay đổi từ 'top' thành 'bottom'
     left: 0,
     right: 0,
-    zIndex: 1,
+    zIndex: 1000,
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 16,
@@ -65,7 +65,6 @@ const styles = StyleSheet.create({
   alertMessage: {
     color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: 'bold',
   },
 });
 

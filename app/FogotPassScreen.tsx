@@ -1,70 +1,119 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, BackHandler, Image } from 'react-native';
-import { useRouter } from 'expo-router';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
+import axios, { AxiosResponse } from "axios";
+import { useRouter } from "expo-router";
+import AlertComponent from "@/components/AlertComponent";
 
 const ForgotPassScreen = () => {
-  const [email, setEmail] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const emailInputRef = useRef<TextInput>(null);
+  const [email, setEmail] = useState("");
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [showMissingInfoAlert, setShowMissingInfoAlert] = useState(false);
+  const [message, setMessage] = useState("");
+  const [color, setColor] = useState("");
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  const handleForgotPassword = async () => {
-    if (!email) {
-      setErrorMessage('Vui lòng nhập email của bạn.');
-      emailInputRef.current?.focus();
-      return;
-    }
-
-    if (!emailRegex.test(email)) {
-      setErrorMessage('Email không hợp lệ. Vui lòng nhập lại.');
-      emailInputRef.current?.focus();
-      return;
-    }
-
-    router.push({ pathname: "OtpFogotPassScreen", params: { email: email } });
+  const isValidEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
-  useEffect(() => {
-    const backAction = () => {
-      router.replace("LoginScreen");
-      return true;
-    };
+  const handleResetPassword = async () => {
+    if (email.trim() === "") {
+      alert("Xin vui lòng điền email của bạn.");
+      return;
+    }
+    if (!isValidEmail(email)) {
+      setMessage("Email không hợp lệ");
+      setColor("red");
+      setShowMissingInfoAlert(true);
+      return;
+    }
 
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+    try {
+      setLoading(true);
+      const response: AxiosResponse = await axios.post(
+        "http://beejobs.io.vn:14307/api/forgottpass2",
+        {
+          email: email,
+        }
+      );
+      if (response.data.status === 200) {
+        console.log("Yêu cầu đặt lại mật khẩu thành công:", response.data);
+        Alert.alert(
+          "Thông báo", // Tiêu đề
+          "Yêu cầu đặt lại mật khẩu đã được gửi. Vui lòng kiểm tra email của bạn.", // Nội dung
+          [{ text: "OK" }] // Nút bấm
+        );
+        //setEmail("");
+        router.push({
+          pathname: "OtpFogotPassScreen",
+          params: { email: email },
+        });
+      } else if (response.data.status === 404) {
+        setMessage("Email chưa đăng ký!");
+        setColor("red");
+        setShowMissingInfoAlert(true);
+        return;
+      } else {
+        setMessage("Đã xảy ra lỗi!");
+        setColor("red");
+        setShowMissingInfoAlert(true);
+        return;
+      }
+    } catch (error) {
+      console.error("Lỗi đặt lại mật khẩu:", error);
+      alert(
+        "Đã xảy ra lỗi trong quá trình đặt lại mật khẩu. Vui lòng thử lại sau."
+      );
+    } finally {
+      setLoading(false); // Kết thúc loading
+    }
+  };
 
-    return () => backHandler.remove();
-  }, []);
+  const navigateToLogin = () => {
+    router.push("LoginScreen");
+  };
 
   return (
     <View style={styles.container}>
-        <Image style= {styles.logo} source={require('../assets/images/BeeJobs_logo.jpg')}/>
       <Text style={styles.title}>Quên mật khẩu</Text>
-      <TextInput
-        ref={emailInputRef}
-        style={styles.input}
-        placeholder="Nhập email của bạn"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
-      <TouchableOpacity style={styles.button} onPress={handleForgotPassword}>
-        <Text style={styles.buttonText}>Xác nhận</Text>
-      </TouchableOpacity>
-
-      <Text style={styles.footerText}>
-        Đăng nhập với tài khoản khác?
-        <Text
-          style={styles.signupText}
-          onPress={() => router.push("LoginScreen")}
-        >
-          {" "}
-          Đăng nhập
-        </Text>
+      <Text style={styles.instruction}>
+        Nhập email hoặc số điện thoại của bạn và chúng tôi sẽ gửi hướng dẫn để
+        đặt lại mật khẩu.
       </Text>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Email hoặc số điện thoại"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+        />
+      </View>
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
+        <TouchableOpacity style={styles.button} onPress={handleResetPassword}>
+          <Text style={styles.buttonText}>Gửi yêu cầu</Text>
+        </TouchableOpacity>
+      )}
+      <TouchableOpacity style={styles.backButton} onPress={navigateToLogin}>
+        <Text style={styles.backButtonText}>Quay lại đăng nhập</Text>
+      </TouchableOpacity>
+      <AlertComponent
+        color={color}
+        message={message}
+        visible={showMissingInfoAlert}
+        onClose={() => setShowMissingInfoAlert(false)}
+      />
     </View>
   );
 };
@@ -72,59 +121,60 @@ const ForgotPassScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 20,
+    justifyContent: "center",
   },
   title: {
     fontSize: 30,
-    fontWeight: 'bold',
-    alignSelf: 'center',
+    fontWeight: "bold",
+    alignSelf: "center",
     marginBottom: 30,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#A9A9A9',
-    borderRadius: 15,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    backgroundColor: '#f9f9f9',
-    fontSize: 16,
-    color: '#000',
-    marginBottom: 10,
-  },
-  errorText: {
-    color: 'red',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  button: {
-    marginTop:30,
-    backgroundColor: '#007BFF',
-    paddingVertical: 15,
-    borderRadius: 15,
-    width: Dimensions.get("screen").width / 1.5,
-    alignSelf: 'center',
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  footerText: {
-    textAlign: "center",
+  instruction: {
     fontSize: 16,
     color: "#A9A9A9",
-    marginTop: 30,
+    textAlign: "center",
+    marginBottom: 20,
   },
-  signupText: {
-    color: "#007BFF",
+  inputContainer: {
+    borderWidth: 1,
+    borderColor: "#A9A9A9",
+    borderRadius: 25,
+    marginBottom: 20,
+    paddingHorizontal: 15,
+    backgroundColor: "#f9f9f9",
+    padding: 10,
+  },
+  input: {
+    padding: 10,
+    fontSize: 16,
+    color: "#000",
+  },
+  button: {
+    backgroundColor: "#007BFF",
+    paddingVertical: 15,
+    borderRadius: 25,
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 18,
     fontWeight: "bold",
   },
-  logo: {
-    alignSelf: 'center',
-    width: "80%",
-    height: 250,
+  backButton: {
+    backgroundColor: "#f9f9f9",
+    paddingVertical: 15,
+    borderRadius: 25,
+    alignItems: "center",
+    borderColor: "#007BFF",
+    borderWidth: 1,
+  },
+  backButtonText: {
+    color: "#007BFF",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
 
