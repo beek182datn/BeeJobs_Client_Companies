@@ -1,11 +1,22 @@
-import { StyleSheet, Text, View, ScrollView, Dimensions, Animated, Image, FlatList, TouchableOpacity, BackHandler } from "react-native";
-import React, { useRef, useState, useEffect } from "react";
-import { useLocalSearchParams } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useEffect } from 'react';
+import { StyleSheet, Text, View, ScrollView, Dimensions, TouchableOpacity, BackHandler } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { useRouter } from "expo-router";
+import { useRouter } from 'expo-router';
 
 const { width } = Dimensions.get('window');
+const iconSize = width * 0.05; 
+
+const DetailRow = ({ icon, title, value, color }) => (
+  <View style={styles.row}>
+    <Icon name={icon} size={iconSize} color={color} style={styles.rowIcon} />
+    <View style={styles.rowContent}>
+      <Text style={styles.rowTitle}>{title}</Text>
+      <Text style={styles.rowValue}>{value}</Text>
+    </View>
+  </View>
+);
 
 export default function Details() {
   const { data } = useLocalSearchParams();
@@ -15,13 +26,13 @@ export default function Details() {
   const handleApplyInfoPress = () => {
     router.push({
       pathname: 'ListApplyForJob',
-      params: { jobId: item._id }
+      params: { jobId: item._id },
     });
   };
 
   useEffect(() => {
     const backAction = () => {
-      router.replace("Jobs");
+      router.replace('Jobs');
       return true;
     };
 
@@ -33,56 +44,76 @@ export default function Details() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.card}>
-          <View style={styles.item}>
-            <Icon name="tag" size={20} color="#007bff" style={styles.icon} />
-            <Text style={styles.title}>Tiêu đề: {item.title}</Text>
-          </View>
+        <View style={styles.detailsContainer}>
+          <DetailRow
+            icon="tag"
+            title="Tiêu đề:"
+            value={item.title}
+            color="#FF6347" 
+          />
           <View style={styles.divider} />
-          <View style={styles.item}>
-            <Icon name="file-text" size={20} color="#007bff" style={styles.icon} />
-            <Text style={styles.text}>Mô tả: {item.desc}</Text>
-          </View>
+          <DetailRow
+            icon="file-text"
+            title="Mô tả:"
+            value={item.desc}
+            color="#4682B4" 
+          />
           <View style={styles.divider} />
-          <View style={styles.item}>
-            <Icon name="list-alt" size={20} color="#007bff" style={styles.icon} />
-            <Text style={styles.text}>Hình thức: {item.form}</Text>
-          </View>
+          <DetailRow
+            icon="list-alt"
+            title="Hình thức:"
+            value={item.form}
+            color="#32CD32" 
+          />
           <View style={styles.divider} />
-          <View style={styles.item}>
-            <Icon name="users" size={20} color="#007bff" style={styles.icon} />
-            <Text style={styles.text}>Số lượng tuyển: {item.number_of_recruitments}</Text>
-          </View>
+          <DetailRow
+            icon="users"
+            title="Số lượng tuyển:"
+            value={item.number_of_recruitments}
+            color="#FFD700" 
+          />
           <View style={styles.divider} />
-          <View style={styles.item}>
-            <Icon name="check-circle" size={20} color="#007bff" style={styles.icon} />
-            <Text style={styles.text}>Yêu cầu: {item.requirements}</Text>
-          </View>
+          <DetailRow
+            icon="check-circle"
+            title="Yêu cầu:"
+            value={item.requirements}
+            color="#8A2BE2" 
+          />
           <View style={styles.divider} />
-          <View style={styles.item}>
-            <Icon name="money" size={20} color="#007bff" style={styles.icon} />
-            <Text style={styles.text}>Lương: {item.salary}</Text>
-          </View>
+          <DetailRow
+            icon="money"
+            title="Lương:"
+            value={item.salary}
+            color="#FF4500" 
+          />
           <View style={styles.divider} />
-          <View style={styles.item}>
-            <Icon name="gift" size={20} color="#007bff" style={styles.icon} />
-            <Text style={styles.text}>Lợi ích: {item.benefits}</Text>
-          </View>
+          <DetailRow
+            icon="gift"
+            title="Lợi ích:"
+            value={item.benefits}
+            color="#DA70D6" 
+          />
           <View style={styles.divider} />
-          <View style={styles.item}>
-            <Icon name="map-marker" size={20} color="#007bff" style={styles.icon} />
-            <Text style={styles.text}>Vị trí: {item.location}</Text>
-          </View>
+          <DetailRow
+            icon="map-marker"
+            title="Vị trí:"
+            value={item.location}
+            color="#20B2AA" 
+          />
           <View style={styles.divider} />
-          <View style={styles.item}>
-            <Icon name="calendar" size={20} color="#007bff" style={styles.icon} />
-            <Text style={styles.text}>Thời hạn: {item.deadline}</Text>
-          </View>
+          <DetailRow
+            icon="calendar"
+            title="Thời hạn:"
+            value={item.deadline}
+            color="#DC143C" 
+          />
           <View style={styles.divider} />
-          <View style={styles.item}>
-            <Icon name="clock-o" size={20} color="#007bff" style={styles.icon} />
-            <Text style={styles.text}>Ngày tạo: {item.created_at}</Text>
-          </View>
+          <DetailRow
+            icon="clock-o"
+            title="Ngày tạo:"
+            value={item.created_at}
+            color="#B22222" 
+          />
         </View>
       </ScrollView>
 
@@ -99,49 +130,44 @@ const styles = StyleSheet.create({
     backgroundColor: '#f2f2f2',
   },
   scrollContainer: {
-    padding: 20,
+    padding: width * 0.05, 
   },
-  card: {
-    backgroundColor: '#ffffff',
-    borderRadius: 15,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    elevation: 5,
-    padding: 20,
-    marginBottom: 80,
+  detailsContainer: {
+    marginBottom: width * 0.2, 
   },
-  item: {
+  row: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    paddingVertical: width * 0.03, 
   },
-  icon: {
-    marginRight: 12,
+  rowIcon: {
+    marginRight: width * 0.03, 
   },
-  title: {
-    fontSize: 22,
+  rowContent: {
+    flex: 1,
+  },
+  rowTitle: {
+    fontSize: width * 0.05, 
     fontWeight: '600',
     color: '#333',
   },
-  text: {
-    fontSize: 18,
+  rowValue: {
+    fontSize: width * 0.04, 
     color: '#555',
-    margin: 8,
+    marginTop: width * 0.01, 
   },
   divider: {
-    height: 1.5,
+    height: 1,
     backgroundColor: '#e0e0e0',
-    marginVertical: 12,
+    marginVertical: width * 0.02, 
   },
   applyButton: {
     position: 'absolute',
-    bottom: 20,
-    left: 20,
-    right: 20,
+    bottom: width * 0.05, 
+    left: width * 0.05, 
+    right: width * 0.05, 
     backgroundColor: '#007bff',
-    paddingVertical: 15,
+    paddingVertical: width * 0.04, 
     borderRadius: 30,
     alignItems: 'center',
     shadowColor: '#000000',
@@ -152,8 +178,10 @@ const styles = StyleSheet.create({
   },
   applyButtonText: {
     color: '#ffffff',
-    fontSize: 18,
+    fontSize: width * 0.05, 
     fontWeight: '700',
   },
 });
+
+
 

@@ -396,11 +396,12 @@ export default function Jobs() {
       </SafeAreaView>
     );
   }
-  
+
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: "#f5f5f5",
+      backgroundColor: "#F5FFFA",
       paddingHorizontal: 10,
     },
     loadingContainer: {
@@ -453,24 +454,32 @@ export default function Jobs() {
       fontSize: 16,
       textAlign: "center",
     },
-
     label: {
       fontSize: 16,
       fontWeight: "bold",
       marginBottom: 5,
     },
     modalTextInput: {
-      height: 40,
+      height: 60, // Đặt chiều cao cố định
+      borderColor: "#ddd",
+     
+      borderWidth: 1,
+      borderRadius: 5,
+      paddingHorizontal: 10,
+      backgroundColor: "#fff",
+      marginBottom: 10,
+    },
+    datePickerButton: {
+      justifyContent: "center",
+      alignItems: "center",
+      height: 60, // Đặt chiều cao cố định cho nút chọn ngày
       borderColor: "#ddd",
       borderWidth: 1,
       borderRadius: 5,
       paddingHorizontal: 10,
       backgroundColor: "#fff",
-
-    },
-    datePickerButton: {
-      justifyContent: "center",
-      alignItems: "center",
+      marginBottom: 10,
+      justifyContent: 'center',
     },
     inputError: {
       borderColor: "red",
@@ -501,8 +510,6 @@ export default function Jobs() {
       color: "#fff",
       fontSize: 16,
     },
-
-
     centeredView: {
       flex: 1,
       justifyContent: "center",
@@ -510,8 +517,8 @@ export default function Jobs() {
       backgroundColor: "rgba(0,0,0,0.5)",
     },
     modalView: {
-      width: "80%", 
-      maxHeight: "80%", 
+      width: "80%",
+      maxHeight: "80%",
       backgroundColor: "#fff",
       borderRadius: 20,
       padding: 20,
@@ -528,14 +535,157 @@ export default function Jobs() {
     inputRow: {
       marginBottom: 15,
       width: "100%",
-    },multilineInput:{
-      minHeight: 60,
-      maxHeight: 120, 
+    },
+    multilineInput: {
       textAlignVertical: 'top',
-      marginBottom: 10,
-      flexGrow: 1,
-    } 
+    },
   });
+  
+
+
+
+
+
+  
+//   const styles = StyleSheet.create({
+//     container: {
+//       flex: 1,
+//       backgroundColor: "#F5FFFA",
+//       paddingHorizontal: 10,
+//     },
+//     loadingContainer: {
+//       flex: 1,
+//       justifyContent: "center",
+//       alignItems: "center",
+//       backgroundColor: "#f5f5f5",
+//     },
+//     searchInput: {
+//       height: 40,
+//       borderColor: "#ddd",
+//       borderWidth: 1,
+//       borderRadius: 5,
+//       paddingHorizontal: 10,
+//       marginVertical: 10,
+//       backgroundColor: "#fff",
+//     },
+//     list: {
+//       paddingBottom: 70,
+//     },
+//     itemContainer: {
+//       backgroundColor: "#fff",
+//       padding: 15,
+//       marginVertical: 5,
+//       borderRadius: 10,
+//       shadowColor: "#000",
+//       shadowOffset: { width: 0, height: 2 },
+//       shadowOpacity: 0.1,
+//       shadowRadius: 4,
+//       elevation: 3,
+//     },
+//     title: {
+//       fontSize: 16,
+//       fontWeight: "bold",
+//     },
+//     viewDetails: {
+//       color: "#1e90ff",
+//       marginTop: 10,
+//     },
+//     buttonContainer: {
+//       backgroundColor: "#007bff",
+//       padding: 15,
+//       borderRadius: 10,
+//       position: "absolute",
+//       bottom: 20,
+//       right: 20,
+//     },
+//     textButton: {
+//       color: "#fff",
+//       fontSize: 16,
+//       textAlign: "center",
+//     },
+
+//     label: {
+//       fontSize: 16,
+//       fontWeight: "bold",
+//       marginBottom: 5,
+//     },
+//     modalTextInput: {
+//       height: 40,
+//       borderColor: "#ddd",
+//       borderWidth: 1,
+//       borderRadius: 5,
+//       paddingHorizontal: 10,
+//       backgroundColor: "#fff",
+
+//     },
+//     datePickerButton: {
+//       justifyContent: "center",
+//       alignItems: "center",
+//     },
+//     inputError: {
+//       borderColor: "red",
+//     },
+//     errorText: {
+//       color: "red",
+//       fontSize: 12,
+//       marginTop: 5,
+//     },
+//     modalButtonsContainer: {
+//       flexDirection: "row",
+//       marginTop: 20,
+//     },
+//     modalButton: {
+//       flex: 1,
+//       padding: 10,
+//       borderRadius: 5,
+//       marginHorizontal: 5,
+//       alignItems: "center",
+//     },
+//     deleteButton: {
+//       backgroundColor: "#dc3545",
+//     },
+//     saveButton: {
+//       backgroundColor: "#28a745",
+//     },
+//     modalButtonText: {
+//       color: "#fff",
+//       fontSize: 16,
+//     },
+
+
+//     centeredView: {
+//       flex: 1,
+//       justifyContent: "center",
+//       alignItems: "center",
+//       backgroundColor: "rgba(0,0,0,0.5)",
+//     },
+//     modalView: {
+//       width: "80%", 
+//       maxHeight: "80%", 
+//       backgroundColor: "#fff",
+//       borderRadius: 20,
+//       padding: 20,
+//       alignItems: "center",
+//       shadowColor: "#000",
+//       shadowOffset: { width: 0, height: 2 },
+//       shadowOpacity: 0.25,
+//       shadowRadius: 4,
+//       elevation: 5,
+//     },
+//     scrollViewContent: {
+//       flexGrow: 1,
+//     },
+//     inputRow: {
+//       marginBottom: 15,
+//       width: "100%",
+//     },multilineInput:{
+//       minHeight: 60,
+//       maxHeight: 120, 
+//       textAlignVertical: 'top',
+//       marginBottom: 10,
+//       flexGrow: 1,
+//     } 
+//   });
   
 
 

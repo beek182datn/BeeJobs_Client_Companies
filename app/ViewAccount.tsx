@@ -1,208 +1,9 @@
-// import React, { useEffect, useState } from 'react';
-// import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, Alert, BackHandler, Image, ScrollView } from 'react-native';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
-// import { useRouter } from "expo-router";
-
-// export default function ViewAccount() {
-//   const [loading, setLoading] = useState(true);
-//   const [accountDetails, setAccountDetails] = useState(null);
-//   const router = useRouter();
-
-//   useEffect(() => {
-//     fetchAccountDetails();
-//   }, []);
-
-//   const fetchAccountDetails = async () => {
-//     const companyId = await AsyncStorage.getItem('company_id');
-//     try {
-//       const response = await fetch(`http://beejobs.io.vn:14307/api/companies/getCompanyById/${companyId}`, {
-//         method: 'GET',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//       });
-  
-//       if (response.ok) {
-//         const data = await response.json();
-//         if (data && data.data) {
-//           setAccountDetails(data.data);
-//         } else {
-//           Alert.alert("Error", "Data structure is not as expected");
-//         }
-//       } else {
-//         Alert.alert("Error", "Failed to fetch account details");
-//       }
-//     } catch (error) {
-//       Alert.alert("Error", "An error occurred");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   useEffect(() => {
-//     const backAction = () => {
-//       router.replace("Profile");
-//       return true;
-//     };
-
-//     const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
-
-//     return () => backHandler.remove();
-//   }, []);
-
-//   if (loading) {
-//     return (
-//       <View style={styles.loadingContainer}>
-//         <ActivityIndicator size="large" color="#007bff" />
-//       </View>
-//     );
-//   }
-
-//   if (!accountDetails) {
-//     return (
-//       <View style={styles.loadingContainer}>
-//         <Text>No account details available</Text>
-//       </View>
-//     );
-//   }
-
-//   return (
-//     <ScrollView style={styles.container}>
-//       <View style={styles.headerContainer}>
-//         {accountDetails.company_logo ? (
-//           <Image
-//             style={styles.logo}
-//             source={{ uri: `http://beejobs.io.vn:14307${accountDetails.company_logo}` }}
-//           />
-//         ) : (
-//           <Text>No logo available</Text>
-//         )}
-//         <Text style={styles.header}>{accountDetails.company_name}</Text>
-//       </View>
-//       <View style={styles.detailContainer}>
-//         <Text style={styles.label}>Địa chỉ:</Text>
-//         <Text style={styles.value}>{accountDetails.company_address}</Text>
-//       </View>
-//       <View style={styles.detailContainer}>
-//         <Text style={styles.label}>Website:</Text>
-//         <Text style={styles.value}>{accountDetails.company_website}</Text>
-//       </View>
-//       <View style={styles.detailContainer}>
-//         <Text style={styles.label}>Quy mô:</Text>
-//         <Text style={styles.value}>{accountDetails.company_scale}</Text>
-//       </View>
-//       <View style={styles.detailContainer}>
-//         <Text style={styles.label}>Mã số thuế:</Text>
-//         <Text style={styles.value}>{accountDetails.taxcode}</Text>
-//       </View>
-//       <View style={styles.detailContainer}>
-//         <Text style={styles.label}>Mô tả:</Text>
-//         <Text style={styles.value}>{accountDetails.company_desc}</Text>
-//       </View>
-//       <Text style= {[styles.label, {marginLeft: 20}]}>Giấy chứng nhận</Text>
-//       <View style={styles.certificationContainer}>
-   
-//         {accountDetails.company_certification ? (
-//           <Image
-//             style={styles.certification}
-//             source={{ uri: `http://beejobs.io.vn:14307${accountDetails.company_certification}` }}
-//           />
-//         ) : (
-//           <Text>No certification available</Text>
-//         )}
-//       </View>
-//       <TouchableOpacity
-//         style={styles.button}
-//         onPress={() => router.push("EditAccount")}
-//       >
-//         <Text style={styles.buttonText}>Sửa thông tin</Text>
-//       </TouchableOpacity>
-//     </ScrollView>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#f5f5f5',
-//   },
-//   loadingContainer: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-//   headerContainer: {
-//     marginTop: 25,
-//     alignItems: 'center',
-//     marginBottom: 20,
-//     padding: 20,
-//     backgroundColor: '#fff',
-//     borderBottomWidth: 1,
-//     borderBottomColor: '#ddd',
-//     borderRadius: 20,
-//     borderWidth: 1
-//   },
-//   logo: {
-//     width: 100,
-//     height: 100,
-//     borderRadius: 50,
-//     marginBottom: 10,
-//   },
-//   header: {
-//     fontSize: 24,
-//     fontWeight: 'bold',
-//     textAlign: 'center',
-//   },
-//   detailContainer: {
-//     flexDirection: 'row',
-//     marginBottom: 15,
-//     alignItems: 'center',
-//     paddingHorizontal: 20,
-//   },
-//   label: {
-//     flex: 1,
-//     fontSize: 18,
-//     fontWeight: 'bold',
-//   },
-//   value: {
-//     flex: 2,
-//     fontSize: 18,
-//     color: '#555',
-//   },
-//   certificationContainer: {
-//     alignItems: 'center', 
-//     marginVertical: 20,
-//   },
-//   certification: {
-//     width: 150, 
-//     height: 150, 
-//     borderRadius: 15, 
-//     marginBottom: 8,
-//   },
-//   button: {
-//     backgroundColor: '#007bff',
-//     paddingVertical: 15,
-//     borderRadius: 8,
-//     alignItems: 'center',
-//     marginTop: 20,
-//     marginHorizontal: 20,
-//     elevation: 5,
-//   },
-//   buttonText: {
-//     color: '#fff',
-//     fontSize: 18,
-//     fontWeight: 'bold',
-//   },
-// });
-
-
-
-
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, Alert, BackHandler, Image, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default function ViewAccount() {
   const [loading, setLoading] = useState(true);
@@ -286,24 +87,39 @@ export default function ViewAccount() {
           <Text style={styles.header}>{accountDetails.company_name}</Text>
         </View>
         <View style={styles.detailContainer}>
-          <Text style={styles.label}>Địa chỉ:</Text>
-          <Text style={styles.value}>{accountDetails.company_address}</Text>
+          <Icon name="location-on" size={24} color="#007bff" />
+          <View style={styles.detailText}>
+            <Text style={styles.label}>Địa chỉ:</Text>
+            <Text style={styles.value}>{accountDetails.company_address}</Text>
+          </View>
         </View>
         <View style={styles.detailContainer}>
-          <Text style={styles.label}>Website:</Text>
-          <Text style={styles.value}>{accountDetails.company_website}</Text>
+          <Icon name="web" size={24} color="#ff5722" />
+          <View style={styles.detailText}>
+            <Text style={styles.label}>Website:</Text>
+            <Text style={styles.value}>{accountDetails.company_website}</Text>
+          </View>
         </View>
         <View style={styles.detailContainer}>
-          <Text style={styles.label}>Quy mô:</Text>
-          <Text style={styles.value}>{accountDetails.company_scale}</Text>
+          <Icon name="domain" size={24} color="#4caf50" />
+          <View style={styles.detailText}>
+            <Text style={styles.label}>Quy mô:</Text>
+            <Text style={styles.value}>{accountDetails.company_scale}</Text>
+          </View>
         </View>
         <View style={styles.detailContainer}>
-          <Text style={styles.label}>Mã số thuế:</Text>
-          <Text style={styles.value}>{accountDetails.taxcode}</Text>
+          <Icon name="business" size={24} color="#ff9800" />
+          <View style={styles.detailText}>
+            <Text style={styles.label}>Mã số thuế:</Text>
+            <Text style={styles.value}>{accountDetails.taxcode}</Text>
+          </View>
         </View>
         <View style={styles.detailContainer}>
-          <Text style={styles.label}>Mô tả:</Text>
-          <Text style={styles.value}>{accountDetails.company_desc}</Text>
+          <Icon name="description" size={24} color="#9c27b0" />
+          <View style={styles.detailText}>
+            <Text style={styles.label}>Mô tả:</Text>
+            <Text style={styles.value}>{accountDetails.company_desc}</Text>
+          </View>
         </View>
         <Text style={styles.certificationTitle}>Giấy chứng nhận</Text>
         <View style={styles.certificationContainer}>
@@ -316,12 +132,20 @@ export default function ViewAccount() {
             <Text>No certification available</Text>
           )}
         </View>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => router.push("EditAccount")}
-        >
-          <Text style={styles.buttonText}>Sửa thông tin</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => router.push("EditAccount")}
+          >
+            <Text style={styles.buttonText}>Sửa thông tin</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.cancelButton}
+            onPress={() => router.replace("Profile")}
+          >
+            <Text style={styles.cancelButtonText}>Hủy</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -343,7 +167,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerContainer: {
-
     alignItems: 'center',
     marginBottom: 20,
     paddingVertical: 20,
@@ -383,14 +206,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
   },
+  detailText: {
+    marginLeft: 10,
+  },
   label: {
-    flex: 1,
     fontSize: 16,
     fontWeight: 'bold',
     color: '#555',
   },
   value: {
-    flex: 2,
     fontSize: 16,
     color: '#333',
   },
@@ -411,13 +235,18 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 8,
   },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 20,
+  },
   button: {
     backgroundColor: '#007bff',
     paddingVertical: 15,
     borderRadius: 10,
     alignItems: 'center',
-    marginVertical: 20,
-    marginHorizontal: 20,
+    flex: 1,
+    marginRight: 10,
     elevation: 2,
   },
   buttonText: {
@@ -425,5 +254,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  cancelButton: {
+    backgroundColor: '#f44336',
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    flex: 1,
+    marginLeft: 10,
+    elevation: 2,
+  },
+  cancelButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
-

@@ -38,8 +38,7 @@ export default function Details() {
   };
 
   const handleNumberInputPrice = (text) => {
-    const numericText = text.replace(/[^0-9]/g, '');
-    setSalary(numericText);
+    setSalary(text);
   };
 
   const onChange = (event, selectedDate) => {
@@ -137,136 +136,132 @@ export default function Details() {
         keyboardShouldPersistTaps='handled'
       >
         <View style={styles.inputContainer}>
-          <Icon name="document-text-outline" size={25} style={styles.icon} />
+          <Icon name="document-text-outline" size={25} style={[styles.icon, styles.iconTitle]} />
           <TextInput
-            style={[styles.input, styles.descInput, errors.title && styles.inputError]}
+            style={[styles.input, styles.inputTitle, errors.title && styles.inputError]}
             value={title}
             onChangeText={setTitle}
-            placeholder="Nhập tiêu đề..."
-            multiline
-            placeholderTextColor="#A9A9A9"
+            placeholder="Tiêu đề..."
+            placeholderTextColor="#B0B0B0"
           />
           {errors.title && <Text style={styles.errorText}>{errors.title}</Text>}
         </View>
 
         <View style={styles.inputContainer}>
-          <Icon name="albums-outline" size={25} style={styles.icon} />
+          <Icon name="albums-outline" size={25} style={[styles.icon, styles.iconForm]} />
           <TextInput
-            style={[styles.input, styles.descInput, errors.form && styles.inputError]}
+            style={[styles.input, styles.inputForm, errors.form && styles.inputError]}
             value={form}
             onChangeText={setForm}
-            placeholder="Nhập hình thức..."
+            placeholder="Hình thức..."
             multiline
-            placeholderTextColor="#A9A9A9"
+            placeholderTextColor="#B0B0B0"
           />
           {errors.form && <Text style={styles.errorText}>{errors.form}</Text>}
         </View>
 
         <View style={styles.inputContainer}>
-          <Icon name="people-outline" size={25} style={styles.icon} />
+          <Icon name="people-outline" size={25} style={[styles.icon, styles.iconQuantity]} />
           <TextInput
-            style={[styles.input, styles.descInput, errors.number_of_recruitments && styles.inputError]}
+            style={[styles.input, styles.inputQuantity, errors.number_of_recruitments && styles.inputError]}
             value={number_of_recruitments}
             onChangeText={handelNumberInputQuantity}
-            placeholder="Nhập số lượng tuyển dụng..."
+            placeholder="Số lượng tuyển dụng..."
             keyboardType="numeric"
-            placeholderTextColor="#A9A9A9"
+            placeholderTextColor="#B0B0B0"
           />
           {errors.number_of_recruitments && <Text style={styles.errorText}>{errors.number_of_recruitments}</Text>}
         </View>
 
         <View style={styles.inputContainer}>
-          <Icon name="document-attach-outline" size={20} style={styles.icon} />
+          <Icon name="document-attach-outline" size={25} style={[styles.icon, styles.iconRequirements]} />
           <TextInput
-            style={[styles.input, styles.descInput, errors.requirements && styles.inputError]}
+            style={[styles.input, styles.inputRequirements, errors.requirements && styles.inputError]}
             value={requirements}
             onChangeText={setRequirements}
-            placeholder="Nhập yêu cầu..."
+            placeholder="Yêu cầu..."
             multiline
-            placeholderTextColor="#A9A9A9"
+            placeholderTextColor="#B0B0B0"
           />
           {errors.requirements && <Text style={styles.errorText}>{errors.requirements}</Text>}
         </View>
 
         <View style={styles.inputContainer}>
-          <Icon name="cash-outline" size={20} style={styles.icon} />
+          <Icon name="cash-outline" size={25} style={[styles.icon, styles.iconSalary]} />
           <TextInput
-            style={[styles.input, styles.descInput, errors.salary && styles.inputError]}
+            style={[styles.input, styles.inputSalary, errors.salary && styles.inputError]}
             value={salary}
             onChangeText={handleNumberInputPrice}
             placeholder="Lương..."
-            keyboardType="numeric"
-            placeholderTextColor="#A9A9A9"
+            placeholderTextColor="#B0B0B0"
           />
           {errors.salary && <Text style={styles.errorText}>{errors.salary}</Text>}
         </View>
 
         <View style={styles.inputContainer}>
-          <Icon name="gift-outline" size={20} style={styles.icon} />
+          <Icon name="gift-outline" size={25} style={[styles.icon, styles.iconBenefits]} />
           <TextInput
-            style={[styles.input, styles.descInput, errors.benefits && styles.inputError]}
+            style={[styles.input, styles.inputBenefits, errors.benefits && styles.inputError]}
             value={benefits}
             onChangeText={setBenefits}
-            placeholder="Nhập lợi ích..."
+            placeholder="Lợi ích..."
             multiline
-            placeholderTextColor="#A9A9A9"
+            placeholderTextColor="#B0B0B0"
           />
           {errors.benefits && <Text style={styles.errorText}>{errors.benefits}</Text>}
         </View>
 
         <View style={styles.inputContainer}>
-          <Icon name="location-outline" size={20} style={styles.icon} />
+          <Icon name="location-outline" size={25} style={[styles.icon, styles.iconLocation]} />
           <TextInput
-            style={[styles.input, styles.descInput, errors.location && styles.inputError]}
+            style={[styles.input, styles.inputLocation, errors.location && styles.inputError]}
             value={location}
             onChangeText={setLocation}
-            placeholder="Nhập vị trí..."
-            placeholderTextColor="#A9A9A9"
+            placeholder="Vị trí..."
+            placeholderTextColor="#B0B0B0"
           />
           {errors.location && <Text style={styles.errorText}>{errors.location}</Text>}
         </View>
 
         <View style={styles.inputContainer}>
-          <Icon name="clipboard-outline" size={25} style={styles.icon} />
+          <Icon name="clipboard-outline" size={25} style={[styles.icon, styles.iconDesc]} />
           <TextInput
-            style={[styles.input, styles.inputDescription, errors.desc && styles.inputError]}
+            style={[styles.input, styles.inputDesc, errors.desc && styles.inputError]}
             value={desc}
             onChangeText={setDesc}
-            placeholder="Nhập mô tả..."
+            placeholder="Mô tả..."
             multiline
             numberOfLines={4}
-            placeholderTextColor="#A9A9A9"
+            placeholderTextColor="#B0B0B0"
           />
-                   {errors.desc && <Text style={styles.errorText}>{errors.desc}</Text>}
+          {errors.desc && <Text style={styles.errorText}>{errors.desc}</Text>}
         </View>
 
         <View style={styles.inputContainer}>
-          <Icon name="calendar-outline" size={20} style={styles.icon} />
-          <TouchableOpacity onPress={showDatepicker} style={[styles.input, styles.descInput, errors.deadline && styles.inputError]}>
-            <Text style={{ color: deadline ? "#000" : "#A9A9A9" }}>{deadline || "Nhập thời hạn..."}</Text>
+          <Icon name="calendar-outline" size={25} style={[styles.icon, styles.iconDate]} />
+          <TouchableOpacity onPress={showDatepicker} style={[styles.input, styles.inputDate]}>
+            <Text style={styles.dateText            }>{deadline || "Chọn hạn hồ sơ"}</Text>
+            <Icon name="calendar-outline" size={20} color="#007BFF" />
           </TouchableOpacity>
-          {errors.deadline && <Text style={styles.errorText}>{errors.deadline}</Text>}
+          {showDatePicker && (
+            <DateTimePicker
+              value={date}
+              mode="date"
+              display="default" 
+              onChange={onChange}
+            />
+          )}
         </View>
 
-        {showDatePicker && (
-          <DateTimePicker
-            value={date}
-            mode="date"
-            display="default"
-            onChange={onChange}
-            style={{ zIndex: 1000 }}
-          />
-        )}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity onPress={handleCancel} style={styles.buttonCancel}>
+            <Text style={styles.buttonText}>Hủy</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleSave} style={styles.buttonSave}>
+            <Text style={styles.buttonText}>Lưu</Text>
+          </TouchableOpacity>
+        </View>
       </KeyboardAwareScrollView>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={handleSave} style={[styles.button, styles.saveButton]}>
-          <Text style={styles.buttonText}>Lưu</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleCancel} style={[styles.button, styles.cancelButton]}>
-          <Text style={styles.buttonText}>Hủy</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }
@@ -274,81 +269,127 @@ export default function Details() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#F7F9FC',
+    backgroundColor: "#F5F5F5",
+    padding: 16,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
     marginBottom: 15,
     borderRadius: 8,
-    paddingHorizontal: 10,
-    backgroundColor: '#FFFFFF',
-    borderColor: '#DDDDDD',
     borderWidth: 1,
-    elevation: 1,
-  },
-  icon: {
-    marginRight: 10,
-    color: '#0099FF',
+    borderColor: "#DCDCDC",
+    backgroundColor: "#FFFFFF",
+    padding: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   input: {
     flex: 1,
-    height: 50,
-    paddingLeft: 10,
-    borderRadius: 8,
-    backgroundColor: '#FFFFFF',
-    color: '#000000',
+    padding: 8,
+    marginLeft: 10,
+    borderRadius: 4,
   },
-  descInput: {
-    justifyContent: 'center',
+  inputTitle: {
+    borderColor: "#007BFF",
   },
-  inputDescription: {
+  inputForm: {
+    borderColor: "#28A745",
+  },
+  inputQuantity: {
+    borderColor: "#FFC107",
+  },
+  inputRequirements: {
+    borderColor: "#DC3545",
+  },
+  inputSalary: {
+    borderColor: "#17A2B8",
+  },
+  inputBenefits: {
+    borderColor: "#6C757D",
+  },
+  inputLocation: {
+    borderColor: "#FF5733",
+  },
+  inputDesc: {
+    borderColor: "#C70039",
     height: 100,
     textAlignVertical: 'top',
   },
-  inputError: {
-    borderColor: '#FF6F61',
+  inputDate: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderColor: "#007BFF",
   },
-  errorText: {
-    color: '#FF6F61',
-    marginLeft: 10,
+  icon: {
+    marginRight: 10,
+  },
+  iconTitle: {
+    color: "#007BFF",
+  },
+  iconForm: {
+    color: "#28A745",
+  },
+  iconQuantity: {
+    color: "#FFC107",
+  },
+  iconRequirements: {
+    color: "#DC3545",
+  },
+  iconSalary: {
+    color: "#17A2B8",
+  },
+  iconBenefits: {
+    color: "#6C757D",
+  },
+  iconLocation: {
+    color: "#FF5733",
+  },
+  iconDesc: {
+    color: "#C70039",
+  },
+  dateText: {
+    flex: 1,
+    color: "#6C757D",
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 20,
-    alignItems: 'center',
   },
-  button: {
+  buttonCancel: {
     flex: 1,
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 12,
+    backgroundColor: "#FF6F61",
+    borderRadius: 5,
+    padding: 15,
     alignItems: 'center',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    marginHorizontal: 10,
+    marginRight: 10,
   },
-  saveButton: {
-    backgroundColor: '#0099FF',
-  },
-  cancelButton: {
-    backgroundColor: '#FF6F61',
+  buttonSave: {
+    flex: 1,
+    backgroundColor: "#28A745",
+    borderRadius: 5,
+    padding: 15,
+    alignItems: 'center',
   },
   buttonText: {
-    color: 'white',
-    fontSize: 18,
+    color: "#FFFFFF",
     fontWeight: 'bold',
-    textTransform: 'uppercase',
   },
-  scrollContent: {
-    flexGrow: 1,
+  errorText: {
+    color: "#FF6F61",
+    fontSize: 12,
+    marginTop: 5,
+    marginLeft: 10,
   },
 });
+
+
+          
+
 
 
 

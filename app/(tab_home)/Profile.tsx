@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Image, ActivityIndicator, Alert, SafeAreaView, ScrollView} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Image, ActivityIndicator, Alert, SafeAreaView, ScrollView, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+const { width, height } = Dimensions.get('window');
+
+
 
 export default function Profile() {
   const router = useRouter();
@@ -40,14 +43,22 @@ export default function Profile() {
   }, []);
 
   const handleLogout = async () => {
-    try {
-      await AsyncStorage.clear();
-      router.replace("LoginScreen");
-    } catch (error) {
-      console.error("Error clearing AsyncStorage:", error);
-      Alert.alert('Error', 'Failed to log out.');
-    }
-  };
+    Alert.alert('Đăng xuất', "Bạn có muốn đăng xuất không",
+      [
+        {text: 'Hủy', style: 'cancel'},
+        {text: 'Đăng xuất', onPress: async ()=>{
+
+          try {
+            await AsyncStorage.clear();
+            router.replace("LoginScreen");
+          } catch (error) {
+            console.error("Error clearing AsyncStorage:", error);
+            Alert.alert('Error', 'Failed to log out.');
+          }
+
+        }}, ],
+)
+}
 
   if (loading) {
     return (
@@ -139,7 +150,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   profileContainer: {
-    marginTop:7,
+    marginTop: 7,
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#FFFFFF",
@@ -153,9 +164,9 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   imageProfile: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: width * 0.2,
+    height: width * 0.2,
+    borderRadius: (width * 0.2) / 2,
     borderWidth: 2,
     borderColor: "#0099FF",
   },
@@ -164,19 +175,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   companyName: {
-    fontSize: 18,
+    fontSize: width * 0.045,
     fontWeight: 'bold',
     color: "#333333",
   },
   userId: {
-    fontSize: 14,
+    fontSize: width * 0.035,
     color: "#666666",
   },
   sectionContainer: {
     marginBottom: 20,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: width * 0.04,
     fontWeight: "bold",
     color: "#0099FF",
     marginBottom: 10,
@@ -186,7 +197,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#FFFFFF",
     borderRadius: 10,
-    padding: 15,
+    padding: width * 0.04,
     marginBottom: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -198,27 +209,34 @@ const styles = StyleSheet.create({
     color: "#0099FF",
   },
   underlinedText: {
-    fontSize: 14,
+    fontSize: width * 0.035,
     marginLeft: 15,
     flex: 1,
     color: "#333333",
+    textDecorationLine: "underline",
   },
   buttonLogout: {
-    backgroundColor: "#0099FF",
-    height: 45,
-    borderRadius: 25,
-    justifyContent: "center",
-    alignItems: "center",
     flexDirection: "row",
-    paddingHorizontal: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#0099FF",
+    borderRadius: 10,
+    padding: width * 0.04, 
+    marginTop: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   textLogout: {
     color: "white",
     fontSize: 16,
+    fontWeight: 'bold',
     marginRight: 10,
   },
-  scrollview:{
-    flex:1,
-  }
+  scrollview: {
+    flexGrow: 1,
+  },
 });
 

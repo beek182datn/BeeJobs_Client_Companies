@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const handleImagePicker = async (setter) => {
   const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -21,7 +22,7 @@ const handleImagePicker = async (setter) => {
   });
 
   if (!result.canceled && result.assets && result.assets.length > 0) {
-    setter(result.assets[0].uri); 
+    setter(result.assets[0].uri);
   }
 };
 
@@ -68,13 +69,13 @@ export default function EditAccount() {
           setCompanyCertification(companyData.company_certification || '');
           setCompanyDesc(companyData.company_desc || '');
         } else {
-          Alert.alert("Lỗi", "Cấu trúc dữ liệu không như mong đợi");
+          Alert.alert("Error", "Data structure is not as expected");
         }
       } else {
-        Alert.alert("Lỗi", `Không thể lấy thông tin tài khoản: ${response.statusText}`);
+        Alert.alert("Error", `Failed to fetch account details: ${response.statusText}`);
       }
     } catch (error) {
-    //  Alert.alert("Lỗi", `Đã xảy ra lỗi: ${error.message}`);
+      Alert.alert("Error", `An error occurred: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -83,13 +84,13 @@ export default function EditAccount() {
   const handleSave = async () => {
     const isCompanyNameChanged = companyName !== originalCompanyName;
     if (companyName !== originalCompanyName && !newCertification) {
-      Alert.alert("Thông báo", "Vui lòng cập nhật lại giấy tờ khi thay đổi tên công ty");
+      Alert.alert("Notification", "Please update the certification when changing the company name");
       return;
     }
-  
+
     const companyId = await AsyncStorage.getItem('company_id');
     const userId = await AsyncStorage.getItem('idUser');
-  
+
     const formData = new FormData();
     formData.append('company_name', companyName);
     formData.append('company_address', companyAddress);
@@ -107,7 +108,7 @@ export default function EditAccount() {
         name: 'logo.jpg',
       });
     }
-  
+
     if (newCertification) {
       const response = await fetch(newCertification);
       const blob = await response.blob();
@@ -117,21 +118,25 @@ export default function EditAccount() {
         name: 'certification.jpg',
       });
     }
-  
+
     const xhr = new XMLHttpRequest();
     xhr.open('PUT', `http://beejobs.io.vn:14307/api/companies/edit/${userId}/${companyId}`);
     xhr.onload = () => {
       if (xhr.status === 200) {
-        Alert.alert("Thành công", "Cập nhật thông tin công ty thành công");
+        Alert.alert("Success", "Company information updated successfully");
         router.replace("ViewAccount");
       } else {
-        Alert.alert("Lỗi", `Không thể cập nhật thông tin công ty: ${xhr.responseText}`);
+        Alert.alert("Error", `Failed to update company information: ${xhr.responseText}`);
       }
     };
     xhr.onerror = () => {
-    //  Alert.alert("Lỗi", "Đã xảy ra lỗi");
+      Alert.alert("Error", "An error occurred");
     };
     xhr.send(formData);
+  };
+
+  const handleCancel = () => {
+    router.replace("ViewAccount");
   };
 
   useEffect(() => {
@@ -147,110 +152,113 @@ export default function EditAccount() {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <SafeAreaView style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#007bff" />
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-   
-    <ScrollView style={styles.container}>
-      <View style={styles.headerContainer}>
-        <View style={styles.logoContainer}>
-          {newLogo ? (
-            <Image style={styles.logo} source={{ uri: newLogo }} />
-          ) : companyLogo ? (
-            <Image style={styles.logo} source={{ uri: `http://beejobs.io.vn:14307${companyLogo}` }} />
-          ) : (
-            <Text>Không có logo</Text>
-          )}
-          <TouchableOpacity style={styles.changeButton} onPress={() => handleImagePicker(setNewLogo)}>
-            <Text style={styles.buttonText}>Thay đổi Logo</Text>
-          </TouchableOpacity>
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.headerContainer}>
+          <View style={styles.logoContainer}>
+            {newLogo ? (
+              <Image style={styles.logo} source={{ uri: newLogo }} />
+            ) : companyLogo ? (
+              <Image style={styles.logo} source={{ uri: `http://beejobs.io.vn:14307${companyLogo}` }} />
+            ) : (
+              <Text>No logo available</Text>
+            )}
+            <TouchableOpacity style={styles.changeButton} onPress={() => handleImagePicker(setNewLogo)}>
+              <Text style={styles.buttonText}>Change Logo</Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.header}>Edit Company Information</Text>
         </View>
-        <Text style={styles.header}>Chỉnh sửa thông tin công ty</Text>
-      </View>
-      <View style={styles.detailContainer}>
-        <Text style={styles.label}>Tên công ty:</Text>
-        <TextInput
-          style={styles.input}
-          value={companyName}
-          multiline
-          onChangeText={(text) => {
-            setCompanyName(text);
-            if (text !== originalCompanyName) {
-              setNewCertification(null);
-            }
-          }}
-        />
-      </View>
-      <View style={styles.detailContainer}>
-        <Text style={styles.label}>Địa chỉ:</Text>
-        <TextInput
-          style={styles.input}
-          value={companyAddress}
-          multiline
-          onChangeText={setCompanyAddress}
-        />
-      </View>
-      <View style={styles.detailContainer}>
-        <Text style={styles.label}>Website:</Text>
-        <TextInput
-          style={styles.input}
-          value={companyWebsite}
-          multiline
-          onChangeText={setCompanyWebsite}
-        />
-      </View>
-      <View style={styles.detailContainer}>
-        <Text style={styles.label}>Quy mô:</Text>
-        <TextInput
-          style={styles.input}
-          value={companyScale}
-          multiline
-          onChangeText={setCompanyScale}
-        />
-      </View>
-      <View style={styles.detailContainer}>
-        <Text style={styles.label}>Mã số thuế:</Text>
-        <TextInput
-          style={styles.input}
-          value={taxCode}
-    
-          onChangeText={setTaxCode}
-        />
-      </View>
-      <View style={styles.detailContainer}>
-        <Text style={styles.label}>Mô tả công ty:</Text>
-        <TextInput
-          style={[styles.input, styles.multilineInput]}
-          value={companyDesc}
-          multiline
-          numberOfLines={4}
-
-          onChangeText={setCompanyDesc}
-        />
-      </View>
-      <View style={styles.detailContainer}>
+        <View style={styles.detailContainer}>
+          <Icon name="building" size={20} color="#007bff" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Company Name"
+            value={companyName}
+            onChangeText={(text) => {
+              setCompanyName(text);
+              if (text !== originalCompanyName) {
+                setNewCertification(null);
+              }
+            }}
+          />
+        </View>
+        <View style={styles.detailContainer}>
+          <Icon name="map-marker" size={20} color="#28a745" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Address"
+            value={companyAddress}
+            onChangeText={setCompanyAddress}
+          />
+        </View>
+        <View style={styles.detailContainer}>
+          <Icon name="globe" size={20} color="#dc3545" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Website"
+            value={companyWebsite}
+            onChangeText={setCompanyWebsite}
+          />
+        </View>
+        <View style={styles.detailContainer}>
+          <Icon name="bars" size={20} color="#ffc107" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Scale"
+            value={companyScale}
+            onChangeText={setCompanyScale}
+          />
+        </View>
+        <View style={styles.detailContainer}>
+          <Icon name="id-card" size={20} color="#17a2b8" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Tax Code"
+            value={taxCode}
+            onChangeText={setTaxCode}
+          />
+        </View>
+        <View style={styles.detailContainer}>
+          <Icon name="file-text" size={20} color="#6c757d" style={styles.icon} />
+          <TextInput
+            style={[styles.input, styles.multilineInput]}
+            placeholder="Company Description"
+            value={companyDesc}
+            multiline
+            numberOfLines={4}
+            onChangeText={setCompanyDesc}
+          />
+        </View>
         <View style={styles.certificationContainer}>
           {newCertification ? (
             <Image style={styles.certification} source={{ uri: newCertification }} />
           ) : companyCertification ? (
             <Image style={styles.certification} source={{ uri: `http://beejobs.io.vn:14307${companyCertification}` }} />
           ) : (
-            <Text>Không có chứng nhận</Text>
+            <Text>No certification available</Text>
           )}
+                    <TouchableOpacity style={styles.changeButton} onPress={() => handleImagePicker(setNewCertification)}>
+            <Text style={styles.buttonText}>Change Certification</Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.changeButton} onPress={() => handleImagePicker(setNewCertification)}>
-          <Text style={styles.buttonText}>Thay đổi Chứng nhận</Text>
-        </TouchableOpacity>
-      </View>
-      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonTex}>Lưu</Text>
-      </TouchableOpacity>
-    </ScrollView>
-
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
+            <Text style={styles.cancelButtonText}>Hủy</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+            <Text style={styles.saveButtonText}>Lưu</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -258,7 +266,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#f9f9f9', 
+    backgroundColor: '#f4f4f4',
+  },
+  scrollContainer: {
+    paddingBottom: 20,
   },
   headerContainer: {
     marginTop: 10,
@@ -270,6 +281,7 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
+    marginBottom: 10,
   },
   logo: {
     width: 100,
@@ -282,28 +294,33 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff', 
+    color: '#fff',
     marginTop: 10,
   },
   detailContainer: {
     marginBottom: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  label: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 4,
+  icon: {
+    marginRight: 10,
   },
   input: {
+    flex: 1,
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 4,
-    padding: 8,
+    padding: 10,
     fontSize: 16,
     backgroundColor: '#fff',
   },
+  multilineInput: {
+    minHeight: 100,
+    textAlignVertical: 'top',
+  },
   certificationContainer: {
-    alignItems: 'center',
     marginBottom: 16,
+    alignItems: 'center',
   },
   certification: {
     width: 100,
@@ -314,52 +331,66 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
   },
   changeButton: {
-    backgroundColor: '#fff', 
+    backgroundColor: '#fff',
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#007bff', 
+    borderColor: '#007bff',
     marginTop: 10,
   },
   buttonText: {
-    color: '#007bff', 
+    color: '#007bff',
     fontSize: 16,
     fontWeight: 'bold',
   },
   saveButton: {
-    backgroundColor: '#E0EEE0',
+    backgroundColor: '#007bff',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#007bff', 
-    marginTop: 20, 
-    width: '50%', 
-    alignSelf: 'center', 
-    marginBottom: 40,
-
-    
+    borderColor: '#007bff',
+    marginTop: 20,
+    width: '45%',
+    alignSelf: 'center',
   },
   saveButtonText: {
-    color: '#007bff', 
+    color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  cancelButton: {
+    backgroundColor: '#EE6363',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#6c757d',
+    marginTop: 20,
+    width: '45%',
+    alignSelf: 'center',
+    marginRight: 10,
+  },
+  cancelButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 40,
+    paddingHorizontal: 20,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f9f9f9',
-  },saveButtonTex:{
-    color: "#007bff",
-    fontSize: 20
-  },multilineInput:{
-    minHeight: 100,
-    textAlignVertical: 'top',
-  }
+    backgroundColor: '#f4f4f4',
+  },
 });
-
 
