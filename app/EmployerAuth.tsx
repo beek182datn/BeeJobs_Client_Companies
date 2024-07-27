@@ -98,7 +98,6 @@ const EmployerAuth = () => {
       formData.append('company_scale', companyScale);
       formData.append('company_website', companyWebsite);
       formData.append('taxcode', taxCode);
-       formData.append('active', 'false');
 
       if (companyLogo) {
         const response = await fetch(companyLogo);

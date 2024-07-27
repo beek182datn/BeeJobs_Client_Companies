@@ -27,6 +27,7 @@ export default function Details() {
   const [benefits, setBenefits] = useState("");
   const [location, setLocation] = useState("");
   const [deadline, setDeadline] = useState("");
+  const [experience, setExperience] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
   const [errors, setErrors] = useState({});
@@ -59,6 +60,7 @@ export default function Details() {
     if (!form.trim()) newErrors.form = "Hãy nhập hình thức";
     if (!number_of_recruitments.trim()) newErrors.number_of_recruitments = "Hãy nhập số lượng";
     if (!requirements.trim()) newErrors.requirements = "Hãy nhập yêu cầu";
+    if (!experience.trim()) newErrors.experience = "Hãy nhập yêu cầu";
     if (!salary.trim()) newErrors.salary = "Hãy nhập lương";
     if (!benefits.trim()) newErrors.benefits = "Hãy nhập lợi ích";
     if (!location.trim()) newErrors.location = "Hãy nhập vị trí";
@@ -75,6 +77,7 @@ export default function Details() {
       form,
       number_of_recruitments,
       requirements,
+      experience,
       salary,
       benefits,
       location,
@@ -109,6 +112,7 @@ export default function Details() {
     setForm("");
     setNumber_of_recruitments("");
     setRequirements("");
+    setExperience("");
     setSalary("");
     setBenefits("");
     setLocation("");
@@ -184,6 +188,19 @@ export default function Details() {
             placeholderTextColor="#B0B0B0"
           />
           {errors.requirements && <Text style={styles.errorText}>{errors.requirements}</Text>}
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Icon name="ribbon" size={25} style={[styles.icon, styles.iconExperience]} />
+          <TextInput
+            style={[styles.input, styles.inputExperience, errors.experience && styles.inputError]}
+            value={experience}
+            onChangeText={setExperience}
+            placeholder="Kinh nghiệm..."
+            multiline
+            placeholderTextColor="#B0B0B0"
+          />
+          {errors.experience && <Text style={styles.errorText}>{errors.experience}</Text>}
         </View>
 
         <View style={styles.inputContainer}>
@@ -304,6 +321,9 @@ const styles = StyleSheet.create({
   inputRequirements: {
     borderColor: "#DC3545",
   },
+  inputExperience: {
+    borderColor: "#FFC107",
+  },
   inputSalary: {
     borderColor: "#17A2B8",
   },
@@ -338,6 +358,9 @@ const styles = StyleSheet.create({
   },
   iconRequirements: {
     color: "#DC3545",
+  },
+  iconExperience:{
+    color: "#FFC107",
   },
   iconSalary: {
     color: "#17A2B8",

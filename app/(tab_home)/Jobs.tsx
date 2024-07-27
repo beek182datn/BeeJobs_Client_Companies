@@ -52,7 +52,7 @@ export default function Jobs() {
     const companyId = await AsyncStorage.getItem('company_id');
       if (companyId) {
         const response = await axios.get(`http://beejobs.io.vn:14307/api/companies/getCompanyById/${companyId}`);
-        if(!response.data.data.active){
+        if(response.data.data.status !== "ACTIVE"){
           Alert.alert(
             'Thông báo',
             'Doanh nghiệp của bạn chưa được phê duyệt, vui lòng thử lại sau.',
@@ -83,7 +83,7 @@ export default function Jobs() {
   };
 
   const handleEdit = async () => {
-    const { title, desc, form, number_of_recruitments, requirements, salary, benefits, location, deadline } = selectedJob;
+    const { title, desc, form, number_of_recruitments, requirements,  salary, benefits, location, deadline } = selectedJob;
     
     const newErrors = {};
     if (!title.trim()) newErrors.title = "Hãy nhập tiêu đề";

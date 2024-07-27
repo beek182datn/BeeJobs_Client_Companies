@@ -35,7 +35,7 @@ const Home = () => {
         const response = await axios.get(`http://beejobs.io.vn:14307/api/companies/getCompanyById/${companyId}`);
         setCompanyInfo(response.data.data);
         console.log(response.data.data);
-        setAccountStatus(response.data.data.active ? 'Đã phê duyệt' : 'Chưa phê duyệt');
+        setAccountStatus(response.data.data.status ==="ACTIVE" ? 'Đã phê duyệt' : 'Chưa phê duyệt');
 
         const jobResponse = await axios.get(`http://beejobs.io.vn:14307/api/jobs/getJobsByIdCompany/${companyId}`);
         const jobs = jobResponse.data.data;
