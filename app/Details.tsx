@@ -72,6 +72,15 @@ export default function Details() {
             value={item.number_of_recruitments}
             color="#FFD700" 
           />
+
+          <View style={styles.divider} />
+          <DetailRow
+            icon="clock-o"
+            title="Thời gian làm việc"
+            value={item.working_time}
+            color="#0000FF" 
+          />
+
           <View style={styles.divider} />
           <DetailRow
             icon="check-circle"
@@ -93,6 +102,14 @@ export default function Details() {
             value={item.benefits}
             color="#DA70D6" 
           />
+          <View style={styles.divider} />
+          <DetailRow
+            icon="book"
+            title="Kinh Nghiệm:"
+            value={item.experience}
+            color="#B2DFEE" 
+          />
+
           <View style={styles.divider} />
           <DetailRow
             icon="map-marker"

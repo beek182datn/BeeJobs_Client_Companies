@@ -83,7 +83,7 @@ export default function Jobs() {
   };
 
   const handleEdit = async () => {
-    const { title, desc, form, number_of_recruitments, requirements,  salary, benefits, location, deadline } = selectedJob;
+    const { title, desc, form, number_of_recruitments, requirements,  salary, benefits, location, deadline, experience, working_time} = selectedJob;
     
     const newErrors = {};
     if (!title.trim()) newErrors.title = "Hãy nhập tiêu đề";
@@ -95,7 +95,8 @@ export default function Jobs() {
     if (!benefits.trim()) newErrors.benefits = "Hãy nhập lợi ích";
     if (!location.trim()) newErrors.location = "Hãy nhập vị trí";
     if (!deadline.trim()) newErrors.deadline = "Hãy nhập hạn hồ sơ";
-
+    if (!experience.trim()) newErrors.experience = "Hãy nhập kinh nghiệm";
+    if (!working_time.trim()) newErrors.working_time = "Hãy nhập thời gian làm việc";
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length > 0) {
@@ -181,7 +182,7 @@ export default function Jobs() {
   const removeVietNameseTones = (str) => {
     return str
       .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "") // Loại bỏ dấu
+      .replace(/[\u0300-\u036f]/g, "") 
       .replace(/đ/g, "d")
       .replace(/Đ/g, "D")
       .toLowerCase();
@@ -274,6 +275,7 @@ export default function Jobs() {
                   <TextInput
                    style={[styles.modalTextInput, errors.desc && styles.inputError]}
                     value={selectedJob.desc}
+                    multiline
                     onChangeText={(text) =>
                       setSelectedJob({ ...selectedJob, desc: text })
                     }
@@ -319,6 +321,21 @@ export default function Jobs() {
                     />
                     {errors.requirements && <Text style={styles.errorText}>{errors.requirements}</Text>}
                   </View>
+
+                  <View style={styles.inputRow}>
+                    <Text style={styles.label}>Kinh nghiệm</Text>
+                    <TextInput
+                      style={[styles.modalTextInput, errors.experience && styles.inputError,  styles.multilineInput]}
+                      value={selectedJob.experience}
+                      multiline
+                      numberOfLines={2}
+                      onChangeText={(text) =>
+                        setSelectedJob({ ...selectedJob, experience: text })
+                      }
+                    />
+                    {errors.experience && <Text style={styles.errorText}>{errors.experience}</Text>}
+                  </View>
+
                   <View style={styles.inputRow}>
                     <Text style={styles.label}>Lương</Text>
                     <TextInput
@@ -344,6 +361,22 @@ export default function Jobs() {
                     />
                     {errors.benefits && <Text style={styles.errorText}>{errors.benefits}</Text>}
                   </View>
+                  
+                  <View style={styles.inputRow}>
+                    <Text style={styles.label}>Thời gian làm việc</Text>
+                    <TextInput
+                      style={[styles.modalTextInput, errors.working_time && styles.inputError,  styles.multilineInput]}
+                      value={selectedJob.working_time}
+                      multiline
+                      numberOfLines={2}
+                      onChangeText={(text) =>
+                        setSelectedJob({ ...selectedJob, working_time: text })
+                      }
+                    />
+                    {errors.working_time && <Text style={styles.errorText}>{errors.working_time}</Text>}
+                  </View>
+
+
                   <View style={styles.inputRow}>
                     <Text style={styles.label}>Vị trí</Text>
                     <TextInput

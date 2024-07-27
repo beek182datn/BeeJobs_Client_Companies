@@ -28,6 +28,7 @@ export default function Details() {
   const [location, setLocation] = useState("");
   const [deadline, setDeadline] = useState("");
   const [experience, setExperience] = useState("");
+  const [working_time, setWorking_time] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
   const [errors, setErrors] = useState({});
@@ -65,7 +66,7 @@ export default function Details() {
     if (!benefits.trim()) newErrors.benefits = "Hãy nhập lợi ích";
     if (!location.trim()) newErrors.location = "Hãy nhập vị trí";
     if (!deadline.trim()) newErrors.deadline = "Hãy nhập hạn hồ sơ";
-
+    if (!working_time.trim()) newErrors.working_time = "Hãy nhập thời gian làm việc";
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -81,7 +82,8 @@ export default function Details() {
       salary,
       benefits,
       location,
-      deadline
+      deadline,
+      working_time
     }
 
     try {
@@ -117,6 +119,7 @@ export default function Details() {
     setBenefits("");
     setLocation("");
     setDeadline("");
+    setWorking_time("");
   };
 
   useEffect(() => {
@@ -214,6 +217,19 @@ export default function Details() {
           />
           {errors.salary && <Text style={styles.errorText}>{errors.salary}</Text>}
         </View>
+
+        <View style={styles.inputContainer}>
+          <Icon name="cash-outline" size={25} style={[styles.icon, styles.iconWorking_time]} />
+          <TextInput
+            style={[styles.input, styles.inputWorking_time, errors.working_time && styles.inputError]}
+            value={working_time}
+            onChangeText={setWorking_time}
+            placeholder="Thời gian làm việc..."
+            placeholderTextColor="#B0B0B0"
+          />
+          {errors.working_time && <Text style={styles.errorText}>{errors.working_time}</Text>}
+        </View>
+
 
         <View style={styles.inputContainer}>
           <Icon name="gift-outline" size={25} style={[styles.icon, styles.iconBenefits]} />
@@ -337,8 +353,9 @@ const styles = StyleSheet.create({
     borderColor: "#C70039",
     height: 100,
     textAlignVertical: 'top',
-  },
-  inputDate: {
+  },inputWorking_time:{
+    borderColor: "#FFCCFF",
+  },inputDate: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -377,6 +394,8 @@ const styles = StyleSheet.create({
   dateText: {
     flex: 1,
     color: "#6C757D",
+  },iconWorking_time:{
+    color: "#FF6699",
   },
   buttonContainer: {
     flexDirection: 'row',
