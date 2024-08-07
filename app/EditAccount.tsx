@@ -9,7 +9,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 const handleImagePicker = async (setter) => {
   const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
   if (status !== 'granted') {
-    alert('Permission to access media library is required!');
+    alert('Cần có quyền truy cập vào thư viện phương tiện!');
     return;
   }
 
@@ -25,6 +25,7 @@ const handleImagePicker = async (setter) => {
     setter(result.assets[0].uri);
   }
 };
+
 
 export default function EditAccount() {
   const [loading, setLoading] = useState(true);
@@ -69,13 +70,13 @@ export default function EditAccount() {
           setCompanyCertification(companyData.company_certification || '');
           setCompanyDesc(companyData.company_desc || '');
         } else {
-          Alert.alert("Error", "Data structure is not as expected");
+          Alert.alert("Lỗi", "Cấu trúc dữ liệu không như mong đợi");
         }
       } else {
-        Alert.alert("Error", `Failed to fetch account details: ${response.statusText}`);
+        Alert.alert("Lỗi", `Không thể lấy thông tin chi tiết về tài khoản: ${response.statusText}`);
       }
     } catch (error) {
-      Alert.alert("Error", `An error occurred: ${error.message}`);
+      Alert.alert("Lỗi", `Đã xảy ra lỗi: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -84,7 +85,7 @@ export default function EditAccount() {
   const handleSave = async () => {
     const isCompanyNameChanged = companyName !== originalCompanyName;
     if (companyName !== originalCompanyName && !newCertification) {
-      Alert.alert("Notification", "Please update the certification when changing the company name");
+      Alert.alert("Thông báo", "Vui lòng cập nhật chứng nhận khi thay đổi tên công ty");
       return;
     }
 
@@ -123,10 +124,11 @@ export default function EditAccount() {
     xhr.open('PUT', `http://beejobs.io.vn:14307/api/companies/edit/${userId}/${companyId}`);
     xhr.onload = () => {
       if (xhr.status === 200) {
-        Alert.alert("Success", "Company information updated successfully");
+        Alert.alert("Thành công", "Thông tin công ty đã được cập nhật thành công");
         router.replace("ViewAccount");
       } else {
-        Alert.alert("Error", `Failed to update company information: ${xhr.responseText}`);
+        Alert.alert("Lỗi", `Không cập nhật được thông tin công ty: ${xhr.responseText}`);
+        console.log("Lỗi ảnh logo", `${xhr.responseText}`)
       }
     };
     xhr.onerror = () => {
@@ -134,6 +136,7 @@ export default function EditAccount() {
     };
     xhr.send(formData);
   };
+
 
   const handleCancel = () => {
     router.replace("ViewAccount");
@@ -168,13 +171,13 @@ export default function EditAccount() {
             ) : companyLogo ? (
               <Image style={styles.logo} source={{ uri: `http://beejobs.io.vn:14307${companyLogo}` }} />
             ) : (
-              <Text>No logo available</Text>
+              <Text>Không có logo nào có sẵn</Text>
             )}
             <TouchableOpacity style={styles.changeButton} onPress={() => handleImagePicker(setNewLogo)}>
-              <Text style={styles.buttonText}>Change Logo</Text>
+              <Text style={styles.buttonText}>Thay Logo</Text>
             </TouchableOpacity>
           </View>
-          <Text style={styles.header}>Edit Company Information</Text>
+          <Text style={styles.header}>Sửa Thông Tin Công Ty</Text>
         </View>
         <View style={styles.detailContainer}>
           <Icon name="building" size={20} color="#007bff" style={styles.icon} />
@@ -243,21 +246,21 @@ export default function EditAccount() {
           ) : companyCertification ? (
             <Image style={styles.certification} source={{ uri: `http://beejobs.io.vn:14307${companyCertification}` }} />
           ) : (
-            <Text>No certification available</Text>
+            <Text>Không có chứng nhận nào có sẵn</Text>
           )}
                     <TouchableOpacity style={styles.changeButton} onPress={() => handleImagePicker(setNewCertification)}>
-            <Text style={styles.buttonText}>Change Certification</Text>
+            <Text style={styles.buttonText}>Thay đổi chứng nhận</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
+      </ScrollView>
+      <View style={styles.footer}>
+      <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
             <Text style={styles.cancelButtonText}>Hủy</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
             <Text style={styles.saveButtonText}>Lưu</Text>
           </TouchableOpacity>
-        </View>
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
@@ -275,7 +278,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignItems: 'center',
     marginBottom: 20,
-    backgroundColor: '#007bff',
+    backgroundColor: '#4CAF50',
     padding: 20,
     borderRadius: 10,
   },
@@ -337,22 +340,22 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#007bff',
+    borderColor: '#4CAF50',
     marginTop: 10,
   },
   buttonText: {
-    color: '#007bff',
+    color: '#4CAF50',
     fontSize: 16,
     fontWeight: 'bold',
   },
   saveButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#4CAF50',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#007bff',
+    borderColor: '#4CAF50',
     marginTop: 20,
     width: '45%',
     alignSelf: 'center',
@@ -363,20 +366,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   cancelButton: {
-    backgroundColor: '#EE6363',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#6c757d',
+    borderColor: '#4CAF50',
     marginTop: 20,
     width: '45%',
     alignSelf: 'center',
     marginRight: 10,
   },
   cancelButtonText: {
-    color: '#fff',
+    color: '#4CAF50',
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -392,5 +394,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#f4f4f4',
   },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 20,
+    backgroundColor: '#fff',
+    borderTopColor: '#ddd',
+    borderTopWidth: 1,
+  },
+
 });
+
+
+
+
+
+
 

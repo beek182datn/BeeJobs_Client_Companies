@@ -132,21 +132,24 @@ export default function ViewAccount() {
             <Text>No certification available</Text>
           )}
         </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => router.push("EditAccount")}
-          >
-            <Text style={styles.buttonText}>Sửa thông tin</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+      
+      </ScrollView>
+      <View style={styles.footer}>
+
+      <TouchableOpacity
             style={styles.cancelButton}
             onPress={() => router.replace("Profile")}
           >
             <Text style={styles.cancelButtonText}>Hủy</Text>
           </TouchableOpacity>
-        </View>
-      </ScrollView>
+      <TouchableOpacity
+            style={styles.saveButton}
+            onPress={() => router.push("EditAccount")}
+          >
+            <Text style={styles.saveButtonText}>Sửa thông tin</Text>
+          </TouchableOpacity>
+         
+      </View>
     </SafeAreaView>
   );
 }
@@ -171,7 +174,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingVertical: 20,
     paddingHorizontal: 15,
-    backgroundColor: '#8DEEEE',
+    backgroundColor: '#4CAF50',
     borderRadius: 15,
     borderWidth: 1,
     borderColor: '#ddd',
@@ -240,32 +243,46 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginVertical: 20,
   },
-  button: {
-    backgroundColor: '#007bff',
-    paddingVertical: 15,
-    borderRadius: 10,
+  saveButton: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
     alignItems: 'center',
-    flex: 1,
-    marginRight: 10,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#4CAF50',
+    marginTop: 20,
+    width: '45%',
+    alignSelf: 'center',
   },
-  buttonText: {
+  saveButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },
   cancelButton: {
-    backgroundColor: '#f44336',
-    paddingVertical: 15,
-    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
     alignItems: 'center',
-    flex: 1,
-    marginLeft: 10,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#4CAF50',
+    marginTop: 20,
+    width: '45%',
+    alignSelf: 'center',
+    marginRight: 10,
   },
   cancelButtonText: {
-    color: '#fff',
+    color: '#4CAF50',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 20,
+    backgroundColor: '#fff',
+    borderTopColor: '#ddd',
+    borderTopWidth: 1,
   },
 });

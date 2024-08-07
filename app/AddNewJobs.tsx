@@ -286,7 +286,9 @@ export default function Details() {
           )}
         </View>
 
-        <View style={styles.buttonContainer}>
+        
+      </KeyboardAwareScrollView>
+      <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={handleCancel} style={styles.buttonCancel}>
             <Text style={styles.buttonText}>Hủy</Text>
           </TouchableOpacity>
@@ -294,7 +296,6 @@ export default function Details() {
             <Text style={styles.buttonText}>Lưu</Text>
           </TouchableOpacity>
         </View>
-      </KeyboardAwareScrollView>
     </View>
   );
 }

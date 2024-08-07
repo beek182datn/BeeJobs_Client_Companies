@@ -26,10 +26,9 @@ export default function RootLayout() {
       <Stack.Screen name="ChatScreen" options={{headerShown: false}}/>
       <Stack.Screen name="ChatLiveScreen" options={{headerShown: false}}/>
       <Stack.Screen name="ResetPasswordScreen" options={{headerShown: false}}/>
-      <Stack.Screen name="ChangePassword" options={{ headerTitle: "Đổi mật khẩu", headerTitleStyle: {
+      <Stack.Screen name="ChangePassword" options={{ headerTitle: 'Đổi mật khẩu', headerTitleStyle: {
             fontSize: 19,
-            fontWeight: "bold",
-          },
+            fontWeight: "bold",}, 
            headerTitleAlign: "center"
           }}/>
       <Stack.Screen name="ViewAccount" options={{headerShown: false}}/>

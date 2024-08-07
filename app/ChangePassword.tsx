@@ -71,15 +71,19 @@ export default function ChangePassword() {
         <TextInput
           style={styles.input}
           placeholder="Mật khẩu hiện tại"
+          placeholderTextColor="#555"
           value={currentPassword}
           onChangeText={setCurrentPassword}
+      
         />
+
       </View>
       <View style={styles.inputContainer}>
         <Icon name="lock-closed-outline" size={24} style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Mật khẩu mới"
+          placeholderTextColor="#555"
           secureTextEntry={!showNewPassword}
           value={newPassword}
           onChangeText={setNewPassword}
@@ -93,9 +97,11 @@ export default function ChangePassword() {
         <TextInput
           style={styles.input}
           placeholder="Nhập lại mật khẩu mới"
+          placeholderTextColor="#555"
           secureTextEntry={!showConfirmNewPassword}
           value={confirmNewPassword}
           onChangeText={setConfirmNewPassword}
+          
         />
         <TouchableOpacity onPress={() => setShowConfirmNewPassword(!showConfirmNewPassword)}>
           <Icon name={showConfirmNewPassword ? "eye-off-outline" : "eye-outline"} size={24} style={styles.iconToggle} />
