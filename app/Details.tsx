@@ -58,6 +58,15 @@ export default function Details() {
             value={item.desc}
             color="#4682B4" 
           />
+
+          <View style={styles.divider} />
+          <DetailRow
+            icon="briefcase"
+            title="Chuyên ngành:"
+            value={item.majors}
+            color="#32CD32" 
+          />
+
           <View style={styles.divider} />
           <DetailRow
             icon="list-alt"

@@ -89,6 +89,7 @@ export default function Jobs() {
       title,
       desc,
       form,
+      majors,
       number_of_recruitments,
       requirements,
       salary,
@@ -103,6 +104,7 @@ export default function Jobs() {
     if (!title.trim()) newErrors.title = "Hãy nhập tiêu đề";
     if (!desc.trim()) newErrors.desc = "Hãy nhập mô tả";
     if (!form.trim()) newErrors.form = "Hãy nhập hình thức";
+    if (!majors.trim()) newErrors.form = "Hãy nhập chuyên ngành";
     if (!number_of_recruitments.trim())
       newErrors.number_of_recruitments = "Hãy nhập số lượng";
     if (!requirements.trim()) newErrors.requirements = "Hãy nhập yêu cầu";
@@ -275,6 +277,8 @@ export default function Jobs() {
 
   return (
     <SafeAreaView style={styles.container}>
+
+    <View style={styles.searchContainer}>
       <TextInput
         style={styles.searchInput}
         placeholder="Tìm kiếm công việc..."
@@ -282,6 +286,12 @@ export default function Jobs() {
         onChangeText={setSearch}
         placeholderTextColor="#A9A9A9"
       />
+      {search.length > 0 && (
+        <TouchableOpacity onPress={() => setSearch("")} style={styles.clearButton}>
+          <Icon name="close" size={20} color="#A9A9A9" />
+        </TouchableOpacity>
+      )}
+    </View>
       <FlatList
         data={filteredJobs}
         renderItem={renderItem}
@@ -349,6 +359,7 @@ export default function Jobs() {
                     ]}
                     value={selectedJob.desc}
                     multiline
+                    numberOfLines={2}
                     onChangeText={(text) =>
                       setSelectedJob({ ...selectedJob, desc: text })
                     }
@@ -357,6 +368,26 @@ export default function Jobs() {
                     <Text style={styles.errorText}>{errors.desc}</Text>
                   )}
                 </View>
+
+                <View style={styles.inputRow}>
+                  <Text style={styles.label}>Chuyên ngành</Text>
+                  <TextInput
+                    style={[
+                      styles.modalTextInput,
+                      errors.majors && styles.inputError,
+                    ]}
+                    value={selectedJob.majors}
+                    multiline
+                    numberOfLines={2}
+                    onChangeText={(text) =>
+                      setSelectedJob({ ...selectedJob, majors: text })
+                    }
+                  />
+                  {errors.majors && (
+                    <Text style={styles.errorText}>{errors.majors}</Text>
+                  )}
+                </View>
+
                 <View style={styles.inputRow}>
                   <Text style={styles.label}>Hình thức</Text>
                   <TextInput
@@ -367,7 +398,7 @@ export default function Jobs() {
                     ]}
                     value={selectedJob.form}
                     multiline
-                    numberOfLines={2}
+                   
                     onChangeText={(text) =>
                       setSelectedJob({ ...selectedJob, form: text })
                     }
@@ -576,15 +607,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#f5f5f5",
   },
-  searchInput: {
-    height: 40,
-    borderColor: "#ddd",
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginVertical: 10,
-    backgroundColor: "#fff",
-  },
+  // searchInput: {
+  //   height: 40,
+  //   borderColor: "#ddd",
+  //   borderWidth: 1,
+  //   borderRadius: 5,
+  //   paddingHorizontal: 10,
+  //   marginVertical: 10,
+  //   backgroundColor: "#fff",
+  // },
   list: {
     paddingBottom: 70,
   },
@@ -776,5 +807,21 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 40,
+    borderColor: "#CCC",
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingLeft: 10,
+    marginBottom: 10,
+  },
+  searchInput: {
+    flex: 1,
+    color: "#333",
+  },
+  clearButton: {
+    padding: 5,
   },
 });

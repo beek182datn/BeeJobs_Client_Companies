@@ -21,6 +21,7 @@ export default function Details() {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [form, setForm] = useState("");
+  const [majors, setMajors] = useState("");
   const [number_of_recruitments, setNumber_of_recruitments] = useState("");
   const [requirements, setRequirements] = useState("");
   const [salary, setSalary] = useState("");
@@ -59,6 +60,7 @@ export default function Details() {
     if (!title.trim()) newErrors.title = "Hãy nhập tiêu đề";
     if (!desc.trim()) newErrors.desc = "Hãy nhập mô tả";
     if (!form.trim()) newErrors.form = "Hãy nhập hình thức";
+    if (!majors.trim()) newErrors.form = "Hãy nhập chuyên ngành";
     if (!number_of_recruitments.trim()) newErrors.number_of_recruitments = "Hãy nhập số lượng";
     if (!requirements.trim()) newErrors.requirements = "Hãy nhập yêu cầu";
     if (!experience.trim()) newErrors.experience = "Hãy nhập yêu cầu";
@@ -76,6 +78,7 @@ export default function Details() {
       title,
       desc,
       form,
+      majors,
       number_of_recruitments,
       requirements,
       experience,
@@ -120,6 +123,7 @@ export default function Details() {
     setLocation("");
     setDeadline("");
     setWorking_time("");
+    setMajors("");
   };
 
   useEffect(() => {
@@ -167,6 +171,18 @@ export default function Details() {
           {errors.form && <Text style={styles.errorText}>{errors.form}</Text>}
         </View>
 
+        <View style={styles.inputContainer}>
+          <Icon name="briefcase" size={25} style={[styles.icon, styles.iconForm]} />
+          <TextInput
+            style={[styles.input, styles.inputForm, errors.form && styles.inputError]}
+            value={majors}
+            onChangeText={setMajors}
+            placeholder="Chuyên ngành..."
+            multiline
+            placeholderTextColor="#B0B0B0"
+          />
+          {errors.majors && <Text style={styles.errorText}>{errors.majors}</Text>}
+        </View>
         <View style={styles.inputContainer}>
           <Icon name="people-outline" size={25} style={[styles.icon, styles.iconQuantity]} />
           <TextInput
