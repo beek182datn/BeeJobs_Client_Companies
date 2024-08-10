@@ -11,7 +11,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 interface CompanyInfo {
   company_logo?: string;
   company_name?: string;
-  active?: boolean;
+  premium?: boolean;
+  status?: string;
 }
 
 const Home = () => {
@@ -117,6 +118,9 @@ const Home = () => {
           )}
         </ImageBackground>
         
+        {companyInfo.premium && (
+          <Image source={require('../../assets/images/crown.png')} style={styles.premiumIcon}/>
+        )}
         <View style={styles.statusContainer}>
          <Text style={styles.companyName}>{companyInfo.company_name}</Text>
          <TouchableOpacity onPress={() => router.push('/Notifications')} style={styles.notificationIcon}>
@@ -255,7 +259,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     fontSize: 24,
     fontWeight: 'bold',
-    margin: 5,
+    marginHorizontal: 5,
     width:"80%",
   },
   statusContainer: {
@@ -335,6 +339,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     color:"#0099CC"
+  },
+  premiumIcon:{
+    alignSelf:"center",
+    width:20,
+    height:20,
   }
 });
 

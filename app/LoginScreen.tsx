@@ -9,6 +9,7 @@ import {
   ToastAndroid,
   Image,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import axios, { AxiosResponse } from "axios";
@@ -25,6 +26,7 @@ const LoginScreen = () => {
   const [message, setMessage] = useState("");
   const [color, setColor] = useState("");
   const [backPressCount, setBackPressCount] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
@@ -40,6 +42,7 @@ const LoginScreen = () => {
         setShowAlert(true);
         return;
     }
+    setLoading(true);
 
     try {
         const response = await axios.post("http://beejobs.io.vn:14307/api/login", {
@@ -52,6 +55,7 @@ const LoginScreen = () => {
             setColor("red");
             setShowAlert(true);
             clear();
+            setLoading(false);
             return;
         }
 
@@ -61,6 +65,7 @@ const LoginScreen = () => {
         const checkCompanyResponse = await axios.get(`http://beejobs.io.vn:14307/api/companies/checkCompany/${userId}`);
         if (checkCompanyResponse.data.registered) {
           await AsyncStorage.setItem('company_id', checkCompanyResponse.data.data._id);
+          await AsyncStorage.setItem('premium', JSON.stringify(checkCompanyResponse.data.data.premium));
           console.log(checkCompanyResponse.data.data._id);
             router.push("/Home");
         } else {
@@ -83,6 +88,8 @@ const LoginScreen = () => {
         setColor("red");
         setShowAlert(true);
         clear();
+    }finally {
+      setLoading(false); // Stop loading spinner
     }
 };
 
@@ -181,9 +188,14 @@ useEffect(() => {
         </TouchableOpacity>
         <Text style={styles.rememberMeText}>Lưu mật khẩu</Text>
       </View>
+
+      {loading && ( 
+        <ActivityIndicator size="large" color="#007BFF" style={styles.spinner} />
+      )}
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Đăng nhập</Text>
       </TouchableOpacity>
+      
       <Text style={styles.continueWithText}>----- continue with -----</Text>
       <View style={styles.socialIconsContainer}>
         <TouchableOpacity>
@@ -318,6 +330,10 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     width: "80%",
     height: 250,
+  },
+  spinner: {
+    marginVertical: 10,
+    alignSelf: "center", 
   },
 });
 

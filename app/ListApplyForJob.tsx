@@ -13,8 +13,8 @@ const ListApplyForJob = () => {
   const [applyJobId, setApplyJobId] = useState(null);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    { key: 'pending', title: 'Chưa đánh giá' },
-    { key: 'reviewed', title: 'Đã đánh giá' },
+    { key: 'pending', title: 'Hồ sơ mới' },
+    { key: 'reviewed', title: 'Đã duyệt' },
   ]);
 
   const [titleJob, setTitleJob] = useState("");

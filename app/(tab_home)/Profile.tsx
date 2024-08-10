@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, Image, ActivityIndicator, Alert, SafeAreaView, ScrollView, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const { width, height } = Dimensions.get('window');
+import { useFocusEffect } from '@react-navigation/native';
 
 
 
@@ -14,33 +16,44 @@ export default function Profile() {
   const [error, setError] = useState(null);
   const [idUser, setIdUser] = useState(null);
 
-  useEffect(() => {
-    const fetchCompanyData = async () => {
-      try {
-        const companyId = await AsyncStorage.getItem('company_id');
-        const idUser = await AsyncStorage.getItem('idUser');
-        setIdUser(idUser);
+  const toUpAccount = async () => {
+    router.push("ToUpAccountScreen");
+  }
 
-        if (!companyId) {
-          throw new Error('Company ID not found');
-        }
-        const response = await fetch(`http://beejobs.io.vn:14307/api/companies/getCompanyById/${companyId}`);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        setCompanyData(data.data || data);
-      } catch (error) {
-        console.error("Error fetching company data:", error);
-        setError(error.message);
-        Alert.alert('Error', 'Failed to load company data.');
-      } finally {
-        setLoading(false);
+  const UpgradeAccount = async () => {
+    router.push("UpgradeAccountScreen");
+  }
+
+  const fetchCompanyData = async () => {
+    try {
+      const companyId = await AsyncStorage.getItem('company_id');
+      const idUser = await AsyncStorage.getItem('idUser');
+      setIdUser(idUser);
+
+      if (!companyId) {
+        throw new Error('Company ID not found');
       }
-    };
+      const response = await fetch(`http://beejobs.io.vn:14307/api/companies/getCompanyById/${companyId}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setCompanyData(data.data || data);
+    } catch (error) {
+      console.error("Error fetching company data:", error);
+      setError(error.message);
+      Alert.alert('Error', 'Failed to load company data.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchCompanyData();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true); 
+      fetchCompanyData();
+    }, [])
+  );
 
   const handleLogout = async () => {
     Alert.alert('Đăng xuất', "Bạn có muốn đăng xuất không",
@@ -78,7 +91,7 @@ export default function Profile() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style= {styles.scrollview}>
+      
       <View style={styles.profileContainer}>
         <Image
           style={styles.imageProfile}
@@ -89,6 +102,36 @@ export default function Profile() {
           <Text style={styles.userId}>{idUser || "Mã công ty"}</Text>
         </View>
       </View>
+      
+
+      <View style={styles.paycontainer}>
+      <View style={styles.leftContainer}>
+        <Ionicons name="wallet" size={30} color="#1e90ff" />
+        <Text style={styles.label}>Tài khoản chính</Text>
+      </View>
+      <View style={styles.rightContainer}>
+        <Text style={styles.currency}>$</Text>
+        <TouchableOpacity onPress={toUpAccount}>
+        <Text style={styles.balance}>{companyData.currency}</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+
+    {companyData.premium ? (
+      <View style = {styles.premiumView}>
+        <Text style = {styles.introText}>Doanh nghiệp đã nâng cấp Premium</Text>
+        <Image source={require('../../assets/images/crown.png')} style={styles.crownImage} />
+      </View>
+    ) : (
+      <View>
+        <Text style = {styles.introText}>Nâng cấp để sử dụng những dịch vụ tốt nhất! </Text>
+      <TouchableOpacity onPress={UpgradeAccount} style={styles.upgradeButton}>
+        <Text style={styles.upgradeText}>Nâng cấp tài khoản</Text>
+      </TouchableOpacity>
+      </View>
+    )}
+
+    <ScrollView style= {styles.scrollview}>
 
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>Cài đặt tài khoản</Text>
@@ -238,5 +281,63 @@ const styles = StyleSheet.create({
   scrollview: {
     flexGrow: 1,
   },
+  paycontainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    marginBottom:10,
+  },
+  leftContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  rightContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  label: {
+    marginLeft: 8,
+    fontSize: 18,
+    fontWeight:"bold",
+
+  },
+  currency: {
+    fontSize: 16,
+    marginRight: 8,
+    fontWeight:"bold",
+  },
+  balance: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color:"#1e90ff"
+  },
+  crownImage: {
+    marginLeft:10,
+    width: 25 ,
+    height: 25,
+  },
+  upgradeButton: {
+    marginTop:10,
+    backgroundColor: "#5BBD2B",
+    padding: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 20, 
+    width:"40%",
+  },
+  upgradeText: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+  },
+  introText:{
+    marginTop: 15,
+    fontWeight: "400",
+    fontStyle: "italic",
+  },
+  premiumView:{
+    flexDirection:"row",
+    marginBottom: 10,
+  }
 });
 

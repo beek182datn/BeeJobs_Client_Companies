@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, Dimensions, TouchableOpacity, BackHandler } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Dimensions, TouchableOpacity, BackHandler, Alert } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 
 const { width } = Dimensions.get('window');
@@ -22,6 +23,35 @@ export default function Details() {
   const { data } = useLocalSearchParams();
   const item = data ? JSON.parse(data) : {};
   const router = useRouter();
+
+  const suitableCandidate = async () => {
+    try {
+      const value = await AsyncStorage.getItem('premium');
+      if (value !== null) {
+        const isPremium = JSON.parse(value); // Parse giá trị JSON
+        if (isPremium) {
+          router.push("ListSuitableCandidate"); 
+        } else {
+          Alert.alert(
+            'Thông báo',
+            'Tài khoản của bạn chưa được sử dụng tính năng này, hãy nâng cấp để được sử dụng.',
+            [
+              {
+                text: 'Hủy',
+                style: 'cancel',
+              },
+              {
+                text: 'Nâng cấp',
+                onPress: () => router.push('/(tab_home)/Profile') // Chuyển đến màn hình hồ sơ sau khi nhấn OK
+              }
+            ]
+          );
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleApplyInfoPress = () => {
     router.push({
@@ -58,7 +88,6 @@ export default function Details() {
             value={item.desc}
             color="#4682B4" 
           />
-
           <View style={styles.divider} />
           <DetailRow
             icon="briefcase"
@@ -66,7 +95,6 @@ export default function Details() {
             value={item.majors}
             color="#32CD32" 
           />
-
           <View style={styles.divider} />
           <DetailRow
             icon="list-alt"
@@ -143,9 +171,14 @@ export default function Details() {
         </View>
       </ScrollView>
 
-      <TouchableOpacity style={styles.applyButton} onPress={handleApplyInfoPress}>
-        <Text style={styles.applyButtonText}>Thông tin ứng tuyển</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.applyButton} onPress={handleApplyInfoPress}>
+          <Text style={styles.applyButtonText}>Thông tin ứng tuyển</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.applyButton} onPress={suitableCandidate}>
+          <Text style={styles.applyButtonText}>Ứng viên phù hợp</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
@@ -187,14 +220,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#e0e0e0',
     marginVertical: width * 0.02, 
   },
+  buttonContainer: {
+    marginBottom:10,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   applyButton: {
-    position: 'absolute',
-    bottom: width * 0.05, 
-    left: width * 0.05, 
-    right: width * 0.05, 
+    flex: 1,
+    marginHorizontal: 5,
     backgroundColor: '#007bff',
     paddingVertical: width * 0.04, 
-    borderRadius: 30,
+    borderRadius: 15,
     alignItems: 'center',
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 4 },
@@ -204,8 +241,8 @@ const styles = StyleSheet.create({
   },
   applyButtonText: {
     color: '#ffffff',
-    fontSize: width * 0.05, 
-    fontWeight: '700',
+    fontSize: width * 0.04, 
+    fontWeight: 'bold',
   },
 });
 

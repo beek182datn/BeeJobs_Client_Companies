@@ -26,6 +26,9 @@ export default function RootLayout() {
       <Stack.Screen name="ChatScreen" options={{headerShown: false}}/>
       <Stack.Screen name="ChatLiveScreen" options={{headerShown: false}}/>
       <Stack.Screen name="ResetPasswordScreen" options={{headerShown: false}}/>
+      <Stack.Screen name="ToUpAccountScreen" options={{headerTitle: "Số dư tài khoản"}}/>
+      <Stack.Screen name="UpgradeAccountScreen" options={{headerTitle: "Nâng cấp tài khoản"}}/>
+      <Stack.Screen name="ListSuitableCandidate" options={{headerShown: false}}/>
       <Stack.Screen name="ChangePassword" options={{ headerTitle: 'Đổi mật khẩu', headerTitleStyle: {
             fontSize: 19,
             fontWeight: "bold",}, 
