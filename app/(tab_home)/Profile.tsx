@@ -99,7 +99,12 @@ export default function Profile() {
         />
         <View style={styles.textContainer}>
           <Text style={styles.companyName}>{companyData?.company_name || "Tên công ty"}</Text>
-          <Text style={styles.userId}>{idUser || "Mã công ty"}</Text>
+          {/* <Text style={styles.userId}>{"Mã doanh nghiệp: "+idUser || "Mã công ty"}</Text> */}
+          <Text style={styles.userId}>
+  {"Mã doanh nghiệp: "}
+  <Text style={styles.userIdBold}>{idUser || "Mã công ty"}</Text>
+</Text>
+
         </View>
       </View>
       
@@ -170,7 +175,7 @@ export default function Profile() {
           <Icon name="chevron-forward-outline" size={24} style={styles.icon} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.textIcon} onPress={() => router.push("HelpCenter")}>
+        <TouchableOpacity style={styles.textIcon} onPress={() => router.push("JobsAppliedScreen")}>
           <Icon name="call-outline" size={24} style={styles.icon} />
           <Text style={styles.underlinedText}>Trợ giúp</Text>
           <Icon name="chevron-forward-outline" size={24} style={styles.icon} />
@@ -256,7 +261,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     flex: 1,
     color: "#333333",
-    textDecorationLine: "underline",
+    
   },
   buttonLogout: {
     flexDirection: "row",
@@ -338,6 +343,12 @@ const styles = StyleSheet.create({
   premiumView:{
     flexDirection:"row",
     marginBottom: 10,
-  }
+  },
+ 
+  userIdBold: {
+    fontSize: 16, 
+    color: '#333',
+    fontWeight: 'bold',
+  },
 });
 

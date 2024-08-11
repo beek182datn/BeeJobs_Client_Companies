@@ -198,13 +198,9 @@ export default function Jobs() {
     <View style={styles.itemContainer}>
       <TouchableOpacity onPress={() => handleItemPress(item)}>
         <View style={styles.itemContent}>
-          <Icon
-            name="briefcase"
-            size={20}
-            color="#FF6600"
-            style={styles.icon}
-          />
+   
           <Text style={styles.title}>{item.title}</Text>
+         
         </View>
         <View style={styles.itemDetails}>
           <View style={styles.detailRow}>
@@ -214,13 +210,18 @@ export default function Jobs() {
               color="#CCFF66"
               style={styles.icon}
             />
+            
             <Text style={styles.detailText}>
-              Hạn nộp hồ sơ: {item.deadline}
+              <Text style={styles.labelText}>Hạn nộp hồ sơ: </Text>
+              <Text style={styles.formText}>{item.deadline}</Text>
             </Text>
           </View>
           <View style={styles.detailRow}>
             <Icon name="money" size={16} color="#FFCCFF" style={styles.icon} />
-            <Text style={styles.detailText}>Lương: {item.salary}</Text>
+            <Text style={styles.detailText}>
+              <Text style={styles.labelText}>Lương: </Text>
+              <Text style={styles.formText}>{item.salary}</Text>
+            </Text>
           </View>
           <View style={styles.detailRow}>
             <Icon
@@ -229,7 +230,10 @@ export default function Jobs() {
               color="#97FFFF"
               style={styles.icon}
             />
-            <Text style={styles.detailText}>Hình thức: {item.form}</Text>
+            <Text style={styles.detailText}>
+              <Text style={styles.labelText}>Hình thức: </Text>
+              <Text style={styles.formText}>{item.form}</Text>
+            </Text>
           </View>
         </View>
         <TouchableOpacity
@@ -277,21 +281,23 @@ export default function Jobs() {
 
   return (
     <SafeAreaView style={styles.container}>
-
-    <View style={styles.searchContainer}>
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Tìm kiếm công việc..."
-        value={search}
-        onChangeText={setSearch}
-        placeholderTextColor="#A9A9A9"
-      />
-      {search.length > 0 && (
-        <TouchableOpacity onPress={() => setSearch("")} style={styles.clearButton}>
-          <Icon name="close" size={20} color="#A9A9A9" />
-        </TouchableOpacity>
-      )}
-    </View>
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Tìm kiếm công việc..."
+          value={search}
+          onChangeText={setSearch}
+          placeholderTextColor="#A9A9A9"
+        />
+        {search.length > 0 && (
+          <TouchableOpacity
+            onPress={() => setSearch("")}
+            style={styles.clearButton}
+          >
+            <Icon name="close" size={20} color="#A9A9A9" />
+          </TouchableOpacity>
+        )}
+      </View>
       <FlatList
         data={filteredJobs}
         renderItem={renderItem}
@@ -323,12 +329,23 @@ export default function Jobs() {
               activeOpacity={1}
               onPress={() => {}}
             >
-           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
-      <Icon name="pencil" size={20} color="black" style={{ marginRight: 10 }} />
-      <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-        Sửa Thông Tin
-      </Text>
-    </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Icon
+                  name="pencil"
+                  size={20}
+                  color="black"
+                  style={{ marginRight: 10 }}
+                />
+                <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                  Sửa Thông Tin
+                </Text>
+              </View>
               <ScrollView
                 contentContainerStyle={styles.scrollViewContent}
                 ref={scrollViewRef}
@@ -398,7 +415,6 @@ export default function Jobs() {
                     ]}
                     value={selectedJob.form}
                     multiline
-                   
                     onChangeText={(text) =>
                       setSelectedJob({ ...selectedJob, form: text })
                     }
@@ -582,10 +598,13 @@ export default function Jobs() {
                 >
                   <Text style={styles.cancelButtonText}>Hủy</Text>
                 </TouchableOpacity>
-               
-                <TouchableOpacity style={styles.saveButton}  onPress={handleEdit}>
-            <Text style={styles.saveButtonText}>Sửa</Text>
-          </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.saveButton}
+                  onPress={handleEdit}
+                >
+                  <Text style={styles.saveButtonText}>Sửa</Text>
+                </TouchableOpacity>
               </View>
             </TouchableOpacity>
           </TouchableOpacity>
@@ -607,15 +626,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#f5f5f5",
   },
-  // searchInput: {
-  //   height: 40,
-  //   borderColor: "#ddd",
-  //   borderWidth: 1,
-  //   borderRadius: 5,
-  //   paddingHorizontal: 10,
-  //   marginVertical: 10,
-  //   backgroundColor: "#fff",
-  // },
+
   list: {
     paddingBottom: 70,
   },
@@ -679,7 +690,7 @@ const styles = StyleSheet.create({
   deleteButton: {
     backgroundColor: "#ff4d4d",
   },
- 
+
   modalButtonText: {
     color: "#fff",
     fontWeight: "bold",
@@ -746,16 +757,11 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     flexWrap: "wrap",
   },
-  detailText: {
-    marginLeft: 5,
-    fontSize: 14,
-    flexShrink: 1,
-  },
   icon: {
     marginRight: 10,
   },
   buttonContainer: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: "#28A745",
     padding: 15,
     borderRadius: 10,
     position: "absolute",
@@ -781,33 +787,35 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#4CAF50",
+    borderColor: "#ff6400",
     marginTop: 20,
     width: "45%",
     alignSelf: "center",
     marginRight: 10,
   },
   cancelButtonText: {
-    color: "#4CAF50",
+    color: "#ff6400",
     fontSize: 16,
     fontWeight: "bold",
-  },  saveButton: {
-    backgroundColor: '#4CAF50',
+  },
+  saveButton: {
+    backgroundColor: "#ff6400",
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: '#4CAF50',
+    borderColor: "#ff6400",
     marginTop: 20,
-    width: '45%',
-    alignSelf: 'center',
+    width: "45%",
+    alignSelf: "center",
   },
   saveButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
-  },  searchContainer: {
+    fontWeight: "bold",
+  },
+  searchContainer: {
     flexDirection: "row",
     alignItems: "center",
     height: 40,
@@ -823,5 +831,18 @@ const styles = StyleSheet.create({
   },
   clearButton: {
     padding: 5,
+  },
+  detailText: {
+    fontSize: 14,
+    color: "#333",
+    marginLeft: 7,
+    fontWeight: "bold",
+  },
+  labelText: {
+    color: "#999",
+  },
+  formText: {
+    fontWeight: "bold",
+    color: "#000",
   },
 });

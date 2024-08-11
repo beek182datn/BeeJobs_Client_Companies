@@ -60,7 +60,7 @@ export default function Details() {
     if (!title.trim()) newErrors.title = "Hãy nhập tiêu đề";
     if (!desc.trim()) newErrors.desc = "Hãy nhập mô tả";
     if (!form.trim()) newErrors.form = "Hãy nhập hình thức";
-    if (!majors.trim()) newErrors.form = "Hãy nhập chuyên ngành";
+    if (!majors.trim()) newErrors.majors = "Hãy nhập chuyên ngành";
     if (!number_of_recruitments.trim()) newErrors.number_of_recruitments = "Hãy nhập số lượng";
     if (!requirements.trim()) newErrors.requirements = "Hãy nhập yêu cầu";
     if (!experience.trim()) newErrors.experience = "Hãy nhập yêu cầu";
