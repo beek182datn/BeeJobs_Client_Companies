@@ -107,7 +107,7 @@ const RegisterScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Image style= {styles.logo} source={require('../assets/images/BeeJobs_logo1.png')}/>
+      <Image style= {styles.logo} source={require('../assets/images/BeeJobs_logo.jpg')}/>
       <Text style={styles.wellcome}>Chào mừng bạn đến với BeeJobs</Text>
       <Text style={styles.title}>Đăng ký</Text>
       <View style={styles.inputContainer}>
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: "50%",
-    height: 70,
+    height: 150,
     alignSelf: "center",
     marginBottom:20,
   },
