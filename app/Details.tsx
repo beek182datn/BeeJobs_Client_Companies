@@ -92,7 +92,7 @@ export default function Details() {
           <DetailRow
             icon="briefcase"
             title="Chuyên ngành:"
-            value={item.majors}
+           value={item.majors}
             color="#32CD32" 
           />
           <View style={styles.divider} />
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: width * 0.03, 
+    paddingVertical: width * 0.015, 
   },
   rowIcon: {
     marginRight: width * 0.03, 
@@ -205,14 +205,17 @@ const styles = StyleSheet.create({
   rowContent: {
     flex: 1,
   },
+
   rowTitle: {
-    fontSize: width * 0.05, 
-    fontWeight: '600',
-    color: '#333',
+    fontSize: width * 0.04,
+    color: '#999',
+    fontWeight: 'bold',
+    
   },
   rowValue: {
-    fontSize: width * 0.04, 
-    color: '#555',
+    fontSize: width * 0.035, 
+    color: '#333', 
+    fontWeight: 'bold', 
     marginTop: width * 0.01, 
   },
   divider: {
