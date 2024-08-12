@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
+  Alert,
   View,
   Text,
   TextInput,
@@ -132,6 +133,10 @@ useEffect(() => {
     return () => backHandler.remove();
   }, [backPressCount]);
 
+  const handleFeatureInDevelopment = () => {
+    Alert.alert("Thông báo", "Tính năng đang phát triển");
+  };
+
   return (
     <View style={styles.container}>
       <Image style= {styles.logo} source={require('../assets/images/BeeJobs_logo.jpg')}/>
@@ -198,13 +203,13 @@ useEffect(() => {
       
       <Text style={styles.continueWithText}>----- continue with -----</Text>
       <View style={styles.socialIconsContainer}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleFeatureInDevelopment}>
           <Ionicons name="logo-facebook" size={35} color="#3b5998" />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleFeatureInDevelopment}>
           <Ionicons name="logo-google" size={35} color="#db4a39" />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleFeatureInDevelopment}>
           <Ionicons name="logo-twitter" size={35} color="#00acee" />
         </TouchableOpacity>
       </View>
