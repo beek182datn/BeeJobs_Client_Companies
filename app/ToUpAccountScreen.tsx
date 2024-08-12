@@ -4,11 +4,19 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StripeProvider, useStripe } from '@stripe/stripe-react-native';
 
+interface History {
+  amount?: string;
+  currency?: string;
+  transaction_date?: String;
+  status?: string;
+}
+
 const ToUpAccountScreen = () => {
   const [balance, setBalance] = useState(0);
   const [transactionHistory, setTransactionHistory] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [topUpAmount, setTopUpAmount] = useState('');
+  const [transHistory, setTransHistory] = useState<History[]>([]);
   const stripe = useStripe();
 
   const fetchData = async () => {
@@ -18,6 +26,10 @@ const ToUpAccountScreen = () => {
         const response = await axios.get(`http://beejobs.io.vn:14307/api/companies/getCompanyById/${companyId}`);
         setBalance(response.data.data.currency);
         console.log(response.data.data.company_name);
+        const responseTrans = await axios.get(`http://beejobs.io.vn:14307/api/payment/getTransactionHistoryByCompanyId/${companyId}`);
+        setTransHistory(responseTrans.data.data);
+        console.log(responseTrans.data.data);
+        
       }
     } catch (error) {
       console.error("Lỗi khi tải dữ liệu:", error);
@@ -27,37 +39,38 @@ const ToUpAccountScreen = () => {
   const handleTopUp = async () => {
     const companyId = await AsyncStorage.getItem('company_id');
     const amount = parseFloat(topUpAmount);
-
+  
     // Kiểm tra số tiền nạp tối thiểu
     if (amount < 50) {
       Alert.alert('Lỗi', 'Số tiền nạp tối thiểu là 50$.');
       return;
     }
+  
     try {
+      // Gửi yêu cầu tạo thanh toán
       const response = await axios.post('http://beejobs.io.vn:14307/api/payment/createPayment', {
         amount: amount * 100,
         company_id: companyId,
-      });
-
+      }, { timeout: 10000 }); // Thêm thời gian chờ 10 giây
+  
       const { client_secret, paymentIntentId } = response.data;
       console.log(response.data);
-      
-
+  
       // Khởi tạo thanh toán với Stripe
       const { error: initError } = await stripe.initPaymentSheet({
         paymentIntentClientSecret: client_secret,
         googlePay: true,
-        merchantDisplayName: 'ToUp-Account'
+        merchantDisplayName: 'TopUp-Account',
+        returnURL: 'your-app://return-url' // Thêm returnURL
       });
-
+  
       if (initError) {
         console.error(initError);
         return Alert.alert('Lỗi', initError.message);
       }
-
-      // Hiển thị thanh toán
+  
       const { error: presentError } = await stripe.presentPaymentSheet();
-
+  
       if (presentError) {
         if (presentError.code === 'Canceled') {
           // Người dùng đóng cửa sổ thanh toán
@@ -68,28 +81,29 @@ const ToUpAccountScreen = () => {
         console.error(presentError);
         return Alert.alert('Lỗi', presentError.message);
       }
-
-      // Xác nhận thanh toán và gửi thông tin đến server để lưu lịch sử giao dịch
+  
       await axios.post('http://beejobs.io.vn:14307/api/payment/confirmPayment', {
         paymentIntentId: paymentIntentId,
         companyId: companyId,
         amount: Number(topUpAmount),
-      });
+      }, { timeout: 10000 }); 
+  
       setModalVisible(false);
-
+  
       await axios.post(`http://beejobs.io.vn:14307/api/companies/top_up_account/${companyId}`, {
         amount: Number(topUpAmount),
-      });
-
+      }, { timeout: 10000 }); 
+  
       Alert.alert('Success', 'Thanh toán thành công!');
-      fetchData(); // Cập nhật lại số dư sau khi nạp tiền thành công
-      
+      fetchData(); 
+  
       setTopUpAmount('');
     } catch (error) {
       console.error('Lỗi khi thanh toán:', error);
       Alert.alert('Lỗi', 'Đã xảy ra lỗi trong quá trình thanh toán.');
     }
   };
+  
 
 
   useEffect(() => {
@@ -109,12 +123,12 @@ const ToUpAccountScreen = () => {
         <View style={styles.historyContainer}>
           <Text style={styles.historyTitle}>Lịch sử giao dịch</Text>
           <FlatList
-            data={transactionHistory}
-            keyExtractor={(item) => item.id}
+            data={transHistory}
+            keyExtractor={(item) => item._id}
             renderItem={({ item }) => (
               <View style={styles.transactionItem}>
-                <Text>{item.date}</Text>
-                <Text style={styles.transactionAmount}>{item.amount} VND</Text>
+                <Text>{`${new Date(item.transaction_date).toLocaleDateString()} ${new Date(item.transaction_date).toLocaleTimeString()}`}</Text>
+                <Text style={styles.transactionAmount}>{item.status}</Text>
               </View>
             )}
           />
@@ -204,6 +218,7 @@ const styles = StyleSheet.create({
   },
   transactionAmount: {
     fontWeight: 'bold',
+    width:"63%",
   },
   modalContainer: {
     flex: 1,
