@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   },
   chatRoomItem: {
     flexDirection: 'row',
-    padding: 6,
+    padding: 8,
     marginVertical: 5,
     marginHorizontal: 10,
     backgroundColor: '#fff',
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 1,
-    marginLeft: 15,
+    marginLeft: 17,
     justifyContent: 'center',
   },
   workerName: {
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
     borderRadius: 20,
-    padding: 10,
+    padding: 5,
     marginHorizontal: 20,
     marginBottom: 20,
     borderWidth: 1,
@@ -188,8 +188,9 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    marginLeft: 10,
-    fontSize: 16,
+  
+    marginLeft: 15,
+    fontSize: 15,
     color: '#333',
   },
   error: {
