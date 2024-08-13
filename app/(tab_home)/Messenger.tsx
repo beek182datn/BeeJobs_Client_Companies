@@ -21,12 +21,10 @@ const Messenger = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [chatRooms, setChatRooms] = useState<ChatRoomInfor[]>([]);
-  const [filteredChatRooms, setFilteredChatRooms] = useState<ChatRoomInfor[]>([])
+  const [filteredChatRooms, setFilteredChatRooms] = useState<ChatRoomInfor[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
   const router = useRouter();
-
-
 
   const fetchChatRooms = async () => {
     const userId = await AsyncStorage.getItem('company_id');
@@ -35,10 +33,9 @@ const Messenger = () => {
       setChatRooms(response.data.data);
       setFilteredChatRooms(response.data.data);
       console.log(response.data.data);
-      
     } catch (error) {
       setError(error.message);
-      console.error('Error fetching applications:', error);
+      console.error('Error fetching chat rooms:', error);
     } finally {
       setLoading(false);
     }
@@ -49,6 +46,7 @@ const Messenger = () => {
       fetchChatRooms();
     }, [])
   );
+
   const handleSearch = (query) => {
     setSearchQuery(query);
     if (query) {
@@ -62,13 +60,13 @@ const Messenger = () => {
   };
 
   const handleItemPress = (_id, worker_name, worker_avatar) => {
-    router.push({ pathname: "ChatScreen", params: { ChatID: _id, nameOther: worker_name, avtOther: worker_avatar } });
-  }
+    router.push({ pathname: 'ChatScreen', params: { ChatID: _id, nameOther: worker_name, avtOther: worker_avatar } });
+  };
 
   if (loading) {
     return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0000ff" />
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#007BFF" />
       </View>
     );
   }
@@ -76,7 +74,7 @@ const Messenger = () => {
   if (error) {
     return (
       <View style={styles.container}>
-        <Text style={styles.error}>Lỗi khi tải dữ liệu: {error}</Text>
+        <Text style={styles.error}>Error loading data: {error}</Text>
       </View>
     );
   }
@@ -84,42 +82,41 @@ const Messenger = () => {
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
-              colors={['#f0f0f0', '#87cefa']}
-              style={styles.container}
-              start={[0, 1]}
-              end={[1, 0]}
-            >
-            
-            
-      <Text style={styles.title}>Chat với ứng viên</Text>
+        colors={['#f0f0f0', '#87cefa']}
+        style={styles.container}
+        start={[0, 1]}
+        end={[1, 0]}
+      >
+        <Text style={styles.title}>Trò chuyện với ứng viên</Text>
 
-      <View style = {styles.searchContainer}>
-      <Ionicons name="search" size={24} color="#ddd" />
-      <TextInput
-          style={styles.searchInput}
-          placeholder="Tìm kiếm ứng viên..."
-          value={searchQuery}
-          onChangeText={handleSearch}
-        />
-        </View>
-      <FlatList
-        data={filteredChatRooms}
-        keyExtractor={(item) => item._id}
-        renderItem={({ item }) => (
-        <TouchableOpacity onPress={() => handleItemPress(item._id, item.worker_name, item.worker_avatar)}>
-        <View style={styles.chatRoomItem}>
-          <Image
-            source={{ uri: "http://beejobs.io.vn:14307"+ item.worker_avatar}}
-            style={styles.avatar}
+        <View style={styles.searchContainer}>
+          <Ionicons name="search" size={24} color="#888" />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Tìm kiếm ứng viên..."
+            value={searchQuery}
+            onChangeText={handleSearch}
           />
-          <View style={styles.textContainer}>
-            <Text style={styles.workerName}>{item.worker_name}</Text>
-            <Text style={styles.lastMessage}>{item.lastMessage ? item.lastMessage : 'No messages'}</Text>
-          </View>
         </View>
-        </TouchableOpacity>
-        )}
-      />
+
+        <FlatList
+          data={filteredChatRooms}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => handleItemPress(item._id, item.worker_name, item.worker_avatar)}>
+              <View style={styles.chatRoomItem}>
+                <Image
+                  source={{ uri: "http://beejobs.io.vn:14307" + item.worker_avatar }}
+                  style={styles.avatar}
+                />
+                <View style={styles.textContainer}>
+                  <Text style={styles.workerName}>{item.worker_name}</Text>
+                  <Text style={styles.lastMessage}>{item.lastMessage ? item.lastMessage : 'No messages yet'}</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
       </LinearGradient>
     </SafeAreaView>
   );
@@ -128,63 +125,79 @@ const Messenger = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
   },
-
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+  },
   title: {
-    marginTop:30,
-    fontSize: 24,
-    fontWeight: 'bold',
+    marginTop: 30,
     marginBottom: 20,
-    alignSelf: 'center',
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
   },
   chatRoomItem: {
     flexDirection: 'row',
-    padding: 10,
-    marginVertical: 1,
-    backgroundColor: '#f9f9f9',
-    borderBottomWidth: 1,
-    borderColor: '#ccc',
-    alignItems: 'center',
+    padding: 8,
+    marginVertical: 5,
+    marginHorizontal: 10,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 5,
+    elevation: 3,
   },
   avatar: {
-    marginLeft:15,
     width: 50,
     height: 50,
     borderRadius: 25,
-    marginRight: 15,
+    borderWidth: 2,
+    borderColor: '#007BFF',
   },
   textContainer: {
     flex: 1,
+    marginLeft: 17,
+    justifyContent: 'center',
   },
   workerName: {
-    marginLeft:20,
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '600',
+    color: '#333',
   },
   lastMessage: {
-    marginLeft:20,
-    fontSize: 16,
+    fontSize: 14,
     color: '#666',
-  },
-  error: {
-    color: 'red',
-    fontSize: 18,
-  },
-  searchInput: {
-    flex: 1,
-    height: 40,
-    paddingHorizontal: 10,
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
     backgroundColor: '#fff',
-    borderColor: '#ccc',
+    borderRadius: 20,
+    padding: 5,
+    marginHorizontal: 20,
+    marginBottom: 20,
     borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal:5,
-    marginHorizontal:20,
+    borderColor: '#ddd',
+  },
+  searchInput: {
+    flex: 1,
+  
+    marginLeft: 15,
+    fontSize: 15,
+    color: '#333',
+  },
+  error: {
+    color: 'red',
+    fontSize: 18,
+    textAlign: 'center',
+    marginTop: 20,
   },
 });
 
