@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 
 const ListApplyForJob = () => {
   const [applicationsPending, setApplicationsPending] = useState([]);
@@ -74,6 +75,13 @@ const ListApplyForJob = () => {
     setLoading(true); 
     fetchApplications();
   }, [jobId, fetchApplications]);
+
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true); 
+      fetchApplications();
+    }, [])
+  );
 
   const handleViewProfile = (_id) => {
     console.log(`View apply ID:  ${_id}`);
@@ -178,7 +186,7 @@ const ListApplyForJob = () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style ={styles.header}>
-            <TouchableOpacity style={styles.backButton} onPress={() => router.replace("/Jobs")}>
+            <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
             <Ionicons name="arrow-back" size={25} color="black" />
             </TouchableOpacity>
         <Text style={styles.titlejob}>{titleJob}</Text>

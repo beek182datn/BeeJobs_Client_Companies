@@ -30,7 +30,10 @@ export default function Details() {
       if (value !== null) {
         const isPremium = JSON.parse(value); // Parse giá trị JSON
         if (isPremium) {
-          router.push("ListSuitableCandidate"); 
+          router.push({
+            pathname: 'ListSuitableCandidate',
+            params: { job_id: item._id },
+          });
         } else {
           Alert.alert(
             'Thông báo',
@@ -165,7 +168,8 @@ export default function Details() {
           <DetailRow
             icon="clock-o"
             title="Ngày tạo:"
-            value={item.created_at}
+            value={`${new Date(item.created_at).toLocaleDateString()} ${new Date(item.created_at).toLocaleTimeString()}`}
+            
             color="#B22222" 
           />
         </View>

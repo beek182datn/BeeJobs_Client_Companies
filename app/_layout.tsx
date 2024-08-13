@@ -1,4 +1,5 @@
 import { Stack } from "expo-router";
+import { Platform } from 'react-native';
 
 export default function RootLayout() {
   return (
@@ -14,6 +15,7 @@ export default function RootLayout() {
             fontWeight: "bold",
             alignSelf: "center",
           },
+          // headerShown: Platform.OS !== 'ios',
         }} />
       <Stack.Screen name="OtpScreen" options={{headerShown: false}}/>
       <Stack.Screen name="EmployerAuth" options={{headerShown: false}}/>
