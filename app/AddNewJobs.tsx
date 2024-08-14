@@ -57,6 +57,7 @@ export default function Details() {
   };
 
   const handleSave = async () => {
+
     const newErrors = {};
     if (!title.trim()) newErrors.title = "Hãy nhập tiêu đề";
     if (!desc.trim()) newErrors.desc = "Hãy nhập mô tả";

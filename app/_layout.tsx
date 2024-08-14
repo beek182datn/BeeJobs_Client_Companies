@@ -86,7 +86,7 @@ export default function RootLayout() {
       <Stack.Screen
         name="HelpCenter"
         options={{
-          headerTitle: "Chính sách bảo mật",
+          headerTitle: "Trung tâm trợ giúp",
           headerTitleStyle: { fontSize: 19, fontWeight: "bold" },
           headerStyle: {
             backgroundColor: "#fff",

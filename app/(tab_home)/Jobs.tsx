@@ -262,6 +262,10 @@ export default function Jobs() {
 
   const filteredJobs = search ? searchJobs(search) : jobs;
 
+
+  const clearSearch = () => {
+    setSearch("");
+  };
   const scrollToEnd = () => {
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollToEnd({ animated: true });
@@ -286,6 +290,11 @@ export default function Jobs() {
           onChangeText={setSearch}
           autoCapitalize="none"
         />
+         {search.length > 0 && (
+          <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
+            <Icon name="times-circle" size={20} color="#999" />
+          </TouchableOpacity>
+        )}
       </View>
       <FlatList
         data={filteredJobs}
@@ -481,14 +490,8 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     marginVertical: 16,
-  },
-  searchInput: {
-    backgroundColor: "#fff",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 8,
-    fontSize: 16,
-    elevation: 1,
+    flexDirection: "row",
+    margin: 10
   },
   itemContainer: {
     backgroundColor: "#fff",
@@ -623,5 +626,16 @@ const styles = StyleSheet.create({
   errorText: {
     color: "#cc0000",
     fontSize: 14,
+  },  searchInput: {
+    flex: 1,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+  },
+  clearButton: {
+    alignSelf: "center",
+    position: 'absolute',
+    right: 15,
   },
 });

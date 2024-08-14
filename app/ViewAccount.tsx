@@ -94,6 +94,13 @@ export default function ViewAccount() {
           </View>
         </View>
         <View style={styles.detailContainer}>
+          <Icon name="phone" size={24} color="#007bff" />
+          <View style={styles.detailText}>
+            <Text style={styles.label}>Số điện thoại:</Text>
+            <Text style={styles.value}>{accountDetails.phone_number}</Text>
+          </View>
+        </View>
+        <View style={styles.detailContainer}>
           <Icon name="web" size={24} color="#ff5722" />
           <View style={styles.detailText}>
             <Text style={styles.label}>Website:</Text>
