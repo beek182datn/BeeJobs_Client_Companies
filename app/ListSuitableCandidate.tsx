@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, SafeAreaView, Image,Linking } from 'react-native';
 import axios from 'axios';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -12,6 +12,12 @@ const ListSuitableCandidate = () => {
 
   const { job_id } = useLocalSearchParams();
   const router = useRouter();
+
+
+  const handleCall = (phone_number) => {
+      const call = `tel:${phone_number.replace(/\s+/g, '')}`;
+      Linking.openURL(call).catch(console.error);
+  };
 
   const handleChatLive = async (user_id, worker_name) => {
     const companyId = await AsyncStorage.getItem('company_id');
@@ -60,15 +66,37 @@ const ListSuitableCandidate = () => {
 
   const renderItem = ({ item }) => (
     <View style={styles.candidateItem}>
-      <Text style={styles.name}>{item.worker_name}</Text>
-      <Text style={styles.major}>Chuyên ngành: {item.major}</Text>
-      <Text style={styles.experience}>Kinh nghiệm: {item.experience}</Text>
-      <TouchableOpacity
-        style={styles.chatButton}
-        onPress={() => handleChatLive(item.user_id, item.worker_name)}
-      >
-        <Text style={styles.chatButtonText}>Chat ngay</Text>
-      </TouchableOpacity>
+      <View style={styles.chatRoomItem}>
+                <Image
+                  source={{ uri: "http://beejobs.io.vn:14307" + item.worker_avatar }}
+                  style={styles.avatar}
+                />
+                <View style={styles.textContainer}>
+                <Text style={styles.name}>{item.worker_name}</Text>
+                <Text style={styles.major}>Chuyên ngành: {item.major}</Text>
+                <Text style={styles.experience}>Kinh nghiệm: {item.experience}</Text>
+                </View>
+              </View>
+
+              <View style = {{flexDirection:"row", justifyContent:"space-between"}}>
+              <TouchableOpacity
+               style={styles.chatButton1}
+                onPress={() => handleCall(item.phone)}
+              >
+                <Ionicons name="call" size={20} color="white" />
+                <Text style={styles.chatButtonText}>Gọi ngay</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+               style={styles.chatButton}
+                onPress={() => handleChatLive(item.user_id, item.worker_name)}
+              >
+                <Ionicons name="chatbubble-ellipses" size={20} color="white" />
+                <Text style={styles.chatButtonText}>Chat ngay</Text>
+              </TouchableOpacity>
+
+              </View>
+              
     </View>
   );
 
@@ -88,8 +116,8 @@ const ListSuitableCandidate = () => {
             
             <View style={styles.jobInfo}>
               <Text style={styles.jobTitle}>{job.title}</Text>
-              <Text style={styles.jobDesc}>{job.desc}</Text>
-              <Text style={styles.jobLocation}>Địa điểm: {job.location}</Text>
+              <Text style={styles.jobMajor}>Chuyên ngành: {job.majors}</Text>
+              <Text style={styles.jobexpre}>Kinh nghiệm: {job.experience}</Text>
             </View>
           )}
           {candidates.length === 0 ? (
@@ -110,7 +138,7 @@ const ListSuitableCandidate = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f8f8f8',
   },
   jobInfo: {
     marginBottom: 16,
@@ -122,20 +150,26 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
-  jobDesc: {
+  jobMajor: {
     fontSize: 16,
     marginTop: 4,
   },
-  jobLocation: {
+  jobexpre: {
     fontSize: 16,
     color: '#555',
     marginTop: 4,
   },
   candidateItem: {
+    marginHorizontal:16,
     padding: 16,
     marginVertical: 8,
-    backgroundColor: '#f9f9f9',
-    borderRadius: 8,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 5,
+    elevation: 3,
   },
   name: {
     fontSize: 18,
@@ -151,15 +185,24 @@ const styles = StyleSheet.create({
     color: '#555',
     marginTop: 4,
   },
+  chatButton1: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: '#5BBD2B',
+    borderRadius: 8,
+    width:"30%",
+    flexDirection:"row",
+  },
   chatButton: {
     marginTop: 10,
     padding: 10,
     backgroundColor: '#007BFF',
     borderRadius: 8,
     width:"30%",
-    alignSelf:"flex-end"
+    flexDirection:"row",
   },
   chatButtonText: {
+    marginLeft:5,
     color: '#fff',
     textAlign: 'center',
     fontWeight: 'bold',
@@ -181,6 +224,26 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     color: 'black',
     marginLeft:25,
+  },
+  chatRoomItem: {
+    flexDirection: 'row',
+    padding: 8,
+    marginVertical: 5,
+    marginHorizontal: 10,
+    
+    
+  },
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    borderWidth: 2,
+    borderColor: '#007BFF',
+  },
+  textContainer: {
+    flex: 1,
+    marginLeft: 17,
+    justifyContent: 'center',
   },
 });
 

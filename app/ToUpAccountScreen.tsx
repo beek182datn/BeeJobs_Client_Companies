@@ -41,8 +41,8 @@ const ToUpAccountScreen = () => {
     const amount = parseFloat(topUpAmount);
   
     // Kiểm tra số tiền nạp tối thiểu
-    if (amount < 50) {
-      Alert.alert('Lỗi', 'Số tiền nạp tối thiểu là 50$.');
+    if (amount < 50 || amount > 10000 ) {
+      Alert.alert('Lỗi', 'Số tiền nạp tối thiểu là 50$, tối đa là 10000$');
       return;
     }
   
@@ -145,7 +145,7 @@ const ToUpAccountScreen = () => {
               <Text style={styles.modalTitle}>Nhập số tiền nạp</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Số tiền nạp"
+                placeholder="50 - 10000"
                 keyboardType="numeric"
                 value={topUpAmount}
                 onChangeText={(text) => setTopUpAmount(text.replace(/[^0-9]/g, ''))}
