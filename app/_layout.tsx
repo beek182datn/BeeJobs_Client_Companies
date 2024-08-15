@@ -1,4 +1,5 @@
 import { Stack } from "expo-router";
+import { Platform } from 'react-native';
 
 export default function RootLayout() {
   return (
@@ -14,6 +15,7 @@ export default function RootLayout() {
             fontWeight: "bold",
             alignSelf: "center",
           },
+          // headerShown: Platform.OS !== 'ios',
         }} />
       <Stack.Screen name="OtpScreen" options={{headerShown: false}}/>
       <Stack.Screen name="EmployerAuth" options={{headerShown: false}}/>
@@ -26,6 +28,7 @@ export default function RootLayout() {
       <Stack.Screen name="ChatScreen" options={{headerShown: false}}/>
       <Stack.Screen name="ChatLiveScreen" options={{headerShown: false}}/>
       <Stack.Screen name="ResetPasswordScreen" options={{headerShown: false}}/>
+      <Stack.Screen name="JobsAppliedScreen" options={{headerTitle: "Tin đã có đơn ứng tuyển"}}/>
       <Stack.Screen name="ToUpAccountScreen" options={{headerTitle: "Số dư tài khoản"}}/>
       <Stack.Screen name="UpgradeAccountScreen" options={{headerTitle: "Nâng cấp tài khoản"}}/>
       <Stack.Screen name="ListSuitableCandidate" options={{headerShown: false}}/>
@@ -83,7 +86,7 @@ export default function RootLayout() {
       <Stack.Screen
         name="HelpCenter"
         options={{
-          headerTitle: "Chính sách bảo mật",
+          headerTitle: "Trung tâm trợ giúp",
           headerTitleStyle: { fontSize: 19, fontWeight: "bold" },
           headerStyle: {
             backgroundColor: "#fff",

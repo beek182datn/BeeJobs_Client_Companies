@@ -189,7 +189,7 @@ useEffect(() => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
-            <TouchableOpacity style={styles.backButton} onPress={() => router.replace("/Jobs")}>
+            <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
             <Ionicons name="arrow-back" size={25} color="black" />
             </TouchableOpacity>
             <View style={styles.headerContent}>

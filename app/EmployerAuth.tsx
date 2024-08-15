@@ -23,6 +23,7 @@ const EmployerAuth = () => {
   const [companyScale, setCompanyScale] = useState('');
   const [companyDesc, setCompanyDesc] = useState('');
   const [companyWebsite, setCompanyWebsite] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [companyCertification, setCompanyCertification] = useState<string | null>(null);
   const [taxCode, setTaxCode] = useState('');
   const [message, setMessage] = useState('');
@@ -37,6 +38,7 @@ const EmployerAuth = () => {
   const CompanyWebRel = useRef<TextInput>(null);
   const taxCodeRef = useRef<TextInput>(null);
   const CompanyDescRef = useRef<TextInput>(null);
+  const PhoneNumberRef = useRef<TextInput>(null);
 
   const handleImagePicker = async (setter: React.Dispatch<React.SetStateAction<string | null>>) => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -60,7 +62,7 @@ const EmployerAuth = () => {
   const handleSubmit = async () => {
     setCertificationError(false);
 
-    if (!companyName || !companyAddress || !companyScale || !companyWebsite || !taxCode || !companyCertification || !companyDesc) {
+    if (!companyName || !companyAddress || !companyScale || !companyWebsite || !phoneNumber || !taxCode || !companyCertification || !companyDesc) {
       setMessage('Hãy nhập đầy đủ thông tin bắt buộc');
       setColor('red');
       
@@ -77,6 +79,8 @@ const EmployerAuth = () => {
         CompanyScaleRef.current?.focus();
       }else if (!companyWebsite) {
         CompanyWebRel.current?.focus();
+      }else if (!phoneNumber) {
+        PhoneNumberRef.current?.focus();
       }
        else if (!taxCode) {
         taxCodeRef.current?.focus();
@@ -97,6 +101,7 @@ const EmployerAuth = () => {
       formData.append('company_address', companyAddress);
       formData.append('company_scale', companyScale);
       formData.append('company_website', companyWebsite);
+      formData.append('phone_number', phoneNumber);
       formData.append('taxcode', taxCode);
 
       if (companyLogo) {
@@ -235,6 +240,16 @@ const EmployerAuth = () => {
           placeholder="Nhập website công ty"
           value={companyWebsite}
           onChangeText={setCompanyWebsite}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Số điện thoại công ty</Text>
+        <TextInput
+          ref={PhoneNumberRef}
+          style={styles.input}
+          placeholder="Nhập số điện thoại"
+          value={phoneNumber}
+          onChangeText={(text) => setPhoneNumber(text.replace(/[^0-9]/g, ''))}
         />
       </View>
       <View style={styles.inputContainer}>

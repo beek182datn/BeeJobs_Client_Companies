@@ -39,7 +39,9 @@ export default function EditAccount() {
   const [companyCertification, setCompanyCertification] = useState('');
   const [newCertification, setNewCertification] = useState(null);
   const [companyDesc, setCompanyDesc] = useState('');
+  const [phone_number, setPhone_Number] = useState('');
   const [originalCompanyName, setOriginalCompanyName] = useState('');
+  const [errors, setErrors] = useState({});
   const router = useRouter();
 
   useEffect(() => {
@@ -69,6 +71,7 @@ export default function EditAccount() {
           setCompanyLogo(companyData.company_logo || '');
           setCompanyCertification(companyData.company_certification || '');
           setCompanyDesc(companyData.company_desc || '');
+          setPhone_Number(companyData.phone_number || '');
         } else {
           Alert.alert("Lỗi", "Cấu trúc dữ liệu không như mong đợi");
         }
@@ -83,14 +86,30 @@ export default function EditAccount() {
   };
 
   const handleSave = async () => {
-    const isCompanyNameChanged = companyName !== originalCompanyName;
+   
+    const newErrors = {};
+    if (!companyName.trim()) newErrors.companyName = "Hãy nhập tên công ty";
+    if (!companyAddress.trim()) newErrors.companyAddress = "Hãy nhập địa chỉ công ty";
+    if (!companyWebsite.trim()) newErrors.companyWebsite = "Hãy nhập website công ty";
+    if (!phone_number.trim()) newErrors.phoneNumber = "Hãy nhập số điện thoại";
+    if (!companyScale.trim()) newErrors.companyScale = "Hãy nhập quy mô công ty";
+    if (!taxCode.trim()) newErrors.taxCode = "Hãy nhập mã số thuế";
+    if (!companyDesc.trim()) newErrors.companyDesc = "Hãy nhập mô tả công ty";
     if (companyName !== originalCompanyName && !newCertification) {
       Alert.alert("Thông báo", "Vui lòng cập nhật chứng nhận khi thay đổi tên công ty");
       return;
     }
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
 
+    const isCompanyNameChanged = companyName !== originalCompanyName;
     const companyId = await AsyncStorage.getItem('company_id');
     const userId = await AsyncStorage.getItem('idUser');
+
+
+
 
     const formData = new FormData();
     formData.append('company_name', companyName);
@@ -99,6 +118,7 @@ export default function EditAccount() {
     formData.append('company_scale', companyScale);
     formData.append('taxcode', taxCode);
     formData.append('company_desc', companyDesc);
+    formData.append('phone_number', phone_number);
     formData.append('active', isCompanyNameChanged ? 'false' : 'true');
     if (newLogo) {
       const response = await fetch(newLogo);
@@ -192,6 +212,7 @@ export default function EditAccount() {
               }
             }}
           />
+           {errors.companyName && <Text style={styles.errorText}>{errors.companyName}</Text>}
         </View>
         <View style={styles.detailContainer}>
           <Icon name="map-marker" size={20} color="#28a745" style={styles.icon} />
@@ -201,6 +222,7 @@ export default function EditAccount() {
             value={companyAddress}
             onChangeText={setCompanyAddress}
           />
+           {errors.companyAddress && <Text style={styles.errorText}>{errors.companyAddress}</Text>}
         </View>
         <View style={styles.detailContainer}>
           <Icon name="globe" size={20} color="#dc3545" style={styles.icon} />
@@ -210,6 +232,17 @@ export default function EditAccount() {
             value={companyWebsite}
             onChangeText={setCompanyWebsite}
           />
+            {errors.companyWebsite && <Text style={styles.errorText}>{errors.companyWebsite}</Text>}
+        </View>
+        <View style={styles.detailContainer}>
+          <Icon name="phone" size={20} color="#dc3587" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Số điện thoại"
+            value={phone_number}
+            onChangeText={setPhone_Number}
+          />
+            {errors.phoneNumber && <Text style={styles.errorText}>{errors.phoneNumber}</Text>}
         </View>
         <View style={styles.detailContainer}>
           <Icon name="bars" size={20} color="#ffc107" style={styles.icon} />
@@ -219,6 +252,7 @@ export default function EditAccount() {
             value={companyScale}
             onChangeText={setCompanyScale}
           />
+           {errors.companyScale && <Text style={styles.errorText}>{errors.companyScale}</Text>}
         </View>
         <View style={styles.detailContainer}>
           <Icon name="id-card" size={20} color="#17a2b8" style={styles.icon} />
@@ -228,6 +262,7 @@ export default function EditAccount() {
             value={taxCode}
             onChangeText={setTaxCode}
           />
+            {errors.taxCode && <Text style={styles.errorText}>{errors.taxCode}</Text>}
         </View>
         <View style={styles.detailContainer}>
           <Icon name="file-text" size={20} color="#6c757d" style={styles.icon} />
@@ -239,6 +274,7 @@ export default function EditAccount() {
             numberOfLines={4}
             onChangeText={setCompanyDesc}
           />
+          {errors.companyDesc && <Text style={styles.errorText}>{errors.companyDesc}</Text>}
         </View>
         <View style={styles.certificationContainer}>
           {newCertification ? (
@@ -304,6 +340,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     flexDirection: 'row',
     alignItems: 'center',
+    
   },
   icon: {
     marginRight: 10,
@@ -402,9 +439,13 @@ const styles = StyleSheet.create({
     borderTopColor: '#ddd',
     borderTopWidth: 1,
   },
-
+  errorText: {
+    color: '#dc3545',
+    marginTop: 5,
+    fontSize: 12,
+    marginBottom: 10
+  },
 });
-
 
 
 

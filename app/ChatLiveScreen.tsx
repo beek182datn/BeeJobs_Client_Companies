@@ -121,7 +121,7 @@ const ChatLiveScreen = () => {
           keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
         >
           <View style={styles.headerContainer}>
-            <TouchableOpacity style={styles.backButton} onPress={() => router.replace("/ViewProfileWorker")}>
+            <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
             <Ionicons name="arrow-back" size={25} color="#660099" />
             </TouchableOpacity>
             <View style={styles.headerContent}>

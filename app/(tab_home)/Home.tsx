@@ -188,7 +188,7 @@ const Home = () => {
             </LinearGradient>
          </TouchableOpacity>
 
-          <TouchableOpacity style={styles.touchable} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.touchable} onPress={()=> router.push('/JobsAppliedScreen')} activeOpacity={0.7}>
             <LinearGradient
               colors={['#f0f0f0', '#87cefa']}
               style={styles.button}

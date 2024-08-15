@@ -7,14 +7,15 @@ import {
   TouchableOpacity,
   Platform,
   Dimensions,
-  BackHandler
+  BackHandler,
+  Alert
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Icon from 'react-native-vector-icons/Ionicons'; 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from "expo-router";
-
+import axios from 'axios';
 const { width } = Dimensions.get('window');
 
 export default function Details() {
@@ -56,11 +57,12 @@ export default function Details() {
   };
 
   const handleSave = async () => {
+
     const newErrors = {};
     if (!title.trim()) newErrors.title = "Hãy nhập tiêu đề";
     if (!desc.trim()) newErrors.desc = "Hãy nhập mô tả";
     if (!form.trim()) newErrors.form = "Hãy nhập hình thức";
-    if (!majors.trim()) newErrors.form = "Hãy nhập chuyên ngành";
+    if (!majors.trim()) newErrors.majors = "Hãy nhập chuyên ngành";
     if (!number_of_recruitments.trim()) newErrors.number_of_recruitments = "Hãy nhập số lượng";
     if (!requirements.trim()) newErrors.requirements = "Hãy nhập yêu cầu";
     if (!experience.trim()) newErrors.experience = "Hãy nhập yêu cầu";
@@ -88,27 +90,65 @@ export default function Details() {
       deadline,
       working_time
     }
-
-    try {
-      const companyId = await AsyncStorage.getItem('company_id');
-      const response = await fetch(`http://beejobs.io.vn:14307/api/jobs/create/${companyId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    Alert.alert(
+      'Xác nhận',
+      'Đăng tin tuyển dụng mới với 19$?',
+      [
+        {
+          text: 'Hủy',
+          style: 'cancel',
         },
-        body: JSON.stringify(addJobs),
-      });
+        {
+          text: 'Xác nhận',
+          onPress: async () => {
+            console.log("Up new Job for $19");
+            const companyId = await AsyncStorage.getItem('company_id');
+            if(companyId){
+              const response = await axios.get(`http://beejobs.io.vn:14307/api/companies/getCompanyById/${companyId}`);
+              if(response.data.data.currency < 19){
+                Alert.alert('Lỗi', 'Số dư của bạn không đủ!');
+                router.push("ToUpAccountScreen");
+              }else{
+                const amount = "-19";
+              await axios.post(`http://beejobs.io.vn:14307/api/companies/top_up_account/${companyId}`, {
+                amount: Number(amount),
+              });
+              await axios.post('http://beejobs.io.vn:14307/api/payment/confirmPaymentSubtract', {
+                companyId: companyId,
+                amount: Number(amount),
+              });
+              ///
+              Alert.alert('Thành công', 'Nâng cấp thành công!');
+              try {
+                const companyId = await AsyncStorage.getItem('company_id');
+                const response = await fetch(`http://beejobs.io.vn:14307/api/jobs/create/${companyId}`, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(addJobs),
+                });
+          
+                if(response.ok) {
+                  const result = await response.json();
+                  router.push("Jobs");
+                  console.log("Thêm jobs thành công", result);
+                } else {
+                  console.error("Lỗi jobs", response.status, response.statusText);
+                }
+              } catch(err) {
+                console.error("Lỗi thêm jobs", err);
+              }
+              }
+              
+            }
+          },
+        },
+      ],
+      { cancelable: false }
+    );
 
-      if(response.ok) {
-        const result = await response.json();
-        router.push("Jobs");
-        console.log("Thêm jobs thành công", result);
-      } else {
-        console.error("Lỗi jobs", response.status, response.statusText);
-      }
-    } catch(err) {
-      console.error("Lỗi thêm jobs", err);
-    }
+    
   }
 
   const handleCancel = () => {

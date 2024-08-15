@@ -30,7 +30,10 @@ export default function Details() {
       if (value !== null) {
         const isPremium = JSON.parse(value); // Parse giá trị JSON
         if (isPremium) {
-          router.push("ListSuitableCandidate"); 
+          router.push({
+            pathname: 'ListSuitableCandidate',
+            params: { job_id: item._id },
+          });
         } else {
           Alert.alert(
             'Thông báo',
@@ -92,7 +95,7 @@ export default function Details() {
           <DetailRow
             icon="briefcase"
             title="Chuyên ngành:"
-            value={item.majors}
+           value={item.majors}
             color="#32CD32" 
           />
           <View style={styles.divider} />
@@ -165,7 +168,8 @@ export default function Details() {
           <DetailRow
             icon="clock-o"
             title="Ngày tạo:"
-            value={item.created_at}
+            value={`${new Date(item.created_at).toLocaleDateString()} ${new Date(item.created_at).toLocaleTimeString()}`}
+            
             color="#B22222" 
           />
         </View>
@@ -197,7 +201,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: width * 0.03, 
+    paddingVertical: width * 0.015, 
   },
   rowIcon: {
     marginRight: width * 0.03, 
@@ -205,14 +209,17 @@ const styles = StyleSheet.create({
   rowContent: {
     flex: 1,
   },
+
   rowTitle: {
-    fontSize: width * 0.05, 
-    fontWeight: '600',
-    color: '#333',
+    fontSize: width * 0.04,
+    color: '#999',
+    fontWeight: 'bold',
+    
   },
   rowValue: {
-    fontSize: width * 0.04, 
-    color: '#555',
+    fontSize: width * 0.035, 
+    color: '#333', 
+    fontWeight: 'bold', 
     marginTop: width * 0.01, 
   },
   divider: {
