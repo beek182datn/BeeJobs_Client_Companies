@@ -47,6 +47,11 @@ const Messenger = () => {
     }, [])
   );
 
+  const clearSearch = () => {
+    setSearchQuery("");
+    setFilteredChatRooms(chatRooms);
+  };
+
   const handleSearch = (query) => {
     setSearchQuery(query);
     if (query) {
@@ -97,6 +102,11 @@ const Messenger = () => {
             value={searchQuery}
             onChangeText={handleSearch}
           />
+          {searchQuery.length > 0 && (
+          <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
+            <Ionicons name="close" size={20} color="#999" />
+          </TouchableOpacity>
+        )}
         </View>
 
         <FlatList
@@ -192,6 +202,11 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     fontSize: 15,
     color: '#333',
+  },
+  clearButton: {
+    alignSelf: "center",
+    position: 'absolute',
+    right: 15,
   },
   error: {
     color: 'red',
