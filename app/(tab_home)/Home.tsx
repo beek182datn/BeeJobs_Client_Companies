@@ -123,7 +123,7 @@ const Home = () => {
         )}
         <View style={styles.statusContainer}>
          <Text style={styles.companyName}>{companyInfo.company_name}</Text>
-         <TouchableOpacity onPress={() => router.push('/Notifications')} style={styles.notificationIcon}>
+         <TouchableOpacity onPress={() => router.push('/NotifiScreen')} style={styles.notificationIcon}>
             <Ionicons name="notifications" size={24} color="#1e90ff" />
           </TouchableOpacity>
         </View>
@@ -203,7 +203,7 @@ const Home = () => {
         </View>
 
         <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.touchable} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.touchable} activeOpacity={0.7} onPress={() => router.push('ListSuitableApplyJob') }>
             <LinearGradient
               colors={['#00ff7f' ,'#f0f0f0' ]}
               style={styles.button}
