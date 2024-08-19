@@ -37,10 +37,17 @@ const JobDetailItem = ({ item }) => {
       });
     };
   const handleWorker = (_id)=> {
+    setModalVisible(false);
         router.push({
             pathname: 'ViewProfileWorker',
             params: {profileID:_id}
         })
+  }
+
+
+  const handleModalOpen = () =>{
+    console.log("Modal open button click");
+    setModalVisible(true);
   }
     return (
       <View style={styles.itemContainer}>
@@ -54,7 +61,7 @@ const JobDetailItem = ({ item }) => {
             </View>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <TouchableOpacity onPress={handleModalOpen}>
           <Text style={styles.subTitle}>Xem người ứng tuyển</Text>
         </TouchableOpacity>
   
@@ -65,6 +72,7 @@ const JobDetailItem = ({ item }) => {
           onRequestClose={() => {
             setModalVisible(!modalVisible);
           }}
+          onDismiss={()=> setModalVisible(false)}
         >
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
@@ -72,7 +80,8 @@ const JobDetailItem = ({ item }) => {
               <FlatList
                 data={item.applicants}
                 renderItem={({ item }) => (
-                <TouchableOpacity onPress={()=>handleWorker(item._id)}>                  
+                <TouchableOpacity onPress={()=>handleWorker(item._id) }> 
+
                   <ApplicantItem
                     fullname={item.fullname}
                     phone_number={item.phone_number}

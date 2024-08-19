@@ -50,7 +50,7 @@ const LoginScreen = () => {
             username: username,
             passwd: passwd,
         });
-        console.log("token", response.data.user_info.Active);
+        console.log("token", response.data.user_info);
         if (response.data.status !== 200) {
             setMessage(response.data.msg);
             setColor("red");
@@ -59,20 +59,20 @@ const LoginScreen = () => {
             setLoading(false);
             return;
         }
-        // if(!response.data.user_info.Veryfy){
-        //   Alert.alert(
-        //     'Lỗi',
-        //     'Tài khoản của bạn chưa được xác thực!',
-        //   );
-        //   return;
-        // }
-        // if(response.data.user_info.Active === "INACTIVE"){
-        //   Alert.alert(
-        //     'Lỗi',
-        //     'Tài khoản của bạn đã bị khóa!',
-        //   );
-        //   return;
-        // }
+        if(response.data.user_info.Active === "INACTIVE") {
+          Alert.alert(
+            'Lỗi',
+            'Tài khoản của bạn chưa được xác thực!',
+          );
+          return;
+        }
+        if(response.data.user_info.Active === "BLOCK"){
+          Alert.alert(
+            'Lỗi',
+            'Tài khoản của bạn đã bị khóa!',
+          );
+          return;
+        }
 
         const userId = response.data.user_info.id_user;
         await AsyncStorage.setItem('idUser',userId );

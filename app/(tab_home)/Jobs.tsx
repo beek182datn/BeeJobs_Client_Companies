@@ -299,16 +299,15 @@ export default function Jobs() {
       <FlatList
         data={filteredJobs}
         keyExtractor={(item) => item._id.toString()}
+        contentContainerStyle={styles.list}
         renderItem={renderItem}
       />
-      <View style={styles.addButtonContainer}>
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={handlecheckactive}
-        >
-          <Text style={styles.addButtonText}>Thêm công việc</Text>
-        </TouchableOpacity>
-      </View>
+         <TouchableOpacity
+        style={styles.buttonContainer}
+        onPress={handlecheckactive}
+      >
+        <Text style={styles.textButton}>Thêm công việc mới</Text>
+      </TouchableOpacity>
       {selectedJob && (
         <Modal
           animationType="slide"
@@ -318,159 +317,297 @@ export default function Jobs() {
             setModalVisible(!modalVisible);
           }}
         >
-          <ScrollView
-            style={styles.modalContainer}
-            ref={scrollViewRef}
-            onContentSizeChange={scrollToEnd}
-          >
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Chỉnh sửa thông tin công việc</Text>
-              {Object.keys(errors).length > 0 && (
-                <View style={styles.errorContainer}>
-                  {Object.values(errors).map((error, index) => (
-                    <Text key={index} style={styles.errorText}>
-                      {error}
-                    </Text>
-                  ))}
-                </View>
-              )}
-              <TextInput
-                style={styles.input}
-                placeholder="Tiêu đề"
-                value={selectedJob.title}
-                onChangeText={(text) =>
-                  setSelectedJob({ ...selectedJob, title: text })
-                }
-                onFocus={scrollToEnd}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Mô tả"
-                value={selectedJob.desc}
-                onChangeText={(text) =>
-                  setSelectedJob({ ...selectedJob, desc: text })
-                }
-                onFocus={scrollToEnd}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Hình thức"
-                value={selectedJob.form}
-                onChangeText={(text) =>
-                  setSelectedJob({ ...selectedJob, form: text })
-                }
-                onFocus={scrollToEnd}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Chuyên ngành"
-                value={selectedJob.majors}
-                onChangeText={(text) =>
-                  setSelectedJob({ ...selectedJob, majors: text })
-                }
-                onFocus={scrollToEnd}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Số lượng"
-                value={selectedJob.number_of_recruitments}
-                onChangeText={(text) =>
-                  setSelectedJob({
-                    ...selectedJob,
-                    number_of_recruitments: text,
-                  })
-                }
-                onFocus={scrollToEnd}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Yêu cầu"
-                value={selectedJob.requirements}
-                onChangeText={(text) =>
-                  setSelectedJob({ ...selectedJob, requirements: text })
-                }
-                onFocus={scrollToEnd}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Lương"
-                value={selectedJob.salary}
-                onChangeText={(text) =>
-                  setSelectedJob({ ...selectedJob, salary: text })
-                }
-                onFocus={scrollToEnd}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Lợi ích"
-                value={selectedJob.benefits}
-                onChangeText={(text) =>
-                  setSelectedJob({ ...selectedJob, benefits: text })
-                }
-                onFocus={scrollToEnd}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Vị trí"
-                value={selectedJob.location}
-                onChangeText={(text) =>
-                  setSelectedJob({ ...selectedJob, location: text })
-                }
-                onFocus={scrollToEnd}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Hạn hồ sơ"
-                value={selectedJob.deadline}
-                onFocus={showDatePicker}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Kinh nghiệm"
-                value={selectedJob.experience}
-                onChangeText={(text) =>
-                  setSelectedJob({ ...selectedJob, experience: text })
-                }
-                onFocus={scrollToEnd}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Thời gian làm việc"
-                value={selectedJob.working_time}
-                onChangeText={(text) =>
-                  setSelectedJob({ ...selectedJob, working_time: text })
-                }
-                onFocus={scrollToEnd}
-              />
-              {isDatePickerVisible && (
-                <DateTimePicker
-                  value={date}
-                  mode="date"
-                  display="default"
-                  onChange={handleConfirm}
-                  minimumDate={new Date()}
+   
+       <TouchableOpacity
+            style={styles.centeredView}
+            onPress={() => setModalVisible(false)}>
+
+             <TouchableOpacity
+              style={styles.modalView}
+              activeOpacity={1}
+              onPress={() => {}}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Icon
+                  name="pencil"
+                  size={20}
+                  color="black"
+                  style={{ marginRight: 10 }}
                 />
-              )}
-              <TouchableOpacity
-                style={styles.saveButton}
-                onPress={handleEdit}
+                <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                  Sửa Thông Tin
+                </Text>
+              </View>
+              <ScrollView
+                contentContainerStyle={styles.scrollViewContent}
+                ref={scrollViewRef}
+                onContentSizeChange={scrollToEnd}
               >
-                <Text style={styles.saveButtonText}>Lưu</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.deleteButton}
-                onPress={confirmDelete}
-              >
-                <Text style={styles.deleteButtonText}>Xóa</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setModalVisible(false)}
-              >
-                <Text style={styles.closeButtonText}>Đóng</Text>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
+                <View style={styles.inputRow}>
+                  <Text style={styles.label}>Tiêu đề</Text>
+                  <TextInput
+                    style={[
+                      styles.modalTextInput,
+                      errors.title && styles.inputError,
+                    ]}
+                    value={selectedJob.title}
+                    onChangeText={(text) =>
+                      setSelectedJob({ ...selectedJob, title: text })
+                    }
+                  />
+                  {errors.title && (
+                    <Text style={styles.errorText}>{errors.title}</Text>
+                  )}
+                </View>
+                <View style={styles.inputRow}>
+                  <Text style={styles.label}>Mô tả</Text>
+                  <TextInput
+                    style={[
+                      styles.modalTextInput,
+                      errors.desc && styles.inputError,
+                    ]}
+                    value={selectedJob.desc}
+                    multiline
+                    numberOfLines={2}
+                    onChangeText={(text) =>
+                      setSelectedJob({ ...selectedJob, desc: text })
+                    }
+                  />
+                  {errors.desc && (
+                    <Text style={styles.errorText}>{errors.desc}</Text>
+                  )}
+                </View>
+
+                <View style={styles.inputRow}>
+                  <Text style={styles.label}>Chuyên ngành</Text>
+                  <TextInput
+                    style={[
+                      styles.modalTextInput,
+                      errors.majors && styles.inputError,
+                    ]}
+                    value={selectedJob.majors}
+                    multiline
+                    numberOfLines={2}
+                    onChangeText={(text) =>
+                      setSelectedJob({ ...selectedJob, majors: text })
+                    }
+                  />
+                  {errors.majors && (
+                    <Text style={styles.errorText}>{errors.majors}</Text>
+                  )}
+                </View>
+
+                <View style={styles.inputRow}>
+                  <Text style={styles.label}>Hình thức</Text>
+                  <TextInput
+                    style={[
+                      styles.modalTextInput,
+                      errors.form && styles.inputError,
+                      styles.multilineInput,
+                    ]}
+                    value={selectedJob.form}
+                    multiline
+                    onChangeText={(text) =>
+                      setSelectedJob({ ...selectedJob, form: text })
+                    }
+                  />
+                  {errors.form && (
+                    <Text style={styles.errorText}>{errors.form}</Text>
+                  )}
+                </View>
+                <View style={styles.inputRow}>
+                  <Text style={styles.label}>Số lượng</Text>
+                  <TextInput
+                    style={[
+                      styles.modalTextInput,
+                      errors.number_of_recruitments && styles.inputError,
+                    ]}
+                    value={selectedJob.number_of_recruitments}
+                    onChangeText={(text) =>
+                      setSelectedJob({
+                        ...selectedJob,
+                        number_of_recruitments: text,
+                      })
+                    }
+                    keyboardType="numeric"
+                  />
+                  {errors.number_of_recruitments && (
+                    <Text style={styles.errorText}>
+                      {errors.number_of_recruitments} </Text>
+                       )}
+                         </View>
+                <View style={styles.inputRow}>
+                  <Text style={styles.label}>Yêu cầu</Text>
+                  <TextInput
+                    style={[
+                      styles.modalTextInput,
+                      errors.requirements && styles.inputError,
+                      styles.multilineInput,
+                    ]}
+                    value={selectedJob.requirements}
+                    multiline
+                    numberOfLines={2}
+                    onChangeText={(text) =>
+                      setSelectedJob({ ...selectedJob, requirements: text })
+                    }
+                  />
+                  {errors.requirements && (
+                    <Text style={styles.errorText}>{errors.requirements}</Text>
+                  )}
+                </View>
+
+                <View style={styles.inputRow}>
+                  <Text style={styles.label}>Kinh nghiệm</Text>
+                  <TextInput
+                    style={[
+                      styles.modalTextInput,
+                      errors.experience && styles.inputError,
+                      styles.multilineInput,
+                    ]}
+                    value={selectedJob.experience}
+                    multiline
+                    numberOfLines={2}
+                    onChangeText={(text) =>
+                      setSelectedJob({ ...selectedJob, experience: text })
+                    }
+                  />
+                  {errors.experience && (
+                    <Text style={styles.errorText}>{errors.experience}</Text>
+                  )}
+                </View>
+
+                <View style={styles.inputRow}>
+                  <Text style={styles.label}>Lương</Text>
+                  <TextInput
+                    style={[
+                      styles.modalTextInput,
+                      errors.salary && styles.inputError,
+                    ]}
+                    value={selectedJob.salary}
+                    onChangeText={(text) =>
+                      setSelectedJob({ ...selectedJob, salary: text })
+                    }
+                    keyboardType="numeric"
+                  />
+                  {errors.salary && (
+                    <Text style={styles.errorText}>{errors.salary}</Text>
+                  )}
+                </View>
+                <View style={styles.inputRow}>
+                  <Text style={styles.label}>Lợi ích</Text>
+                  <TextInput
+                    style={[
+                      styles.modalTextInput,
+                      errors.benefits && styles.inputError,
+                      styles.multilineInput,
+                    ]}
+                    value={selectedJob.benefits}
+                    multiline
+                    numberOfLines={2}
+                    onChangeText={(text) =>
+                      setSelectedJob({ ...selectedJob, benefits: text })
+                    }
+                  />
+                  {errors.benefits && (
+                    <Text style={styles.errorText}>{errors.benefits}</Text>
+                  )}
+                </View>
+
+                <View style={styles.inputRow}>
+                  <Text style={styles.label}>Thời gian làm việc</Text>
+                  <TextInput
+                    style={[
+                      styles.modalTextInput,
+                      errors.working_time && styles.inputError,
+                      styles.multilineInput,
+                    ]}
+                    value={selectedJob.working_time}
+                    multiline
+                    numberOfLines={2}
+                    onChangeText={(text) =>
+                      setSelectedJob({ ...selectedJob, working_time: text })
+                    }
+                  />
+                  {errors.working_time && (
+                    <Text style={styles.errorText}>{errors.working_time}</Text>
+                  )}
+                </View>
+
+                <View style={styles.inputRow}>
+                  <Text style={styles.label}>Vị trí</Text>
+                  <TextInput
+                    style={[
+                      styles.modalTextInput,
+                      errors.location && styles.inputError,
+                    ]}
+                    value={selectedJob.location}
+                    multiline
+                    onChangeText={(text) =>
+                      setSelectedJob({ ...selectedJob, location: text })
+                    }
+                  />
+                  {errors.location && (
+                    <Text style={styles.errorText}>{errors.location}</Text>
+                  )}
+                </View>
+                <View style={styles.inputRow}>
+                  <Text style={styles.label}>Hạn nộp hồ sơ</Text>
+                  <TouchableOpacity
+                    style={[styles.modalTextInput, styles.datePickerButton]}
+                    onPress={showDatePicker}
+                  >
+                    <Text>
+                      {selectedJob.deadline
+                        ? selectedJob.deadline
+                        : "Chọn ngày"}
+                    </Text>
+                  </TouchableOpacity>
+                  {isDatePickerVisible && (
+                    <DateTimePicker
+                      value={date}
+                      mode="date"
+                      display="default"
+                      onChange={handleConfirm}
+                    />
+                  )}
+                  {errors.deadline && (
+                    <Text style={styles.errorText}>{errors.deadline}</Text>
+                  )}
+                </View>
+              </ScrollView>
+              <View style={styles.modalButtonsContainer}>
+                {/* <TouchableOpacity
+                  style={[styles.modalButton, styles.deleteButton]}
+                  onPress={confirmDelete}
+                >
+                  <Text style={styles.modalButtonText}>Xóa</Text>
+                </TouchableOpacity> */}
+
+                <TouchableOpacity
+                  style={styles.cancelButton}
+                  onPress={() => setModalVisible(false)}
+                >
+                  <Text style={styles.cancelButtonText}>Hủy</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.saveButton}
+                  onPress={handleEdit}
+                >
+                  <Text style={styles.saveButtonText}>Sửa</Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          </TouchableOpacity>
+
+           
+
         </Modal>
       )}
     </SafeAreaView>
@@ -480,162 +617,238 @@ export default function Jobs() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#F5FFFA",
+    paddingHorizontal: 10,
+    
   },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  searchContainer: {
-    marginVertical: 16,
-    flexDirection: "row",
-    margin: 10
-  },
-  itemContainer: {
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    marginBottom: 16,
-    padding: 16,
-    elevation: 1,
-  },
-  itemContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  itemDetails: {
-    marginTop: 8,
-  },
-  detailRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 4,
-  },
-  detailText: {
-    fontSize: 14,
-    color: "#666",
-  },
-  labelText: {
-    fontWeight: "bold",
-  },
-  formText: {
-    fontStyle: "italic",
-  },
-  icon: {
-    marginRight: 8,
-  },
-  viewDetailsButton: {
-    alignSelf: "flex-end",
-    backgroundColor: "#4CAF50",
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 4,
-    marginTop: 8,
-  },
-  viewDetailsText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-  addButtonContainer: {
-    paddingVertical: 12,
-    backgroundColor: "#4CAF50",
-    borderRadius: 8,
-    marginTop: 16,
-  },
-  addButton: {
-    alignItems: "center",
-  },
-  addButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    backgroundColor: "#fff",
-    padding: 16,
-    margin: 16,
-    borderRadius: 8,
-    elevation: 5,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 12,
-    color: "#333",
-  },
-  input: {
     backgroundColor: "#f5f5f5",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 6,
-    marginBottom: 12,
-    fontSize: 14,
   },
-  saveButton: {
-    backgroundColor: "#4CAF50",
-    paddingVertical: 10,
-    borderRadius: 8,
-    alignItems: "center",
-    marginBottom: 8,
+
+///
+list: {
+  paddingBottom: 70,
+},
+title: {
+  fontSize: 16,
+  fontWeight: "bold",
+  flex: 1,
+},
+viewDetails: {
+  color: "#1e90ff",
+  marginTop: 10,
+},
+label: {
+  fontSize: 16,
+  fontWeight: "bold",
+  marginBottom: 5,
+},
+
+modalTextInput: {
+  height: 60,
+  borderColor: "#ddd",
+
+  borderWidth: 1,
+  borderRadius: 5,
+  paddingHorizontal: 10,
+  backgroundColor: "#fff",
+  marginBottom: 10,
+},
+datePickerButton: {
+  justifyContent: "center",
+  alignItems: "center",
+  height: 40,
+  borderColor: "#ddd",
+  borderWidth: 1,
+  borderRadius: 5,
+  paddingHorizontal: 10,
+},
+inputError: {
+  borderColor: "red",
+},
+errorText: {
+  color: "red",
+  fontSize: 12,
+  marginTop: 5,
+},
+modalButtonsContainer: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  marginTop: 20,
+},
+modalButton: {
+  flex: 1,
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  borderRadius: 5,
+  justifyContent: "center",
+  alignItems: "center",
+  marginHorizontal: 5,
+},
+deleteButton: {
+  backgroundColor: "#ff4d4d",
+},
+
+modalButtonText: {
+  color: "#fff",
+  fontWeight: "bold",
+},
+centeredView: {
+  flex: 1,
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor: "rgba(0, 0, 0, 0.5)",
+},
+modalView: {
+  width: "90%",
+  maxHeight: "60%",
+  backgroundColor: "white",
+  borderRadius: 10,
+  padding: 20,
+  shadowColor: "#000",
+  shadowOffset: {
+    width: 0,
+    height: 2,
   },
-  saveButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-  deleteButton: {
-    backgroundColor: "#F44336",
-    paddingVertical: 10,
-    borderRadius: 8,
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  deleteButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-  closeButton: {
-    backgroundColor: "#607D8B",
-    paddingVertical: 10,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  closeButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-  errorContainer: {
-    backgroundColor: "#ffcccc",
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  errorText: {
-    color: "#cc0000",
-    fontSize: 14,
-  },  searchInput: {
-    flex: 1,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-  },
-  clearButton: {
-    alignSelf: "center",
-    position: 'absolute',
-    right: 15,
-  },
+  shadowOpacity: 0.25,
+  shadowRadius: 4,
+  elevation: 5,
+},
+scrollViewContent: {
+  paddingVertical: 20,
+},
+inputRow: {
+  marginBottom: 15,
+},
+multilineInput: {
+  height: 80,
+  textAlignVertical: "top",
+},
+itemContainer: {
+  backgroundColor: "#fff",
+  padding: 15,
+  marginVertical: 5,
+  borderRadius: 10,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.1,
+  shadowRadius: 4,
+  elevation: 3,
+  flexDirection: "column",
+},
+itemContent: {
+  flexDirection: "row",
+  alignItems: "center",
+  marginBottom: 10,
+  flexWrap: "wrap",
+},
+itemDetails: {
+  marginBottom: 10,
+},
+detailRow: {
+  flexDirection: "row",
+  alignItems: "center",
+  marginBottom: 5,
+  borderBottomWidth: 1,
+  borderBottomColor: "#EEEEEE",
+  paddingBottom: 5,
+  paddingTop: 5,
+  flexWrap: "wrap",
+},
+icon: {
+  marginRight: 10,
+}, buttonContainer: {
+  backgroundColor: "#28A745",
+  padding: 15,
+  borderRadius: 10,
+  position: "absolute",
+  bottom: 20,
+  right: 20,
+}, textButton: {
+  color: "#fff",
+  fontSize: 16,
+  textAlign: "center",
+},
+viewDetailsButton: {
+  marginTop: 10,
+  alignItems: "flex-end",
+},
+viewDetailsText: {
+  color: "#1e90ff",
+  fontSize: 14,
+},
+cancelButton: {
+  paddingVertical: 12,
+  paddingHorizontal: 20,
+  borderRadius: 8,   alignItems: "center",
+  borderWidth: 1,
+  borderColor: "#ff6400",
+  marginTop: 20,
+  width: "45%",
+  alignSelf: "center",
+  marginRight: 10,
+},
+cancelButtonText: {
+  color: "#ff6400",
+  fontSize: 16,
+  fontWeight: "bold",
+}, saveButton: {
+  backgroundColor: "#ff6400",
+  paddingVertical: 12,
+  paddingHorizontal: 20,
+  borderRadius: 8,
+  alignItems: "center",
+  borderWidth: 1,
+  borderColor: "#ff6400",
+  marginTop: 20,
+  width: "45%",
+  alignSelf: "center",
+},
+saveButtonText: {
+  color: "#fff",
+  fontSize: 16,
+  fontWeight: "bold",
+},
+detailText: {
+  fontSize: 14,
+  color: "#333",
+  marginLeft: 7,
+  fontWeight: "bold",
+},
+labelText: {
+  color: "#999",
+},
+formText: {
+  fontWeight: "bold",
+  color: "#000",
+},
+searchContainer: {
+  marginVertical: 16,
+  flexDirection: "row",
+  margin: 10
+},  searchInput: {
+  flex: 1,
+  padding: 10,
+  borderWidth: 1,
+  borderColor: '#ccc',
+  borderRadius: 5,
+},
+clearButton: {
+  alignSelf: "center",
+  position: 'absolute',
+  right: 15,
+}, addButtonContainer: {
+  paddingVertical: 12,
+  paddingHorizontal: 20,
+  backgroundColor: "#4CAF50",
+  borderRadius: 8,
+  
+}, 
 });
+
+
+
+
