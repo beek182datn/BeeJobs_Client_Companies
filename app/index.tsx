@@ -8,7 +8,7 @@ export default function Index() {
     useFocusEffect(
       React.useCallback(() => {
         const timer = setTimeout(() => {
-          router.push("Home");
+          router.push("LoginScreen");
         }, 3000);
         return () => clearTimeout(timer);
       }, [router])
