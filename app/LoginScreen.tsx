@@ -346,9 +346,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   logo: {
+    marginTop:10,
     alignSelf: "center",
-    width: "80%",
-    height: 250,
+    width: Dimensions.get("window").width/1.6,
+    height: Dimensions.get("window").height/3.5,
   },
   spinner: {
     marginVertical: 10,

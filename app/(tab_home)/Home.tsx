@@ -147,8 +147,8 @@ const Home = () => {
                 }
               ]
             }}
-            width={Dimensions.get("screen").width/1.07}
-            height={240}
+            width={Dimensions.get("window").width/1.07}
+            height={Dimensions.get("window").height/3}
             chartConfig={{
               backgroundColor: "#fff",
               backgroundGradientFrom: "#ff9800",
@@ -163,7 +163,7 @@ const Home = () => {
               barPercentage: 1,
               propsForLabels: {
                 fontWeight: 'bold',
-                fontSize: 12,
+                fontSize: Dimensions.get("window").width*0.025,
               },
             }}
             fromZero={true}
@@ -236,9 +236,8 @@ const Home = () => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop:5,
     flex: 1,
-    padding: 15,
+    paddingHorizontal: 15,
     backgroundColor: '#fff',
   },
   scrollView: {
@@ -307,18 +306,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   welcomeText: {
-    fontSize: 18,
+    fontSize: Dimensions.get("window").width*0.04,
     alignSelf:"flex-end",
     color: '#fff',
     fontWeight: 'bold',
     margin:5,
+    width: Dimensions.get("window").width/1.6
   },
   headerBackground: {
     width: '100%',
-    height: 170,
+    height: Dimensions.get("window").height/4.3,
     flexDirection: 'row',
     marginBottom: 10,
     justifyContent: 'space-between',
+    marginTop:20,
   },
   statContainer: {
     alignItems: 'center',

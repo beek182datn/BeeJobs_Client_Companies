@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, SafeAreaView, Image,Linking } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, SafeAreaView, Image,Linking, Dimensions } from 'react-native';
 import axios from 'axios';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -17,11 +17,11 @@ const ListSuitableCandidate = () => {
   const handleCall = (phone_number) => {
       const call = `tel:${phone_number.replace(/\s+/g, '')}`;
       Linking.openURL(call).catch(console.error);
+      
   };
 
   const handleChatLive = async (user_id, worker_name) => {
     const companyId = await AsyncStorage.getItem('company_id');
-      
       
     try {
       // Gửi yêu cầu tạo ChatRoom mới đến API
@@ -176,12 +176,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   major: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#555',
     marginTop: 4,
   },
   experience: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#555',
     marginTop: 4,
   },
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#5BBD2B',
     borderRadius: 8,
-    width:"30%",
+    width: Dimensions.get("screen").width/3.5,
     flexDirection:"row",
   },
   chatButton: {
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#007BFF',
     borderRadius: 8,
-    width:"30%",
+    width: Dimensions.get("screen").width/3.5,
     flexDirection:"row",
   },
   chatButtonText: {
