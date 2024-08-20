@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     fontWeight:"bold",
   },
   headerContainer: {
-    paddingTop:30,
+    paddingTop:40,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#0099FF',
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
   },
   title1: {
     marginLeft:20,
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#333',
   },

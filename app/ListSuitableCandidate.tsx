@@ -83,7 +83,7 @@ const ListSuitableCandidate = () => {
                style={styles.chatButton1}
                 onPress={() => handleCall(item.phone)}
               >
-                <Ionicons name="call" size={20} color="white" />
+                <Ionicons name="call" size={18} color="white" />
                 <Text style={styles.chatButtonText}>Gọi ngay</Text>
               </TouchableOpacity>
 
@@ -91,7 +91,7 @@ const ListSuitableCandidate = () => {
                style={styles.chatButton}
                 onPress={() => handleChatLive(item.user_id, item.worker_name)}
               >
-                <Ionicons name="chatbubble-ellipses" size={20} color="white" />
+                <Ionicons name="chatbubble-ellipses" size={18} color="white" />
                 <Text style={styles.chatButtonText}>Chat ngay</Text>
               </TouchableOpacity>
 
@@ -202,6 +202,7 @@ const styles = StyleSheet.create({
     flexDirection:"row",
   },
   chatButtonText: {
+    
     marginLeft:5,
     color: '#fff',
     textAlign: 'center',
