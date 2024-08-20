@@ -339,7 +339,9 @@ export default function Details() {
               display="default" 
               onChange={onChange}
             />
+            
           )}
+          {errors.working_time && <Text style={styles.errorText}>{errors.working_time}</Text>}
         </View>
 
         
