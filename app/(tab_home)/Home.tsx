@@ -61,7 +61,7 @@ const Home = () => {
         setCountJobAppliedDone(countjobappliedDone.data.data);
 
         const countWorkerApplied = await axios.get(`http://beejobs.io.vn:14307/api/applyJobs/getWorkerAppliedByCompanyId/${companyId}`);
-        setWokerApplied(countWorkerApplied.data.data);
+        setWokerApplied(countWorkerApplied.data.amount);
       }
     } catch (error) {
       console.error("Lỗi khi tải dữ liệu:", error);
@@ -216,7 +216,7 @@ const Home = () => {
             </LinearGradient>
          </TouchableOpacity>
 
-          <TouchableOpacity style={styles.touchable} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.touchable} activeOpacity={0.7} onPress={() => router.push('AmountWorkerApplyForCompany') }>
             <LinearGradient
               colors={['#00ff7f' , '#f0f0f0' ]}
               style={styles.button}

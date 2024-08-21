@@ -34,6 +34,7 @@ export default function RootLayout() {
       <Stack.Screen name="ListSuitableCandidate" options={{headerShown: false}}/>
       <Stack.Screen name="ListSuitableApplyJob" options={{headerShown: false}}/>
       <Stack.Screen name="NotifiScreen" options={{headerTitle: "notifi"}}/>
+      <Stack.Screen name="AmountWorkerApplyForCompany" options={{headerTitle: "Số ứng viên đã ứng tuyển"}}/>
       <Stack.Screen name="ChangePassword" options={{ headerTitle: 'Đổi mật khẩu', headerTitleStyle: {
             fontSize: 19,
             fontWeight: "bold",}, 
