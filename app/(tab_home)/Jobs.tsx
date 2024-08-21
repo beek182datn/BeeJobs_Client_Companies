@@ -10,8 +10,10 @@ import {
   ScrollView,
   Platform,
   Alert,
+  RefreshControl
 } from "react-native";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
 import { useRouter } from "expo-router";
@@ -30,23 +32,37 @@ export default function Jobs() {
   const [errors, setErrors] = useState({});
   const router = useRouter();
   const scrollViewRef = useRef();
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const companyId = await AsyncStorage.getItem("company_id");
-        const response = await axios.get(
-          "http://beejobs.io.vn:14307/api/jobs/getJobsByIdCompany/" + companyId
-        );
-        setJobs(response.data.data);
-      } catch (err) {
-        console.error("Lỗi khi lấy dữ liệu Jobs", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchJobs = async () => {
+    try {
+      const companyId = await AsyncStorage.getItem("company_id");
+      const response = await axios.get(
+        "http://beejobs.io.vn:14307/api/jobs/getJobsByIdCompany/" + companyId
+      );
+      setJobs(response.data.data);
+    } catch (err) {
+      console.error("Lỗi khi lấy dữ liệu Jobs", err);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchJobs();
+    }, [])
+  );
+useEffect(()=>{
+  fetchJobs();
+})
+
+  const onRefresh = () =>{
+    setRefreshing(true);
     fetchJobs();
-  }, []);
+  }  
 
   const handlecheckactive = async () => {
     const companyId = await AsyncStorage.getItem("company_id");
@@ -301,6 +317,7 @@ export default function Jobs() {
         keyExtractor={(item) => item._id.toString()}
         contentContainerStyle={styles.list}
         renderItem={renderItem}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
       />
          <TouchableOpacity
         style={styles.buttonContainer}

@@ -53,7 +53,7 @@ export default function Profile() {
     } catch (error) {
       console.error("Error fetching company data:", error);
       setError(error.message);
-      Alert.alert("Error", "Failed to load company data.");
+      Alert.alert("Lỗi", "Không tải được dữ liệu công ty.");
     } finally {
       setLoading(false);
     }
@@ -77,7 +77,7 @@ export default function Profile() {
             router.replace("LoginScreen");
           } catch (error) {
             console.error("Error clearing AsyncStorage:", error);
-            Alert.alert("Error", "Failed to log out.");
+            Alert.alert("Lỗi", "Không thể đăng xuất.");
           }
         },
       },
@@ -117,12 +117,12 @@ export default function Profile() {
           </Text>
           {/* <Text style={styles.userId}>{"Mã doanh nghiệp: "+idUser || "Mã công ty"}</Text> */}
           <Text style={styles.userId}>
-            {"Mã doanh nghiệp: "}
-            <Text style={styles.userIdBold}>{idUser || "Mã công ty"}</Text>
+            {"Mã số thuế: "}
+            <Text style={styles.userIdBold}>{companyData?.taxcode || "Mã số thuế"}</Text>
           </Text>
         </View>
       </View>
-
+      
       <View style={styles.paycontainer}>
         <View style={styles.leftContainer}>
           <Ionicons name="wallet" size={30} color="#1e90ff" />
