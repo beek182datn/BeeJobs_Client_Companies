@@ -10,7 +10,7 @@ import {
   ScrollView,
   Platform,
   Alert,
-  RefreshControl
+  RefreshControl,
 } from "react-native";
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
@@ -49,20 +49,19 @@ export default function Jobs() {
     }
   };
 
-
   useFocusEffect(
     useCallback(() => {
       fetchJobs();
     }, [])
   );
-useEffect(()=>{
-  fetchJobs();
-})
+  useEffect(() => {
+    fetchJobs();
+  }, []);
 
-  const onRefresh = () =>{
+  const onRefresh = () => {
     setRefreshing(true);
     fetchJobs();
-  }  
+  };
 
   const handlecheckactive = async () => {
     const companyId = await AsyncStorage.getItem("company_id");
@@ -278,7 +277,6 @@ useEffect(()=>{
 
   const filteredJobs = search ? searchJobs(search) : jobs;
 
-
   const clearSearch = () => {
     setSearch("");
   };
@@ -306,7 +304,7 @@ useEffect(()=>{
           onChangeText={setSearch}
           autoCapitalize="none"
         />
-         {search.length > 0 && (
+        {search.length > 0 && (
           <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
             <Icon name="times-circle" size={20} color="#999" />
           </TouchableOpacity>
@@ -317,9 +315,11 @@ useEffect(()=>{
         keyExtractor={(item) => item._id.toString()}
         contentContainerStyle={styles.list}
         renderItem={renderItem}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
-         <TouchableOpacity
+      <TouchableOpacity
         style={styles.buttonContainer}
         onPress={handlecheckactive}
       >
@@ -334,12 +334,11 @@ useEffect(()=>{
             setModalVisible(!modalVisible);
           }}
         >
-   
-       <TouchableOpacity
+          <TouchableOpacity
             style={styles.centeredView}
-            onPress={() => setModalVisible(false)}>
-
-             <TouchableOpacity
+            onPress={() => setModalVisible(false)}
+          >
+            <TouchableOpacity
               style={styles.modalView}
               activeOpacity={1}
               onPress={() => {}}
@@ -456,9 +455,10 @@ useEffect(()=>{
                   />
                   {errors.number_of_recruitments && (
                     <Text style={styles.errorText}>
-                      {errors.number_of_recruitments} </Text>
-                       )}
-                         </View>
+                      {errors.number_of_recruitments}{" "}
+                    </Text>
+                  )}
+                </View>
                 <View style={styles.inputRow}>
                   <Text style={styles.label}>Yêu cầu</Text>
                   <TextInput
@@ -622,9 +622,6 @@ useEffect(()=>{
               </View>
             </TouchableOpacity>
           </TouchableOpacity>
-
-           
-
         </Modal>
       )}
     </SafeAreaView>
@@ -636,7 +633,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F5FFFA",
     paddingHorizontal: 10,
-    
   },
   loadingContainer: {
     flex: 1,
@@ -645,227 +641,228 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
   },
 
-///
-list: {
-  paddingBottom: 70,
-},
-title: {
-  fontSize: 16,
-  fontWeight: "bold",
-  flex: 1,
-},
-viewDetails: {
-  color: "#1e90ff",
-  marginTop: 10,
-},
-label: {
-  fontSize: 16,
-  fontWeight: "bold",
-  marginBottom: 5,
-},
-
-modalTextInput: {
-  height: 60,
-  borderColor: "#ddd",
-
-  borderWidth: 1,
-  borderRadius: 5,
-  paddingHorizontal: 10,
-  backgroundColor: "#fff",
-  marginBottom: 10,
-},
-datePickerButton: {
-  justifyContent: "center",
-  alignItems: "center",
-  height: 40,
-  borderColor: "#ddd",
-  borderWidth: 1,
-  borderRadius: 5,
-  paddingHorizontal: 10,
-},
-inputError: {
-  borderColor: "red",
-},
-errorText: {
-  color: "red",
-  fontSize: 12,
-  marginTop: 5,
-},
-modalButtonsContainer: {
-  flexDirection: "row",
-  justifyContent: "space-between",
-  marginTop: 20,
-},
-modalButton: {
-  flex: 1,
-  paddingVertical: 10,
-  paddingHorizontal: 20,
-  borderRadius: 5,
-  justifyContent: "center",
-  alignItems: "center",
-  marginHorizontal: 5,
-},
-deleteButton: {
-  backgroundColor: "#ff4d4d",
-},
-
-modalButtonText: {
-  color: "#fff",
-  fontWeight: "bold",
-},
-centeredView: {
-  flex: 1,
-  justifyContent: "center",
-  alignItems: "center",
-  backgroundColor: "rgba(0, 0, 0, 0.5)",
-},
-modalView: {
-  width: "90%",
-  maxHeight: "60%",
-  backgroundColor: "white",
-  borderRadius: 10,
-  padding: 20,
-  shadowColor: "#000",
-  shadowOffset: {
-    width: 0,
-    height: 2,
+  ///
+  list: {
+    paddingBottom: 70,
   },
-  shadowOpacity: 0.25,
-  shadowRadius: 4,
-  elevation: 5,
-},
-scrollViewContent: {
-  paddingVertical: 20,
-},
-inputRow: {
-  marginBottom: 15,
-},
-multilineInput: {
-  height: 80,
-  textAlignVertical: "top",
-},
-itemContainer: {
-  backgroundColor: "#fff",
-  padding: 15,
-  marginVertical: 5,
-  borderRadius: 10,
-  shadowColor: "#000",
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.1,
-  shadowRadius: 4,
-  elevation: 3,
-  flexDirection: "column",
-},
-itemContent: {
-  flexDirection: "row",
-  alignItems: "center",
-  marginBottom: 10,
-  flexWrap: "wrap",
-},
-itemDetails: {
-  marginBottom: 10,
-},
-detailRow: {
-  flexDirection: "row",
-  alignItems: "center",
-  marginBottom: 5,
-  borderBottomWidth: 1,
-  borderBottomColor: "#EEEEEE",
-  paddingBottom: 5,
-  paddingTop: 5,
-  flexWrap: "wrap",
-},
-icon: {
-  marginRight: 10,
-}, buttonContainer: {
-  backgroundColor: "#28A745",
-  padding: 15,
-  borderRadius: 10,
-  position: "absolute",
-  bottom: 20,
-  right: 20,
-}, textButton: {
-  color: "#fff",
-  fontSize: 16,
-  textAlign: "center",
-},
-viewDetailsButton: {
-  marginTop: 10,
-  alignItems: "flex-end",
-},
-viewDetailsText: {
-  color: "#1e90ff",
-  fontSize: 14,
-},
-cancelButton: {
-  paddingVertical: 12,
-  paddingHorizontal: 20,
-  borderRadius: 8,   alignItems: "center",
-  borderWidth: 1,
-  borderColor: "#ff6400",
-  marginTop: 20,
-  width: "45%",
-  alignSelf: "center",
-  marginRight: 10,
-},
-cancelButtonText: {
-  color: "#ff6400",
-  fontSize: 16,
-  fontWeight: "bold",
-}, saveButton: {
-  backgroundColor: "#ff6400",
-  paddingVertical: 12,
-  paddingHorizontal: 20,
-  borderRadius: 8,
-  alignItems: "center",
-  borderWidth: 1,
-  borderColor: "#ff6400",
-  marginTop: 20,
-  width: "45%",
-  alignSelf: "center",
-},
-saveButtonText: {
-  color: "#fff",
-  fontSize: 16,
-  fontWeight: "bold",
-},
-detailText: {
-  fontSize: 14,
-  color: "#333",
-  marginLeft: 7,
-  fontWeight: "bold",
-},
-labelText: {
-  color: "#999",
-},
-formText: {
-  fontWeight: "bold",
-  color: "#000",
-},
-searchContainer: {
-  marginVertical: 16,
-  flexDirection: "row",
-  margin: 10
-},  searchInput: {
-  flex: 1,
-  padding: 10,
-  borderWidth: 1,
-  borderColor: '#ccc',
-  borderRadius: 5,
-},
-clearButton: {
-  alignSelf: "center",
-  position: 'absolute',
-  right: 15,
-}, addButtonContainer: {
-  paddingVertical: 12,
-  paddingHorizontal: 20,
-  backgroundColor: "#4CAF50",
-  borderRadius: 8,
-  
-}, 
+  title: {
+    fontSize: 16,
+    fontWeight: "bold",
+    flex: 1,
+  },
+  viewDetails: {
+    color: "#1e90ff",
+    marginTop: 10,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+
+  modalTextInput: {
+    height: 60,
+    borderColor: "#ddd",
+
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    backgroundColor: "#fff",
+    marginBottom: 10,
+  },
+  datePickerButton: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: 40,
+    borderColor: "#ddd",
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+  },
+  inputError: {
+    borderColor: "red",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginTop: 5,
+  },
+  modalButtonsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 20,
+  },
+  modalButton: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: 5,
+  },
+  deleteButton: {
+    backgroundColor: "#ff4d4d",
+  },
+
+  modalButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalView: {
+    width: "90%",
+    maxHeight: "60%",
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  scrollViewContent: {
+    paddingVertical: 20,
+  },
+  inputRow: {
+    marginBottom: 15,
+  },
+  multilineInput: {
+    height: 80,
+    textAlignVertical: "top",
+  },
+  itemContainer: {
+    backgroundColor: "#fff",
+    padding: 15,
+    marginVertical: 5,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    flexDirection: "column",
+  },
+  itemContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+    flexWrap: "wrap",
+  },
+  itemDetails: {
+    marginBottom: 10,
+  },
+  detailRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: "#EEEEEE",
+    paddingBottom: 5,
+    paddingTop: 5,
+    flexWrap: "wrap",
+  },
+  icon: {
+    marginRight: 10,
+  },
+  buttonContainer: {
+    backgroundColor: "#28A745",
+    padding: 15,
+    borderRadius: 10,
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+  },
+  textButton: {
+    color: "#fff",
+    fontSize: 16,
+    textAlign: "center",
+  },
+  viewDetailsButton: {
+    marginTop: 10,
+    alignItems: "flex-end",
+  },
+  viewDetailsText: {
+    color: "#1e90ff",
+    fontSize: 14,
+  },
+  cancelButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#ff6400",
+    marginTop: 20,
+    width: "45%",
+    alignSelf: "center",
+    marginRight: 10,
+  },
+  cancelButtonText: {
+    color: "#ff6400",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  saveButton: {
+    backgroundColor: "#ff6400",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#ff6400",
+    marginTop: 20,
+    width: "45%",
+    alignSelf: "center",
+  },
+  saveButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  detailText: {
+    fontSize: 14,
+    color: "#333",
+    marginLeft: 7,
+    fontWeight: "bold",
+  },
+  labelText: {
+    color: "#999",
+  },
+  formText: {
+    fontWeight: "bold",
+    color: "#000",
+  },
+  searchContainer: {
+    marginVertical: 16,
+    flexDirection: "row",
+    margin: 10,
+  },
+  searchInput: {
+    flex: 1,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+  },
+  clearButton: {
+    alignSelf: "center",
+    position: "absolute",
+    right: 15,
+  },
+  addButtonContainer: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    backgroundColor: "#4CAF50",
+    borderRadius: 8,
+  },
 });
-
-
-
-
