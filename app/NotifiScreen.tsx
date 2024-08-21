@@ -73,7 +73,7 @@ const NotifiScreen : React.FC<NotificationScreenProps> = ({ userId }) => {
       return (
         <View style={styles.content}>
           <Image
-            source={require('../../assets/images/notification.png')}
+            source={require('../assets/images/notification.png')}
             style={styles.image}
           />
           <Text style={styles.title}>Bạn phải đăng nhập để dùng tính năng này</Text>
@@ -95,7 +95,7 @@ const NotifiScreen : React.FC<NotificationScreenProps> = ({ userId }) => {
       return (
         <View style={styles.content}>
           <Image
-            source={require('../../assets/images/notification.png')}
+            source={require('../assets/images/notification.png')}
             style={styles.image}
           />
           <Text style={styles.title}>Bạn chưa có thông báo nào</Text>
