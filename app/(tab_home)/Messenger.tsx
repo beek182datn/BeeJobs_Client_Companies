@@ -116,7 +116,7 @@ const Messenger = () => {
             <TouchableOpacity onPress={() => handleItemPress(item._id, item.worker_name, item.worker_avatar)}>
               <View style={styles.chatRoomItem}>
                 <Image
-                  source={{ uri: "http://beejobs.io.vn:14307" + item.worker_avatar }}
+                  source={{ uri: item.worker_avatar }}
                   style={styles.avatar}
                 />
                 <View style={styles.textContainer}>
