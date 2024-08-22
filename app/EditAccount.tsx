@@ -192,7 +192,7 @@ export default function EditAccount() {
             {newLogo ? (
               <Image style={styles.logo} source={{ uri: newLogo }} />
             ) : companyLogo ? (
-              <Image style={styles.logo} source={{ uri: `http://beejobs.io.vn:14307${companyLogo}` }} />
+              <Image style={styles.logo} source={{ uri: `${companyLogo}` }} />
             ) : (
               <Text>Không có logo nào có sẵn</Text>
             )}
@@ -289,7 +289,7 @@ export default function EditAccount() {
           {newCertification ? (
             <Image style={styles.certification} source={{ uri: newCertification }} />
           ) : companyCertification ? (
-            <Image style={styles.certification} source={{ uri: `http://beejobs.io.vn:14307${companyCertification}` }} />
+            <Image style={styles.certification} source={{ uri: `${companyCertification}` }} />
           ) : (
             <Text>Không có chứng nhận nào có sẵn</Text>
           )}
