@@ -92,7 +92,7 @@ const ForgotPassScreen = () => {
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Email hoặc số điện thoại"
+          placeholder="Nhập Email ..."
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"

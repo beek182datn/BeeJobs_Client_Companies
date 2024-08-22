@@ -30,6 +30,7 @@ const EmployerAuth = () => {
   const [color, setColor] = useState('');
   const [certificationError, setCertificationError] = useState<boolean>(false);
   const router = useRouter();
+  const [companyDescHeight, setCompanyDescHeight] = useState(50);
   
   // Refs for focusing on inputs
   const companyNameRef = useRef<TextInput>(null);
@@ -196,10 +197,14 @@ const EmployerAuth = () => {
         <Text style={styles.label}>Giới thiệu về công ty *</Text>
         <TextInput
           ref={CompanyDescRef}
-          style={styles.input}
+          style={[styles.input, { height: Math.max(50, companyDescHeight) }]}
           placeholder="Nhập giới thiệu"
           value={companyDesc}
           onChangeText={setCompanyDesc}
+          multiline={true}
+          onContentSizeChange={(e) =>
+            setCompanyDescHeight(e.nativeEvent.contentSize.height)
+          }
         />
       </View>
       <View style={styles.inputContainer}>
@@ -275,7 +280,7 @@ const EmployerAuth = () => {
           style={styles.input}
           placeholder="Nhập mã số thuế"
           value={taxCode}
-          onChangeText={setTaxCode}
+          onChangeText={(text) => setTaxCode(text.replace(/[^0-9]/g, ''))}
         />
       </View>
       {message ? <Text style={{ color, textAlign: 'center', marginVertical: 10 }}>{message}</Text> : null}

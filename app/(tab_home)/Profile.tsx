@@ -107,7 +107,7 @@ export default function Profile() {
           style={styles.imageProfile}
           source={
             companyData?.company_logo
-              ? { uri: `http://beejobs.io.vn:14307${companyData.company_logo}` }
+              ? { uri:companyData.company_logo }
               : require("../../assets/images/avatar-15.png")
           }
         />

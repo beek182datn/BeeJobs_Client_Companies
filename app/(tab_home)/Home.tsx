@@ -114,7 +114,7 @@ const Home = () => {
         <ImageBackground source={require('../../assets/images/Beejob_ket_noi_viec_lam_02.png')} style={styles.headerBackground}>
           <Text style={styles.welcomeText}>Chào mừng bạn đến với BeeJobs!</Text>
           {companyInfo.company_logo && (
-            <Image source={{ uri: "http://beejobs.io.vn:14307/" + companyInfo.company_logo }} style={styles.logo} />
+            <Image source={{ uri:companyInfo.company_logo }} style={styles.logo} />
           )}
         </ImageBackground>
         
