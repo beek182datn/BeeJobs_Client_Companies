@@ -25,7 +25,7 @@ const AmountWorkerApplyForCompany = () => {
 
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
-      <Image source={{ uri: "http://beejobs.io.vn:14307"+ item.avatar }} style={styles.avatar} />
+      <Image source={{ uri: item.avatar }} style={styles.avatar} />
       <View style={styles.infoContainer}>
         <Text style={styles.name}>{item.worker_name}</Text>
         <Text style={styles.phone}>{item.phone}</Text>

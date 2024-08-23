@@ -108,7 +108,7 @@ const ViewProfileWorker = () => {
   const openPdfInBrowser1 = async () => {
     setLoading(true);
     try {
-        const url = `http://beejobs.io.vn:14307${cv}`;
+        const url = cv;
         const supported = await Linking.canOpenURL(url);
 
         if (supported) {

@@ -33,7 +33,7 @@ const NotifiScreen : React.FC<NotificationScreenProps> = ({ userId }) => {
 
   const fetchUserId = async () => {
     try {
-      const user  = await await AsyncStorage.getItem("idUser");
+      const user  =  await AsyncStorage.getItem("idUser");
       if (user) {
         setStoredUserId(user);
         fetchNotifications(user);

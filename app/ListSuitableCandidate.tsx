@@ -68,7 +68,7 @@ const ListSuitableCandidate = () => {
     <View style={styles.candidateItem}>
       <View style={styles.chatRoomItem}>
                 <Image
-                  source={{ uri: "http://beejobs.io.vn:14307" + item.worker_avatar }}
+                  source={{ uri: item.worker_avatar }}
                   style={styles.avatar}
                 />
                 <View style={styles.textContainer}>
