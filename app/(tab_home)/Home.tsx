@@ -105,18 +105,19 @@ const Home = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.scrollView}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      >
+      
         <ImageBackground source={require('../../assets/images/Beejob_ket_noi_viec_lam_02.png')} style={styles.headerBackground}>
           <Text style={styles.welcomeText}>Chào mừng bạn đến với BeeJobs!</Text>
           {companyInfo.company_logo && (
             <Image source={{ uri:companyInfo.company_logo }} style={styles.logo} />
           )}
         </ImageBackground>
+        <ScrollView
+        contentContainerStyle={styles.scrollView}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         
         {companyInfo.premium && (
           <Image source={require('../../assets/images/crown.png')} style={styles.premiumIcon}/>
@@ -135,6 +136,7 @@ const Home = () => {
             <Ionicons name="checkmark-circle" size={24} color="green" style={styles.icon} />
           )}
           </View>
+          
 
         <View style={styles.statContainer}>
           <Text style={styles.statText}>Thống kê:</Text>
