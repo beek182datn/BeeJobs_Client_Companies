@@ -18,6 +18,7 @@ const ChatScreen = () => {
   const [error, setError] = useState("");
   const [newMessage, setNewMessage] = useState("");
   const [companyId, setCompanyId] = useState<string | null>("");
+  const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
   const flatListRef = useRef<FlatList>(null);
   const isFocused = useIsFocused();
 
@@ -31,6 +32,12 @@ const ChatScreen = () => {
     worker_name: string;
     worker_avatar: string;
   }
+
+  const handlePressMessage = (messageId: string) => {
+    setSelectedMessageId((prevMessageId) => 
+      prevMessageId === messageId ? null : messageId
+    );
+  };
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -125,7 +132,7 @@ const ChatScreen = () => {
         <Ionicons name="arrow-back" size={25} color="#660099" />
       </TouchableOpacity>
       <View style={styles.headerContent}>
-        <Image source={{ uri: "http://beejobs.io.vn:14307"+avtOther }} style={styles.avatar} />
+        <Image source={{ uri: avtOther+"" }} style={styles.avatar} />
         <Text style={styles.nameOther}>{nameOther}</Text>
       </View>
     </View>
@@ -135,17 +142,26 @@ const ChatScreen = () => {
         data={messages}
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
+          <TouchableOpacity 
+            onPress={() => handlePressMessage(item._id)} 
+            activeOpacity={0.7}
+          >
           <View style={[styles.messageItem, item.senderId === companyId ? styles.myMessage : styles.theirMessage]}>
             <View style={{flexDirection:"row"}}>
             {item.senderId !== companyId && (
             <Image
-              source={{ uri: "http://beejobs.io.vn:14307" + item.worker_avatar }}
+              source={{ uri: item.worker_avatar }}
               style={styles.avatar}
             />
           )}
             <Text style={styles.messageContent}>{item.content}</Text>
             </View>
+            
           </View>
+          {selectedMessageId === item._id && (
+                <Text style={styles.messageTime}>{`${new Date(item.createdAt).toLocaleDateString()} ${new Date(item.createdAt).toLocaleTimeString()}`}</Text>
+              )}
+          </TouchableOpacity>
         )}
         onContentSizeChange={() => {
           if (isFocused) {
@@ -223,7 +239,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#666',
     marginTop: 5,
-    alignSelf: 'flex-end',
+    alignSelf: 'center',
   },
   inputContainer: {
     flexDirection: 'row',

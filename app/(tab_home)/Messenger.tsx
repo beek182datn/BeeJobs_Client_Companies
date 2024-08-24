@@ -15,6 +15,7 @@ interface ChatRoomInfor {
   worker_avatar: string;
   worker_name: string;
   lastMessage: string;
+  createdAt: string;
 }
 
 const Messenger = () => {
@@ -121,7 +122,11 @@ const Messenger = () => {
                 />
                 <View style={styles.textContainer}>
                   <Text style={styles.workerName}>{item.worker_name}</Text>
-                  <Text style={styles.lastMessage}>{item.lastMessage ? item.lastMessage : 'No messages yet'}</Text>
+                  <Text 
+                  numberOfLines={1}
+                  ellipsizeMode='tail'
+                  style={styles.lastMessage}>{item.lastMessage ? item.lastMessage : 'No messages yet'}</Text>
+                  <Text style={styles.lastcreatedAt}>{new Date(item.createdAt).toLocaleTimeString()}</Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -184,6 +189,8 @@ const styles = StyleSheet.create({
   lastMessage: {
     fontSize: 14,
     color: '#666',
+    width: "85%",
+    
   },
   searchContainer: {
     flexDirection: 'row',
@@ -214,6 +221,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
   },
+  lastcreatedAt:{
+    alignSelf:"flex-end",
+    fontSize: 12,
+    color: '#666',
+  }
 });
 
 export default Messenger;
