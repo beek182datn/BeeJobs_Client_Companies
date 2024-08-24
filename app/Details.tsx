@@ -9,7 +9,14 @@ import { useRouter } from 'expo-router';
 const { width } = Dimensions.get('window');
 const iconSize = width * 0.05; 
 
-const DetailRow = ({ icon, title, value, color }) => (
+interface DetailRowProps {
+  icon: string;   
+  title: string; 
+  value: string;  
+  color?: string; 
+}
+
+const DetailRow: React.FC<DetailRowProps> = ({ icon, title, value, color })  => (
   <View style={styles.row}>
     <Icon name={icon} size={iconSize} color={color} style={styles.rowIcon} />
     <View style={styles.rowContent}>

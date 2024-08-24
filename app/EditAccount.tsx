@@ -5,6 +5,12 @@ import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from 'react-native-vector-icons/FontAwesome';
+import axios from 'axios';
+//  gt có thể là string hoặc không giá trị 
+interface ErrorText {
+  [key: string]: string | undefined;
+}
+
 
 const handleImagePicker = async (setter) => {
   const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -12,16 +18,16 @@ const handleImagePicker = async (setter) => {
     alert('Cần có quyền truy cập vào thư viện phương tiện!');
     return;
   }
-
+// set 
   const result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,// chỉ được được hiển thị ảnh
     allowsEditing: true,
     aspect: [4, 3],
     quality: 1,
     base64: true,
   });
 
-  if (!result.canceled && result.assets && result.assets.length > 0) {
+  if (!result.canceled && result.assets && result.assets.length > 0) {// kiểm tra xem ảnh đã hợp lệ chưa hơp lệ thì set uri
     setter(result.assets[0].uri);
   }
 };
@@ -41,7 +47,7 @@ export default function EditAccount() {
   const [companyDesc, setCompanyDesc] = useState('');
   const [phone_number, setPhone_Number] = useState('');
   const [originalCompanyName, setOriginalCompanyName] = useState('');
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<ErrorText>({});
   const router = useRouter();
 
   useEffect(() => {
@@ -51,35 +57,30 @@ export default function EditAccount() {
   const fetchAccountDetails = async () => {
     const companyId = await AsyncStorage.getItem('company_id');
     try {
-      const response = await fetch(`http://beejobs.io.vn:14307/api/companies/getCompanyById/${companyId}`, {
-        method: 'GET',
+      const response = await axios.get(`http://beejobs.io.vn:14307/api/companies/getCompanyById/${companyId}`, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data && data.data) {
-          const companyData = data.data;
-          setCompanyName(companyData.company_name || '');
-          setOriginalCompanyName(companyData.company_name || '');
-          setCompanyAddress(companyData.company_address || '');
-          setCompanyWebsite(companyData.company_website || '');
-          setCompanyScale(companyData.company_scale || '');
-          setTaxCode(companyData.taxcode || '');
-          setCompanyLogo(companyData.company_logo || '');
-          setCompanyCertification(companyData.company_certification || '');
-          setCompanyDesc(companyData.company_desc || '');
-          setPhone_Number(companyData.phone_number || '');
-        } else {
-          Alert.alert("Lỗi", "Cấu trúc dữ liệu không như mong đợi");
-        }
+  
+      // Kiểm tra xem dữ liệu có tồn tại không
+      if (response.data && response.data.data) {
+        const companyData = response.data.data;
+        setCompanyName(companyData.company_name || '');
+        setOriginalCompanyName(companyData.company_name || '');
+        setCompanyAddress(companyData.company_address || '');
+        setCompanyWebsite(companyData.company_website || '');
+        setCompanyScale(companyData.company_scale || '');
+        setTaxCode(companyData.taxcode || '');
+        setCompanyLogo(companyData.company_logo || '');
+        setCompanyCertification(companyData.company_certification || '');
+        setCompanyDesc(companyData.company_desc || '');
+        setPhone_Number(companyData.phone_number || '');
       } else {
-        Alert.alert("Lỗi", `Không thể lấy thông tin chi tiết về tài khoản: ${response.statusText}`);
+        Alert.alert("Lỗi", "Cấu trúc dữ liệu không như mong đợi");
       }
     } catch (error) {
-      Alert.alert("Lỗi", `Đã xảy ra lỗi: ${error.message}`);
+      Alert.alert("Lỗi", `Đã xảy ra lỗi: ${error.response ? error.response.data.message : error.message}`);
     } finally {
       setLoading(false);
     }
@@ -87,7 +88,7 @@ export default function EditAccount() {
 
   const handleSave = async () => {
    
-    const newErrors = {};
+    const newErrors : ErrorText = {};
     if (!companyName.trim()) newErrors.companyName = "Hãy nhập tên công ty";
     if (!companyAddress.trim()) newErrors.companyAddress = "Hãy nhập địa chỉ công ty";
     if (!companyWebsite.trim()) newErrors.companyWebsite = "Hãy nhập website công ty";
@@ -159,6 +160,8 @@ export default function EditAccount() {
     };
     xhr.send(formData);
   };
+ 
+
 
 
   const handleCancel = () => {
@@ -201,6 +204,7 @@ export default function EditAccount() {
               <Text style={styles.buttonText}>Thay Logo</Text>
             </TouchableOpacity>
           </View>
+
           <Text style={styles.header}>Sửa Thông Tin Công Ty</Text>
         </View>
         <View style={styles.detailContainer}>

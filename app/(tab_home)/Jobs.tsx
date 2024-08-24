@@ -21,16 +21,37 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from '@expo/vector-icons';
+//  gt có thể là string hoặc không giá trị 
+interface ErrorForm {
+  [key: string]: string | undefined;
+}
+interface ErrorText {
+  [key: string]: string | undefined;
+}
+interface FormEdit {
+  title?: string;
+  desc?: string;
+  form?: string;
+  majors?: string;
+  number_of_recruitments?: string;
+  requirements?: string;
+  salary?: string;
+  benefits?: string;
+  location?: string;
+  deadline?: string;
+  experience?: string;
+  working_time?: string;
+}
 
 export default function Jobs() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [selectedJob, setSelectedJob] = useState(null);
+  const [selectedJob, setSelectedJob] = useState<FormEdit | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [date, setDate] = useState(new Date());
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<ErrorText>({});
   const router = useRouter();
   const scrollViewRef = useRef();
   const [refreshing, setRefreshing] = useState(false);
@@ -101,26 +122,28 @@ export default function Jobs() {
   };
 
   const handleEdit = async () => {
+    // lấy các thuộc tính gán giá trị mặc định
     const {
-      title,
-      desc,
-      form,
-      majors,
-      number_of_recruitments,
-      requirements,
-      salary,
-      benefits,
-      location,
-      deadline,
-      experience,
-      working_time,
-    } = selectedJob;
+      title = '',
+      desc = '',
+      form = '',
+      majors = "",
+      number_of_recruitments = "",
+      requirements = '',
+      salary = "",
+      benefits = '',
+      location = '',
+      deadline = '',
+      experience = '',
+      working_time = '',
+    } = selectedJob || {};
+    
 
-    const newErrors = {};
+    const newErrors : ErrorForm = {};
     if (!title.trim()) newErrors.title = "Hãy nhập tiêu đề";
     if (!desc.trim()) newErrors.desc = "Hãy nhập mô tả";
     if (!form.trim()) newErrors.form = "Hãy nhập hình thức";
-    if (!majors.trim()) newErrors.form = "Hãy nhập chuyên ngành";
+    if (!majors.trim()) newErrors.majors = "Hãy nhập chuyên ngành";
     if (!number_of_recruitments.trim())
       newErrors.number_of_recruitments = "Hãy nhập số lượng";
     if (!requirements.trim()) newErrors.requirements = "Hãy nhập yêu cầu";
@@ -133,7 +156,7 @@ export default function Jobs() {
       newErrors.working_time = "Hãy nhập thời gian làm việc";
     setErrors(newErrors);
 
-    if (Object.keys(newErrors).length > 0) {
+    if (Object.keys(newErrors).length > 0) {  
       return;
     }
 
@@ -384,7 +407,7 @@ export default function Jobs() {
                   <TextInput
                     style={[
                       styles.modalTextInput,
-                      errors.title && styles.inputError,
+                     
                     ]}
                     value={selectedJob.title}
                     onChangeText={(text) =>
@@ -400,7 +423,7 @@ export default function Jobs() {
                   <TextInput
                     style={[
                       styles.modalTextInput,
-                      errors.desc && styles.inputError,
+                    
                     ]}
                     value={selectedJob.desc}
                     multiline
@@ -419,7 +442,7 @@ export default function Jobs() {
                   <TextInput
                     style={[
                       styles.modalTextInput,
-                      errors.majors && styles.inputError,
+                     
                     ]}
                     value={selectedJob.majors}
                     multiline
@@ -438,7 +461,7 @@ export default function Jobs() {
                   <TextInput
                     style={[
                       styles.modalTextInput,
-                      errors.form && styles.inputError,
+                     
                       styles.multilineInput,
                     ]}
                     value={selectedJob.form}
@@ -456,7 +479,7 @@ export default function Jobs() {
                   <TextInput
                     style={[
                       styles.modalTextInput,
-                      errors.number_of_recruitments && styles.inputError,
+                     
                     ]}
                     value={selectedJob.number_of_recruitments}
                     onChangeText={(text) =>
@@ -478,7 +501,6 @@ export default function Jobs() {
                   <TextInput
                     style={[
                       styles.modalTextInput,
-                      errors.requirements && styles.inputError,
                       styles.multilineInput,
                     ]}
                     value={selectedJob.requirements}
@@ -498,7 +520,7 @@ export default function Jobs() {
                   <TextInput
                     style={[
                       styles.modalTextInput,
-                      errors.experience && styles.inputError,
+                     
                       styles.multilineInput,
                     ]}
                     value={selectedJob.experience}
@@ -518,7 +540,7 @@ export default function Jobs() {
                   <TextInput
                     style={[
                       styles.modalTextInput,
-                      errors.salary && styles.inputError,
+                      
                     ]}
                     value={selectedJob.salary}
                     onChangeText={(text) =>
@@ -535,7 +557,6 @@ export default function Jobs() {
                   <TextInput
                     style={[
                       styles.modalTextInput,
-                      errors.benefits && styles.inputError,
                       styles.multilineInput,
                     ]}
                     value={selectedJob.benefits}
@@ -555,7 +576,6 @@ export default function Jobs() {
                   <TextInput
                     style={[
                       styles.modalTextInput,
-                      errors.working_time && styles.inputError,
                       styles.multilineInput,
                     ]}
                     value={selectedJob.working_time}
@@ -575,7 +595,6 @@ export default function Jobs() {
                   <TextInput
                     style={[
                       styles.modalTextInput,
-                      errors.location && styles.inputError,
                     ]}
                     value={selectedJob.location}
                     multiline

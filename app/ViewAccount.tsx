@@ -4,10 +4,23 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import axios from 'axios';
+
+interface AccountDetails {
+  company_logo?: string;
+  company_name?: string;
+  company_address?: string;
+  phone_number?: string;
+  company_website?: string;
+  company_scale?: string;
+  taxcode?: string;
+  company_desc?: string;
+  company_certification?: string;
+}
 
 export default function ViewAccount() {
   const [loading, setLoading] = useState(true);
-  const [accountDetails, setAccountDetails] = useState(null);
+  const [accountDetails, setAccountDetails] = useState<AccountDetails | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -17,31 +30,31 @@ export default function ViewAccount() {
   const fetchAccountDetails = async () => {
     const companyId = await AsyncStorage.getItem('company_id');
     try {
-      const response = await fetch(`http://beejobs.io.vn:14307/api/companies/getCompanyById/${companyId}`, {
-        method: 'GET',
+      const response = await axios.get(`http://beejobs.io.vn:14307/api/companies/getCompanyById/${companyId}`, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
   
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Chứng nhận:" +data.data.company_certification);
-        
+      if (response.status === 200) {
+        const data = response.data;
+        console.log("Chứng nhận:" + data.data.company_certification);
+  
         if (data && data.data) {
           setAccountDetails(data.data);
         } else {
-          Alert.alert("Error", "Data structure is not as expected");
+          Alert.alert("Lỗi", "Cấu trúc dữ liệu không như mong đợi");
         }
       } else {
-        Alert.alert("Error", "Failed to fetch account details");
+        Alert.alert("Lỗi", "Không thể lấy thông tin tài khoản");
       }
     } catch (error) {
-      Alert.alert("Error", "An error occurred");
+      Alert.alert("Lỗi", "Có lỗi xảy ra");
     } finally {
       setLoading(false);
     }
   };
+
 
   useEffect(() => {
     const backAction = () => {
@@ -95,6 +108,7 @@ export default function ViewAccount() {
             <Text style={styles.value}>{accountDetails.company_address}</Text>
           </View>
         </View>
+
         <View style={styles.detailContainer}>
           <Icon name="phone" size={24} color="#007bff" />
           <View style={styles.detailText}>
@@ -147,7 +161,7 @@ export default function ViewAccount() {
 
       <TouchableOpacity
             style={styles.cancelButton}
-            onPress={() => router.replace("Profile")}
+            onPress={() => router.push("Profile")}
           >
             <Text style={styles.cancelButtonText}>Hủy</Text>
           </TouchableOpacity>
