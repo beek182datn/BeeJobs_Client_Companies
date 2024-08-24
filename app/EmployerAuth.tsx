@@ -25,6 +25,7 @@ const EmployerAuth = () => {
   const [companyWebsite, setCompanyWebsite] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [companyCertification, setCompanyCertification] = useState<string | null>(null);
+  const [representative, setRepresentative] = useState('');
   const [taxCode, setTaxCode] = useState('');
   const [message, setMessage] = useState('');
   const [color, setColor] = useState('');
@@ -40,6 +41,7 @@ const EmployerAuth = () => {
   const taxCodeRef = useRef<TextInput>(null);
   const CompanyDescRef = useRef<TextInput>(null);
   const PhoneNumberRef = useRef<TextInput>(null);
+  const RepresentativeRef = useRef<TextInput>(null);
 
   const handleImagePicker = async (setter: React.Dispatch<React.SetStateAction<string | null>>) => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -63,7 +65,7 @@ const EmployerAuth = () => {
   const handleSubmit = async () => {
     setCertificationError(false);
 
-    if (!companyName || !companyAddress || !companyScale || !companyWebsite || !phoneNumber || !taxCode || !companyCertification || !companyDesc) {
+    if (!companyName || !companyAddress || !companyScale || !companyWebsite || !phoneNumber || !taxCode || !representative || !companyCertification || !companyDesc) {
       setMessage('Hãy nhập đầy đủ thông tin bắt buộc');
       setColor('red');
       
@@ -82,6 +84,8 @@ const EmployerAuth = () => {
         CompanyWebRel.current?.focus();
       }else if (!phoneNumber) {
         PhoneNumberRef.current?.focus();
+      }else if (!representative) {
+        RepresentativeRef.current?.focus();
       }
        else if (!taxCode) {
         taxCodeRef.current?.focus();
@@ -103,6 +107,7 @@ const EmployerAuth = () => {
       formData.append('company_scale', companyScale);
       formData.append('company_website', companyWebsite);
       formData.append('phone_number', phoneNumber);
+      formData.append('representative', representative);
       formData.append('taxcode', taxCode);
 
       if (companyLogo) {
@@ -272,6 +277,17 @@ const EmployerAuth = () => {
     </Text>
   )}
 </View>
+
+<View style={styles.inputContainer}>
+        <Text style={styles.label}>Người đại diện *</Text>
+        <TextInput
+          ref={RepresentativeRef}
+          style={styles.input}
+          placeholder="Nhập người đại diện"
+          value={representative}
+          onChangeText={setRepresentative}
+        />
+      </View>
 
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Mã số thuế *</Text>
