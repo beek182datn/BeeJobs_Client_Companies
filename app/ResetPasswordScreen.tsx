@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   View,
   Text,
@@ -22,6 +22,10 @@ const ResetPasswordScreen = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const NewPassRef = useRef<TextInput>(null);
+  const ConfirmNewPassRef = useRef<TextInput>(null);
 
   useEffect(() => {
     const backAction = () => {
@@ -65,6 +69,7 @@ const ResetPasswordScreen = () => {
       }
     if (newPassword !== confirmNewPassword) {
       Alert.alert("Lỗi", "Mật khẩu mới và xác nhận mật khẩu không khớp");
+      NewPassRef.current?.focus();
       return;
     }
 
@@ -107,22 +112,46 @@ const ResetPasswordScreen = () => {
           editable={false}
         />
         <Text style={styles.label}>Mật khẩu mới</Text>
+        <View style={styles.inputContainer}>
+        <Ionicons name="lock-closed" size={20} color="#A9A9A9" style={styles.icon} />
         <TextInput
+          ref={NewPassRef}
           style={styles.input}
-          placeholder="Nhập mật khẩu mới"
-          secureTextEntry
+          placeholder="Mật khẩu 6 - 10 ký tự"
+          secureTextEntry={!showPassword}
           value={newPassword}
           onChangeText={setNewPassword}
         />
+        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+          <Ionicons
+            name={showPassword ? "eye-off" : "eye"}
+            size={20}
+            color="#A9A9A9"
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+      </View>
 
         <Text style={styles.label}>Nhập lại mật khẩu mới</Text>
+        <View style={styles.inputContainer}>
+        <Ionicons name="lock-closed" size={20} color="#A9A9A9" style={styles.icon} />
         <TextInput
+          ref={ConfirmNewPassRef}
           style={styles.input}
           placeholder="Nhập lại mật khẩu mới"
-          secureTextEntry
+          secureTextEntry={!showPassword}
           value={confirmNewPassword}
           onChangeText={setConfirmNewPassword}
         />
+        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+          <Ionicons
+            name={showPassword ? "eye-off" : "eye"}
+            size={20}
+            color="#A9A9A9"
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+      </View>
       </View>
 
       <View style={styles.buttonContainer}>
@@ -172,23 +201,21 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   input: {
-    height: 40,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 4,
-    marginBottom: 16,
-    paddingHorizontal: 8,
-    backgroundColor: "#f9f9f9",
+    flex: 1,
+    padding: 10,
+    fontSize: 16,
+    color: "#000",
   },
   inputemail: {
-    height: 40,
+    height: 50,
     borderColor: "#ccc",
     borderWidth: 1,
-    borderRadius: 4,
+    borderRadius: 15,
     marginBottom: 16,
     paddingHorizontal: 8,
     backgroundColor: "#f9f9f9",
-    color: "#ccc",
+    color: "black",
+    fontSize: 16,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -221,6 +248,21 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontWeight: "bold",
+  },
+
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#A9A9A9",
+    borderRadius: 15,
+    marginBottom: 20,
+    paddingHorizontal: 15,
+    backgroundColor: "#f9f9f9",
+    padding: 1,
+  },
+  icon: {
+    marginRight: 10,
   },
 });
 

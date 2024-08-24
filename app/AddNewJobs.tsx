@@ -118,7 +118,7 @@ export default function Details() {
                 amount: Number(amount),
               });
               ///
-              Alert.alert('Thành công', 'Nâng cấp thành công!');
+              Alert.alert('Thành công', 'Đăng tin thành công!');
               try {
                 const companyId = await AsyncStorage.getItem('company_id');
                 const response = await fetch(`http://beejobs.io.vn:14307/api/jobs/create/${companyId}`, {
@@ -339,7 +339,9 @@ export default function Details() {
               display="default" 
               onChange={onChange}
             />
+            
           )}
+          {errors.working_time && <Text style={styles.errorText}>{errors.working_time}</Text>}
         </View>
 
         

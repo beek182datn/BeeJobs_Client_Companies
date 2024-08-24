@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef,useEffect } from "react";
 import {
   View,
   Text,
@@ -20,6 +20,23 @@ const OtpFogotPassScreen: React.FC = () => {
   const params = useLocalSearchParams();
   const email = params.email;
   const type = "FogotPassword";
+
+  const [countdown, setCountdown] = useState(300);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setCountdown(prevCountdown => prevCountdown - 1);
+    }, 1000);
+    setIntervalId(id); 
+
+    return () => clearInterval(id); 
+  }, []);
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  };
 
   const handleSubmit = async () => {
     const otpValue = otp.join("");
@@ -88,9 +105,9 @@ const OtpFogotPassScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Xác minh OTP</Text>
+      <Text style={styles.countdownText}>Hết hạn sau: {formatTime(countdown)}</Text>
       <Text style={styles.instruction}>
-        Nhập mã OTP gồm 6 ký tự mà chúng tôi đã gửi đến email hoặc số điện thoại
-        của bạn.
+        Nhập mã OTP gồm 6 ký tự mà chúng tôi đã gửi đến email của bạn.
       </Text>
       <View style={styles.otpContainer}>
         {otp.map((digit, index) => (
@@ -138,6 +155,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   otpContainer: {
+    paddingHorizontal: 20,
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 20,
@@ -146,7 +164,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#A9A9A9",
     borderRadius: 5,
-    width: 40,
+    width: 45,
     height: 50,
     textAlign: "center",
     fontSize: 18,
@@ -176,6 +194,13 @@ const styles = StyleSheet.create({
     color: "#007BFF",
     fontSize: 18,
     fontWeight: "bold",
+  },
+  countdownText: {
+    alignSelf: "center",
+    fontSize: 20,
+    fontWeight: 'bold',
+    color:"red",
+    marginBottom: 20,
   },
 });
 

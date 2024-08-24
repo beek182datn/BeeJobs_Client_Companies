@@ -1,4 +1,4 @@
-import React, { useState, useEffect  } from "react";
+import React, { useState, useEffect, useRef  } from "react";
 import {
   View,
   Text,
@@ -20,6 +20,7 @@ const RegisterScreen = () => {
   const [accout_name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [passwd, setPassword] = useState("");
+  const [confirmpassword, setConfirmPassword] = useState("");
   //an hien mat khau
   const [showPassword, setShowPassword] = useState(false);
   // su dung cho hop thoai canh bao
@@ -28,6 +29,11 @@ const RegisterScreen = () => {
   const [color, setColor] = useState('');
 
   const router = useRouter();
+
+  const AcoutRef = useRef<TextInput>(null);
+  const EmailRef = useRef<TextInput>(null);
+  const PasswdRef = useRef<TextInput>(null);
+  const ConfirmpassRef = useRef<TextInput>(null);
 
 
   const isValidEmail = (email: string): boolean => {
@@ -45,11 +51,28 @@ const RegisterScreen = () => {
     if (
       accout_name.trim() === "" ||
       email.trim() === "" ||
-      passwd.trim() === ""
+      passwd.trim() === "" ||
+      confirmpassword.trim() === "" 
     ) {
       setMessage('Hãy nhập đầy đủ thông tin')
       setColor('red');
       setShowAlert(true);
+      return;
+    }
+    if(accout_name.trim() === ""){
+      AcoutRef.current?.focus();
+      return;
+    }
+    if(email.trim() === ""){
+      EmailRef.current?.focus();
+      return;
+    }
+    if(passwd.trim() === ""){
+      PasswdRef.current?.focus();
+      return;
+    }
+    if(confirmpassword.trim() === ""){
+      ConfirmpassRef.current?.focus();
       return;
     }
 
@@ -57,6 +80,21 @@ const RegisterScreen = () => {
       setMessage('Email không hợp lệ')
       setColor('red');
       setShowAlert(true);
+      EmailRef.current?.focus();
+      return;
+    }
+    if(passwd.length < 6 || passwd.length > 10){
+      setMessage('Mật khẩu từ 6 - 10 ký tự');
+      setColor('red');
+      setShowAlert(true);
+      PasswdRef.current?.focus();
+      return;
+    }
+    if(passwd !== confirmpassword){
+      setMessage('Mật khẩu không trùng khớp')
+      setColor('red');
+      setShowAlert(true);
+      PasswdRef.current?.focus();
       return;
     }
     
@@ -113,6 +151,7 @@ const RegisterScreen = () => {
       <View style={styles.inputContainer}>
         <Ionicons name="person" size={20} color="#A9A9A9" style={styles.icon} />
         <TextInput
+          ref={AcoutRef}
           style={styles.input}
           placeholder="Tài khoản"
           value={accout_name}
@@ -122,6 +161,7 @@ const RegisterScreen = () => {
       <View style={styles.inputContainer}>
         <Ionicons name="mail" size={20} color="#A9A9A9" style={styles.icon} />
         <TextInput
+          ref={EmailRef}
           style={styles.input}
           placeholder="Email"
           value={email}
@@ -131,11 +171,31 @@ const RegisterScreen = () => {
       <View style={styles.inputContainer}>
         <Ionicons name="lock-closed" size={20} color="#A9A9A9" style={styles.icon} />
         <TextInput
+          ref={PasswdRef}
           style={styles.input}
-          placeholder="Mật khẩu"
+          placeholder="Mật khẩu 6 - 10 ký tự"
           secureTextEntry={!showPassword}
           value={passwd}
           onChangeText={setPassword}
+        />
+        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+          <Ionicons
+            name={showPassword ? "eye-off" : "eye"}
+            size={20}
+            color="#A9A9A9"
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.inputContainer}>
+        <Ionicons name="lock-closed" size={20} color="#A9A9A9" style={styles.icon} />
+        <TextInput
+          ref={ConfirmpassRef}
+          style={styles.input}
+          placeholder="Nhập lại mật khẩu"
+          secureTextEntry={!showPassword}
+          value={confirmpassword}
+          onChangeText={setConfirmPassword}
         />
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
           <Ionicons

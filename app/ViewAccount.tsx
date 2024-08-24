@@ -26,6 +26,8 @@ export default function ViewAccount() {
   
       if (response.ok) {
         const data = await response.json();
+        console.log("Chứng nhận:" +data.data.company_certification);
+        
         if (data && data.data) {
           setAccountDetails(data.data);
         } else {
@@ -79,7 +81,7 @@ export default function ViewAccount() {
           {accountDetails.company_logo ? (
             <Image
               style={styles.logo}
-              source={{ uri: `http://beejobs.io.vn:14307${accountDetails.company_logo}` }}
+              source={{ uri: accountDetails.company_logo }}
             />
           ) : (
             <Text>No logo available</Text>
@@ -133,7 +135,7 @@ export default function ViewAccount() {
           {accountDetails.company_certification ? (
             <Image
               style={styles.certification}
-              source={{ uri: `http://beejobs.io.vn:14307${accountDetails.company_certification}` }}
+              source={{ uri: accountDetails.company_certification }}
             />
           ) : (
             <Text>No certification available</Text>

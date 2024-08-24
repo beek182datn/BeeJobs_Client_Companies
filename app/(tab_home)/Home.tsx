@@ -61,7 +61,7 @@ const Home = () => {
         setCountJobAppliedDone(countjobappliedDone.data.data);
 
         const countWorkerApplied = await axios.get(`http://beejobs.io.vn:14307/api/applyJobs/getWorkerAppliedByCompanyId/${companyId}`);
-        setWokerApplied(countWorkerApplied.data.data);
+        setWokerApplied(countWorkerApplied.data.amount);
       }
     } catch (error) {
       console.error("Lỗi khi tải dữ liệu:", error);
@@ -105,18 +105,19 @@ const Home = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
+      
+        <ImageBackground source={require('../../assets/images/Beejob_ket_noi_viec_lam_02.png')} style={styles.headerBackground}>
+          <Text style={styles.welcomeText}>Chào mừng bạn đến với BeeJobs!</Text>
+          {companyInfo.company_logo && (
+            <Image source={{ uri:companyInfo.company_logo }} style={styles.logo} />
+          )}
+        </ImageBackground>
+        <ScrollView
         contentContainerStyle={styles.scrollView}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <ImageBackground source={require('../../assets/images/Beejob_ket_noi_viec_lam_02.png')} style={styles.headerBackground}>
-          <Text style={styles.welcomeText}>Chào mừng bạn đến với BeeJobs!</Text>
-          {companyInfo.company_logo && (
-            <Image source={{ uri: "http://beejobs.io.vn:14307/" + companyInfo.company_logo }} style={styles.logo} />
-          )}
-        </ImageBackground>
         
         {companyInfo.premium && (
           <Image source={require('../../assets/images/crown.png')} style={styles.premiumIcon}/>
@@ -135,6 +136,7 @@ const Home = () => {
             <Ionicons name="checkmark-circle" size={24} color="green" style={styles.icon} />
           )}
           </View>
+          
 
         <View style={styles.statContainer}>
           <Text style={styles.statText}>Thống kê:</Text>
@@ -147,8 +149,8 @@ const Home = () => {
                 }
               ]
             }}
-            width={Dimensions.get("screen").width/1.07}
-            height={240}
+            width={Dimensions.get("window").width/1.07}
+            height={Dimensions.get("window").height/3}
             chartConfig={{
               backgroundColor: "#fff",
               backgroundGradientFrom: "#ff9800",
@@ -163,7 +165,7 @@ const Home = () => {
               barPercentage: 1,
               propsForLabels: {
                 fontWeight: 'bold',
-                fontSize: 12,
+                fontSize: Dimensions.get("window").width*0.025,
               },
             }}
             fromZero={true}
@@ -216,7 +218,7 @@ const Home = () => {
             </LinearGradient>
          </TouchableOpacity>
 
-          <TouchableOpacity style={styles.touchable} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.touchable} activeOpacity={0.7} onPress={() => router.push('AmountWorkerApplyForCompany') }>
             <LinearGradient
               colors={['#00ff7f' , '#f0f0f0' ]}
               style={styles.button}
@@ -236,9 +238,8 @@ const Home = () => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop:5,
     flex: 1,
-    padding: 15,
+    paddingHorizontal: 15,
     backgroundColor: '#fff',
   },
   scrollView: {
@@ -307,18 +308,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   welcomeText: {
-    fontSize: 18,
+    fontSize: Dimensions.get("window").width*0.04,
     alignSelf:"flex-end",
     color: '#fff',
     fontWeight: 'bold',
     margin:5,
+    width: Dimensions.get("window").width/1.6
   },
   headerBackground: {
     width: '100%',
-    height: 170,
+    height: Dimensions.get("window").height/4.3,
     flexDirection: 'row',
     marginBottom: 10,
     justifyContent: 'space-between',
+    marginTop:20,
   },
   statContainer: {
     alignItems: 'center',

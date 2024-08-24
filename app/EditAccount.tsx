@@ -95,6 +95,8 @@ export default function EditAccount() {
     if (!companyScale.trim()) newErrors.companyScale = "Hãy nhập quy mô công ty";
     if (!taxCode.trim()) newErrors.taxCode = "Hãy nhập mã số thuế";
     if (!companyDesc.trim()) newErrors.companyDesc = "Hãy nhập mô tả công ty";
+    if (!companyLogo.trim()) newErrors.companyLogo = "Hãy nhập logo công ty";
+    if (!companyCertification.trim()) newErrors.companyCertification = "Hãy nhập giấy tờ công ty";
     if (companyName !== originalCompanyName && !newCertification) {
       Alert.alert("Thông báo", "Vui lòng cập nhật chứng nhận khi thay đổi tên công ty");
       return;
@@ -152,7 +154,8 @@ export default function EditAccount() {
       }
     };
     xhr.onerror = () => {
-      Alert.alert("Error", "An error occurred");
+      //Alert.alert("Error", "An error occurred");
+      console.log("Error details:", xhr.statusText);
     };
     xhr.send(formData);
   };
@@ -189,10 +192,11 @@ export default function EditAccount() {
             {newLogo ? (
               <Image style={styles.logo} source={{ uri: newLogo }} />
             ) : companyLogo ? (
-              <Image style={styles.logo} source={{ uri: `http://beejobs.io.vn:14307${companyLogo}` }} />
+              <Image style={styles.logo} source={{ uri: `${companyLogo}` }} />
             ) : (
               <Text>Không có logo nào có sẵn</Text>
             )}
+             {errors.companyLogo && <Text style={styles.errorText}>{errors.companyLogo}</Text>}
             <TouchableOpacity style={styles.changeButton} onPress={() => handleImagePicker(setNewLogo)}>
               <Text style={styles.buttonText}>Thay Logo</Text>
             </TouchableOpacity>
@@ -260,7 +264,12 @@ export default function EditAccount() {
             style={styles.input}
             placeholder="Tax Code"
             value={taxCode}
-            onChangeText={setTaxCode}
+            onChangeText={(text) => {
+              
+              const numericText = text.replace(/[^0-9]/g, '');
+              setTaxCode(numericText);
+            }}
+             keyboardType="numeric"
           />
             {errors.taxCode && <Text style={styles.errorText}>{errors.taxCode}</Text>}
         </View>
@@ -280,13 +289,15 @@ export default function EditAccount() {
           {newCertification ? (
             <Image style={styles.certification} source={{ uri: newCertification }} />
           ) : companyCertification ? (
-            <Image style={styles.certification} source={{ uri: `http://beejobs.io.vn:14307${companyCertification}` }} />
+            <Image style={styles.certification} source={{ uri: `${companyCertification}` }} />
           ) : (
             <Text>Không có chứng nhận nào có sẵn</Text>
           )}
+           {errors.companyCertification && <Text style={styles.errorText}>{errors.companyCertification}</Text>}
                     <TouchableOpacity style={styles.changeButton} onPress={() => handleImagePicker(setNewCertification)}>
             <Text style={styles.buttonText}>Thay đổi chứng nhận</Text>
           </TouchableOpacity>
+          
         </View>
       </ScrollView>
       <View style={styles.footer}>
