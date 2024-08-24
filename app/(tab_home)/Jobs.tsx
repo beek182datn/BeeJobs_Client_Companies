@@ -20,6 +20,7 @@ import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Jobs() {
   const [jobs, setJobs] = useState([]);
@@ -209,7 +210,12 @@ export default function Jobs() {
     });
   };
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }) => {
+    const currentDate = new Date();
+    const expiresDate = new Date(item.expires_at);
+    const timeDiff = expiresDate - currentDate;
+    const remainingDays = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+    return(
     <View style={styles.itemContainer}>
       <TouchableOpacity onPress={() => handleItemPress(item)}>
         <View style={styles.itemContent}>
@@ -247,6 +253,13 @@ export default function Jobs() {
               <Text style={styles.formText}>{item.form}</Text>
             </Text>
           </View>
+          <View style={styles.detailRow}>
+          <Ionicons name="timer" size={17} color="#ff6400" />
+            <Text style={styles.detailText}>
+              <Text style={styles.labelText}>Hạn đăng tuyển: </Text>
+              <Text style={styles.formText}> Còn {remainingDays} ngày</Text>
+            </Text>
+          </View>
         </View>
         <TouchableOpacity
           style={styles.viewDetailsButton}
@@ -256,7 +269,8 @@ export default function Jobs() {
         </TouchableOpacity>
       </TouchableOpacity>
     </View>
-  );
+    )
+  };
 
   const removeVietNameseTones = (str) => {
     return str

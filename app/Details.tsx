@@ -160,7 +160,7 @@ export default function Details() {
           <View style={styles.divider} />
           <DetailRow
             icon="calendar"
-            title="Thời hạn:"
+            title="Hạn nộp hồ sơ:"
             value={item.deadline}
             color="#DC143C" 
           />
@@ -172,7 +172,16 @@ export default function Details() {
             
             color="#B22222" 
           />
+          <View style={styles.divider} />
+          <DetailRow
+            icon="clock-o"
+            title="Hạn đăng tin:"
+            value={`${new Date(item.expires_at).toLocaleDateString()} ${new Date(item.expires_at).toLocaleTimeString()}`}
+            
+            color="#ff6400" 
+          />
         </View>
+        
       </ScrollView>
 
       <View style={styles.buttonContainer}>
