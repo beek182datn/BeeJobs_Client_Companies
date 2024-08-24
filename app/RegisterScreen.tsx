@@ -252,14 +252,14 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     alignSelf: "center",
-    marginBottom: 30,
+    marginBottom: 15,
     color:"#ff4500"
   },
   wellcome: {
     fontSize: 20,
     fontWeight: "bold",
     alignSelf: "center",
-    marginBottom: 20,
+    marginBottom: 10,
   },
   inputContainer: {
     flexDirection: "row",
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#A9A9A9",
     borderRadius: 15,
-    marginBottom: 20,
+    marginBottom: 15,
     paddingHorizontal: 15,
     backgroundColor: "#f9f9f9",
     padding: 1,
@@ -327,9 +327,10 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: "50%",
-    height: 150,
+    height: 120,
     alignSelf: "center",
-    marginBottom:20,
+    marginBottom:10,
+    marginTop:10,
   },
 });
 
