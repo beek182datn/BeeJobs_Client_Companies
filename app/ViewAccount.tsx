@@ -16,6 +16,7 @@ interface AccountDetails {
   taxcode?: string;
   company_desc?: string;
   company_certification?: string;
+  representative ?: string;
 }
 
 export default function ViewAccount() {
@@ -106,6 +107,14 @@ export default function ViewAccount() {
           <View style={styles.detailText}>
             <Text style={styles.label}>Địa chỉ:</Text>
             <Text style={styles.value}>{accountDetails.company_address}</Text>
+          </View>
+        </View>
+        
+        <View style={styles.detailContainer}>
+          <Icon name="account-circle" size={24} color="#708090" />
+          <View style={styles.detailText}>
+            <Text style={styles.label}>Người đại diện:</Text>
+            <Text style={styles.value}>{accountDetails.representative}</Text>
           </View>
         </View>
 

@@ -46,10 +46,11 @@ export default function EditAccount() {
   const [newCertification, setNewCertification] = useState(null);
   const [companyDesc, setCompanyDesc] = useState('');
   const [phone_number, setPhone_Number] = useState('');
+  const [representative, setRepresentative] = useState('');
   const [originalCompanyName, setOriginalCompanyName] = useState('');
   const [errors, setErrors] = useState<ErrorText>({});
   const router = useRouter();
-
+  
   useEffect(() => {
     fetchAccountDetails();
   }, []);
@@ -76,6 +77,7 @@ export default function EditAccount() {
         setCompanyCertification(companyData.company_certification || '');
         setCompanyDesc(companyData.company_desc || '');
         setPhone_Number(companyData.phone_number || '');
+        setRepresentative(companyData.representative || '');
       } else {
         Alert.alert("Lỗi", "Cấu trúc dữ liệu không như mong đợi");
       }
@@ -98,6 +100,7 @@ export default function EditAccount() {
     if (!companyDesc.trim()) newErrors.companyDesc = "Hãy nhập mô tả công ty";
     if (!companyLogo.trim()) newErrors.companyLogo = "Hãy nhập logo công ty";
     if (!companyCertification.trim()) newErrors.companyCertification = "Hãy nhập giấy tờ công ty";
+    if (!representative.trim()) newErrors.representative = "Hãy tên người đại diện";
     if (companyName !== originalCompanyName && !newCertification) {
       Alert.alert("Thông báo", "Vui lòng cập nhật chứng nhận khi thay đổi tên công ty");
       return;
@@ -114,7 +117,7 @@ export default function EditAccount() {
 
 
 
-    const formData = new FormData();
+    const formData = new FormData();// chứa dữ liệu được gửi đến server
     formData.append('company_name', companyName);
     formData.append('company_address', companyAddress);
     formData.append('company_website', companyWebsite);
@@ -122,6 +125,7 @@ export default function EditAccount() {
     formData.append('taxcode', taxCode);
     formData.append('company_desc', companyDesc);
     formData.append('phone_number', phone_number);
+    formData.append('representative', representative);
     formData.append('active', isCompanyNameChanged ? 'false' : 'true');
     if (newLogo) {
       const response = await fetch(newLogo);
@@ -211,7 +215,7 @@ export default function EditAccount() {
           <Icon name="building" size={20} color="#007bff" style={styles.icon} />
           <TextInput
             style={styles.input}
-            placeholder="Company Name"
+            placeholder="Tên công ty.."
             value={companyName}
             onChangeText={(text) => {
               setCompanyName(text);
@@ -223,20 +227,31 @@ export default function EditAccount() {
            {errors.companyName && <Text style={styles.errorText}>{errors.companyName}</Text>}
         </View>
         <View style={styles.detailContainer}>
+          <Icon name="user" size={20} color="#363636" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Người đại diện..."
+            value={representative}
+            onChangeText={setRepresentative}
+          />
+           {errors.representative && <Text style={styles.errorText}>{errors.representative}</Text>}
+        </View>
+        <View style={styles.detailContainer}>
           <Icon name="map-marker" size={20} color="#28a745" style={styles.icon} />
           <TextInput
             style={styles.input}
-            placeholder="Address"
+            placeholder="Địa chỉ..."
             value={companyAddress}
             onChangeText={setCompanyAddress}
           />
            {errors.companyAddress && <Text style={styles.errorText}>{errors.companyAddress}</Text>}
         </View>
+
         <View style={styles.detailContainer}>
           <Icon name="globe" size={20} color="#dc3545" style={styles.icon} />
           <TextInput
             style={styles.input}
-            placeholder="Website"
+            placeholder="Website..."
             value={companyWebsite}
             onChangeText={setCompanyWebsite}
           />
@@ -246,7 +261,7 @@ export default function EditAccount() {
           <Icon name="phone" size={20} color="#dc3587" style={styles.icon} />
           <TextInput
             style={styles.input}
-            placeholder="Số điện thoại"
+            placeholder="Số điện thoại..."
             value={phone_number}
             onChangeText={setPhone_Number}
           />
@@ -256,7 +271,7 @@ export default function EditAccount() {
           <Icon name="bars" size={20} color="#ffc107" style={styles.icon} />
           <TextInput
             style={styles.input}
-            placeholder="Scale"
+            placeholder="Quy mô..."
             value={companyScale}
             onChangeText={setCompanyScale}
           />
@@ -266,7 +281,7 @@ export default function EditAccount() {
           <Icon name="id-card" size={20} color="#17a2b8" style={styles.icon} />
           <TextInput
             style={styles.input}
-            placeholder="Tax Code"
+            placeholder="Mã số thuế..."
             value={taxCode}
             onChangeText={(text) => {
               
@@ -281,7 +296,7 @@ export default function EditAccount() {
           <Icon name="file-text" size={20} color="#6c757d" style={styles.icon} />
           <TextInput
             style={[styles.input, styles.multilineInput]}
-            placeholder="Company Description"
+            placeholder="Mô tả công ty..."
             value={companyDesc}
             multiline
             numberOfLines={4}
