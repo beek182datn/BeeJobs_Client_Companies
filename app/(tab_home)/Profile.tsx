@@ -43,7 +43,7 @@ export default function Profile() {
         throw new Error("Company ID not found");
       }
       const response = await fetch(
-        `http://beejobs.io.vn:14307:14307/api/companies/getCompanyById/${companyId}`
+        `http://beejobs.io.vn:14307/api/companies/getCompanyById/${companyId}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
