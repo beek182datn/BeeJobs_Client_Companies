@@ -18,100 +18,69 @@ interface DetailRowProps {
   color?: string; 
 }
 
-
-
 const DetailRow: React.FC<DetailRowProps> = ({ icon, title, value, color })  => (
-  <View style={styles.row}>
-    <Icon name={icon} size={iconSize} color={color} style={styles.rowIcon} />
-    <View style={styles.rowContent}>
-      <Text style={styles.rowTitle}>{title}</Text>
-      <Text style={styles.rowValue}>{value}</Text>
+    <View style={styles.row}>
+      <Icon name={icon} size={iconSize} color={color} style={styles.rowIcon} />
+      <View style={styles.rowContent}>
+        <Text style={styles.rowTitle}>{title}</Text>
+        <Text style={styles.rowValue}>{value}</Text>
+      </View>
     </View>
-  </View>
-);
+  );
 
-export default function Details() {
-  const { data } = useLocalSearchParams();
+const DetailsJobRemoved = () => {
+    const { data } = useLocalSearchParams();
   const item = data ? JSON.parse(data) : {};
   const router = useRouter();
-
-  const handleUpdateStt = async () => {
-    Alert.alert(
-      "Xác nhận",
-      "Bạn có chắc chắn muốn gỡ tin tuyển dụng này không? Các ứng viên sẽ không thể thấy tin này nữa!",
-      [
-        {
-          text: "Hủy",
-          style: "cancel",
-        },
-        {
-          text: "Đồng ý",
-          onPress: async () => {
-            try {
-              const response = await axios.put(`http://beejobs.io.vn:14307/api/jobs/editstatus/${item._id}`);
-              if (response.status === 200) {
-                router.push("(tab_home)/Jobs");
-              }
-            } catch (error) {
-              console.error("Lỗi khi cập nhật trạng thái:", error);
+    const suitableCandidate = async () => {
+        try {
+          const value = await AsyncStorage.getItem('premium');
+          if (value !== null) {
+            const isPremium = JSON.parse(value); // Parse giá trị JSON
+            if (isPremium) {
+              router.push({
+                pathname: 'ListSuitableCandidate',
+                params: { job_id: item._id },
+              });
+            } else {
+              Alert.alert(
+                'Thông báo',
+                'Tài khoản của bạn chưa được sử dụng tính năng này, hãy nâng cấp để được sử dụng.',
+                [
+                  {
+                    text: 'Hủy',
+                    style: 'cancel',
+                  },
+                  {
+                    text: 'Nâng cấp',
+                    onPress: () => router.push('/(tab_home)/Profile') // Chuyển đến màn hình hồ sơ sau khi nhấn OK
+                  }
+                ]
+              );
             }
-          },
-        },
-      ],
-      { cancelable: true }
-    );
-  };
-
-  const suitableCandidate = async () => {
-    try {
-      const value = await AsyncStorage.getItem('premium');
-      if (value !== null) {
-        const isPremium = JSON.parse(value); // Parse giá trị JSON
-        if (isPremium) {
-          router.push({
-            pathname: 'ListSuitableCandidate',
-            params: { job_id: item._id },
-          });
-        } else {
-          Alert.alert(
-            'Thông báo',
-            'Tài khoản của bạn chưa được sử dụng tính năng này, hãy nâng cấp để được sử dụng.',
-            [
-              {
-                text: 'Hủy',
-                style: 'cancel',
-              },
-              {
-                text: 'Nâng cấp',
-                onPress: () => router.push('/(tab_home)/Profile') // Chuyển đến màn hình hồ sơ sau khi nhấn OK
-              }
-            ]
-          );
+          }
+        } catch (error) {
+          console.error(error);
         }
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleApplyInfoPress = () => {
-    router.push({
-      pathname: 'ListApplyForJob',
-      params: { jobId: item._id },
-    });
-  };
-
-  useEffect(() => {
-    const backAction = () => {
-      router.replace('Jobs');
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
-
-    return () => backHandler.remove();
-  }, []);
-
+      };
+    
+      const handleApplyInfoPress = () => {
+        router.push({
+          pathname: 'ListApplyForJob',
+          params: { jobId: item._id },
+        });
+      };
+    
+      useEffect(() => {
+        const backAction = () => {
+          router.replace('Jobs');
+          return true;
+        };
+    
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+    
+        return () => backHandler.remove();
+      }, []);
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.applyButton2} onPress={suitableCandidate}>
@@ -231,111 +200,106 @@ export default function Details() {
         <TouchableOpacity style={styles.applyButton} onPress={handleApplyInfoPress}>
           <Text style={styles.applyButtonText}>Thông tin ứng tuyển</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.applyButton1} onPress={handleUpdateStt}>
-          <Text style={styles.applyButtonText1}>Gỡ tin tuyển dụng</Text>
-        </TouchableOpacity>
         </View>
       </View>
     </View>
-  );
+  )
 }
 
+export default DetailsJobRemoved
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f2f2f2',
-  },
-  scrollContainer: {
-    paddingHorizontal: width * 0.05, 
-  },
-  detailsContainer: {
-    marginBottom: width * 0.2, 
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: width * 0.015, 
-  },
-  rowIcon: {
-    marginRight: width * 0.03, 
-  },
-  rowContent: {
-    flex: 1,
-  },
-
-  rowTitle: {
-    fontSize: width * 0.04,
-    color: '#999',
-    fontWeight: 'bold',
-    
-  },
-  rowValue: {
-    fontSize: width * 0.035, 
-    color: '#333', 
-    fontWeight: 'bold', 
-    marginTop: width * 0.01, 
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#e0e0e0',
-    marginVertical: width * 0.02, 
-  },
-  footer:{
-    height:"15%",
-  },
-  buttonContainer: {
-    marginTop:15,
-    width: "90%",
-    alignSelf: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  applyButton: {
-    flex: 1,
-    marginHorizontal: 5,
-    backgroundColor: '#007bff',
-    paddingVertical: width * 0.04, 
-    borderRadius: 15,
-    alignItems: 'center',
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 5,
-    marginTop:10,
-  },
-  applyButton1: {
-    marginTop:10,
-    flex: 1,
-    marginHorizontal: 5,
-    backgroundColor: '#ff6400',
-    paddingVertical: width * 0.04, 
-    borderRadius: 15,
-    alignItems: 'center',
-  },
-  applyButton2: {
-    marginVertical:5,
-    flexDirection:"row",
-    marginHorizontal: 15,
-    backgroundColor: '#008000', 
-    borderRadius: 7,
-    width:"40%",
-    height:45,
-    alignSelf:"flex-end",
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  applyButtonText: {
-    color: '#ffffff',
-    fontSize: width * 0.03, 
-    fontWeight: 'bold',
-  },
-  applyButtonText1: {
-    color: '#ffffff',
-    fontSize: width * 0.03, 
-    fontWeight: 'bold',
-  },
-});
-
-
-
+    container: {
+      flex: 1,
+      backgroundColor: '#f2f2f2',
+    },
+    scrollContainer: {
+      paddingHorizontal: width * 0.05, 
+    },
+    detailsContainer: {
+      marginBottom: width * 0.2, 
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: width * 0.015, 
+    },
+    rowIcon: {
+      marginRight: width * 0.03, 
+    },
+    rowContent: {
+      flex: 1,
+    },
+  
+    rowTitle: {
+      fontSize: width * 0.04,
+      color: '#999',
+      fontWeight: 'bold',
+      
+    },
+    rowValue: {
+      fontSize: width * 0.035, 
+      color: '#333', 
+      fontWeight: 'bold', 
+      marginTop: width * 0.01, 
+    },
+    divider: {
+      height: 1,
+      backgroundColor: '#e0e0e0',
+      marginVertical: width * 0.02, 
+    },
+    footer:{
+      height:"15%",
+    },
+    buttonContainer: {
+      marginTop:15,
+      width: "90%",
+      alignSelf: 'center',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    applyButton: {
+      flex: 1,
+      marginHorizontal: 5,
+      backgroundColor: '#007bff',
+      paddingVertical: width * 0.04, 
+      borderRadius: 15,
+      alignItems: 'center',
+      shadowColor: '#000000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3,
+      shadowRadius: 6,
+      elevation: 5,
+      marginTop:10,
+    },
+    applyButton1: {
+      marginTop:10,
+      flex: 1,
+      marginHorizontal: 5,
+      backgroundColor: '#ff6400',
+      paddingVertical: width * 0.04, 
+      borderRadius: 15,
+      alignItems: 'center',
+    },
+    applyButton2: {
+      marginVertical:5,
+      flexDirection:"row",
+      marginHorizontal: 15,
+      backgroundColor: '#008000', 
+      borderRadius: 7,
+      width:"40%",
+      height:45,
+      alignSelf:"flex-end",
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    applyButtonText: {
+      color: '#ffffff',
+      fontSize: width * 0.03, 
+      fontWeight: 'bold',
+    },
+    applyButtonText1: {
+      color: '#ffffff',
+      fontSize: width * 0.03, 
+      fontWeight: 'bold',
+    },
+  });

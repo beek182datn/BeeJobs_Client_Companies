@@ -60,7 +60,7 @@ export default function Jobs() {
     try {
       const companyId = await AsyncStorage.getItem("company_id");
       const response = await axios.get(
-        "http://beejobs.io.vn:14307/api/jobs/getJobsByIdCompany/" + companyId
+        "http://beejobs.io.vn:14307/api/jobs/getJobsActiveByIdCompany/" + companyId
       );
       setJobs(response.data.data);
     } catch (err) {
@@ -84,6 +84,10 @@ export default function Jobs() {
     setRefreshing(true);
     fetchJobs();
   };
+
+  const handlejobsRemoved = () =>{
+    router.push("ListJobsRemoved");
+  }
 
   const handlecheckactive = async () => {
     const companyId = await AsyncStorage.getItem("company_id");
@@ -357,10 +361,16 @@ export default function Jobs() {
         }
       />
       <TouchableOpacity
+        style={styles.buttonContainer1}
+        onPress={handlejobsRemoved}
+      >
+        <Text style={styles.textButton}>Tin đã gỡ</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
         style={styles.buttonContainer}
         onPress={handlecheckactive}
       >
-        <Text style={styles.textButton}>Thêm công việc mới</Text>
+        <Text style={styles.textButton}>Đăng tin tuyển dụng</Text>
       </TouchableOpacity>
       {selectedJob && (
         <Modal
@@ -809,16 +819,27 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     backgroundColor: "#28A745",
-    padding: 15,
-    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical:10,
+    borderRadius: 5,
     position: "absolute",
     bottom: 20,
     right: 20,
+  },
+  buttonContainer1: {
+    backgroundColor: "#e12828",
+    paddingHorizontal: 15,
+    paddingVertical:10,
+    borderRadius: 5,
+    position: "absolute",
+    bottom: 20,
+    left: 20,
   },
   textButton: {
     color: "#fff",
     fontSize: 16,
     textAlign: "center",
+    fontWeight: "bold",
   },
   viewDetailsButton: {
     marginTop: 10,
