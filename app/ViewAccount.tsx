@@ -1,13 +1,40 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, Alert, BackHandler, Image, ScrollView } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect, useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+  BackHandler,
+  Image,
+  ScrollView,
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from "react-native-vector-icons/MaterialIcons";
+import axios from "axios";
+import { LinearGradient } from "expo-linear-gradient";
+interface AccountDetails {
+  // thuộc tính tùy trọn
+  company_logo?: string;
+  company_name?: string;
+  company_address?: string;
+  phone_number?: string;
+  company_website?: string;
+  company_scale?: string;
+  taxcode?: string;
+  company_desc?: string;
+  company_certification?: string;
+  representative?: string;
+}
 
 export default function ViewAccount() {
   const [loading, setLoading] = useState(true);
-  const [accountDetails, setAccountDetails] = useState(null);
+  const [accountDetails, setAccountDetails] = useState<AccountDetails | null>(
+    null
+  );
   const router = useRouter();
 
   useEffect(() => {
@@ -15,29 +42,31 @@ export default function ViewAccount() {
   }, []);
 
   const fetchAccountDetails = async () => {
-    const companyId = await AsyncStorage.getItem('company_id');
+    const companyId = await AsyncStorage.getItem("company_id");
     try {
-      const response = await fetch(`http://beejobs.io.vn:14307/api/companies/getCompanyById/${companyId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-  
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Chứng nhận:" +data.data.company_certification);
-        
+      const response = await axios.get(
+        `http://beejobs.io.vn:14307/api/companies/getCompanyById/${companyId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        const data = response.data;
+        console.log("Chứng nhận:" + data.data.company_certification);
+
         if (data && data.data) {
           setAccountDetails(data.data);
         } else {
-          Alert.alert("Error", "Data structure is not as expected");
+          Alert.alert("Lỗi", "Cấu trúc dữ liệu không như mong đợi");
         }
       } else {
-        Alert.alert("Error", "Failed to fetch account details");
+        Alert.alert("Lỗi", "Không thể lấy thông tin tài khoản");
       }
     } catch (error) {
-      Alert.alert("Error", "An error occurred");
+      Alert.alert("Lỗi", "Có lỗi xảy ra");
     } finally {
       setLoading(false);
     }
@@ -49,7 +78,10 @@ export default function ViewAccount() {
       return true;
     };
 
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
 
     return () => backHandler.remove();
   }, []);
@@ -77,17 +109,25 @@ export default function ViewAccount() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.headerContainer}>
-          {accountDetails.company_logo ? (
-            <Image
-              style={styles.logo}
-              source={{ uri: accountDetails.company_logo }}
-            />
-          ) : (
-            <Text>No logo available</Text>
-          )}
-          <Text style={styles.header}>{accountDetails.company_name}</Text>
-        </View>
+        <LinearGradient
+          colors={["#00ff7f", "#ffff"]}
+          style={styles.headerContainer}
+          start={[0, 1]}
+          end={[1, 0]}
+        >
+          <View style={{ alignItems: "center" }}>
+            {accountDetails.company_logo ? (
+              <Image
+                style={styles.logo}
+                source={{ uri: accountDetails.company_logo }}
+              />
+            ) : (
+              <Text>No logo available</Text>
+            )}
+            <Text style={styles.header}>{accountDetails.company_name}</Text>
+          </View>
+        </LinearGradient>
+
         <View style={styles.detailContainer}>
           <Icon name="location-on" size={24} color="#007bff" />
           <View style={styles.detailText}>
@@ -95,6 +135,15 @@ export default function ViewAccount() {
             <Text style={styles.value}>{accountDetails.company_address}</Text>
           </View>
         </View>
+
+        <View style={styles.detailContainer}>
+          <Icon name="account-circle" size={24} color="#708090" />
+          <View style={styles.detailText}>
+            <Text style={styles.label}>Người đại diện:</Text>
+            <Text style={styles.value}>{accountDetails.representative}</Text>
+          </View>
+        </View>
+
         <View style={styles.detailContainer}>
           <Icon name="phone" size={24} color="#007bff" />
           <View style={styles.detailText}>
@@ -141,23 +190,20 @@ export default function ViewAccount() {
             <Text>No certification available</Text>
           )}
         </View>
-      
       </ScrollView>
       <View style={styles.footer}>
-
-      <TouchableOpacity
-            style={styles.cancelButton}
-            onPress={() => router.replace("Profile")}
-          >
-            <Text style={styles.cancelButtonText}>Hủy</Text>
-          </TouchableOpacity>
-      <TouchableOpacity
-            style={styles.saveButton}
-            onPress={() => router.push("EditAccount")}
-          >
-            <Text style={styles.saveButtonText}>Sửa thông tin</Text>
-          </TouchableOpacity>
-         
+        <TouchableOpacity
+          style={styles.cancelButton}
+          onPress={() => router.push("Profile")}
+        >
+          <Text style={styles.cancelButtonText}>Hủy</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.saveButton}
+          onPress={() => router.push("EditAccount")}
+        >
+          <Text style={styles.saveButtonText}>Sửa thông tin</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -166,7 +212,7 @@ export default function ViewAccount() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
   },
   container: {
     flexGrow: 1,
@@ -175,45 +221,44 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   headerContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 20,
     paddingVertical: 20,
     paddingHorizontal: 15,
-    backgroundColor: '#4CAF50',
     borderRadius: 15,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
   },
   logo: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 180,
+    height: 180,
+    borderRadius: 80,
     marginBottom: 10,
+    borderWidth: 2,
+    borderColor: "#fff",
   },
   header: {
     fontSize: 22,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
   detailContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 15,
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    alignItems: "center",
+    backgroundColor: "#fff",
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#ddd',
-    shadowColor: '#000',
+    borderColor: "#ddd",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
@@ -223,22 +268,22 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#555',
+    fontWeight: "bold",
+    color: "#555",
   },
   value: {
     fontSize: 16,
-    color: '#333',
+    color: "#333",
   },
   certificationTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
     marginVertical: 20,
     marginLeft: 20,
   },
   certificationContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 30,
   },
   certification: {
@@ -248,50 +293,47 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginVertical: 20,
   },
   saveButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: '#4CAF50',
+    borderColor: "#4CAF50",
     marginTop: 20,
-    width: '45%',
-    alignSelf: 'center',
+    width: "45%",
+    alignSelf: "center",
   },
   saveButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   cancelButton: {
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: '#4CAF50',
+    borderColor: "#4CAF50",
     marginTop: 20,
-    width: '45%',
-    alignSelf: 'center',
+    width: "45%",
+    alignSelf: "center",
     marginRight: 10,
   },
   cancelButtonText: {
-    color: '#4CAF50',
+    color: "#4CAF50",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 20,
-    backgroundColor: '#fff',
-    borderTopColor: '#ddd',
-    borderTopWidth: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 10,
   },
 });

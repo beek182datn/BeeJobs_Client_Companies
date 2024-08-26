@@ -9,13 +9,10 @@ export default function RootLayout() {
       <Stack.Screen name="RegisterScreen" options={{ headerShown: false }} />
       <Stack.Screen name="(tab_home)" options={{ headerShown: false }} />
       <Stack.Screen name="Details" options={{
-          headerTitle: "Chi tiết công việc",
-          headerTitleStyle: {
-            fontSize: 19,
-            fontWeight: "bold",
-            alignSelf: "center",
-          },
-          // headerShown: Platform.OS !== 'ios',
+          headerTitle: "Chi tiết công việc"
+        }} />
+        <Stack.Screen name="DetailsJobRemoved" options={{
+          headerTitle: "Chi tiết công việc"
         }} />
       <Stack.Screen name="OtpScreen" options={{headerShown: false}}/>
       <Stack.Screen name="EmployerAuth" options={{headerShown: false}}/>
@@ -28,11 +25,18 @@ export default function RootLayout() {
       <Stack.Screen name="ChatScreen" options={{headerShown: false}}/>
       <Stack.Screen name="ChatLiveScreen" options={{headerShown: false}}/>
       <Stack.Screen name="ResetPasswordScreen" options={{headerShown: false}}/>
-      <Stack.Screen name="JobsAppliedScreen" options={{headerTitle: "Tin đã có đơn ứng tuyển"}}/>
+      <Stack.Screen name="JobsAppliedScreen" options={{headerTitle: "Tin đã có đơn ứng tuyển", headerTitleStyle: {
+            fontSize: 21,
+            
+            fontWeight: "bold",}, 
+           headerTitleAlign: "center", headerStyle: {
+            backgroundColor: "#33FFFF",
+          },}}/>
       <Stack.Screen name="ToUpAccountScreen" options={{headerTitle: "Số dư tài khoản"}}/>
       <Stack.Screen name="UpgradeAccountScreen" options={{headerTitle: "Nâng cấp tài khoản"}}/>
       <Stack.Screen name="ListSuitableCandidate" options={{headerShown: false}}/>
       <Stack.Screen name="ListSuitableApplyJob" options={{headerShown: false}}/>
+      <Stack.Screen name="ListJobsRemoved" options={{headerTitle: "Danh sách tin tuyển dụng đã gỡ"}}/>
       <Stack.Screen name="NotifiScreen" options={{headerTitle: "Thông báo"}}/>
       <Stack.Screen name="AmountWorkerApplyForCompany" options={{headerTitle: "Số ứng viên đã ứng tuyển"}}/>
       <Stack.Screen name="ChangePassword" options={{ headerTitle: 'Đổi mật khẩu', headerTitleStyle: {

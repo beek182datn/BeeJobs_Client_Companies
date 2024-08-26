@@ -5,6 +5,13 @@ import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from 'react-native-vector-icons/FontAwesome';
+import axios from 'axios';
+import { LinearGradient } from 'expo-linear-gradient';
+//  gt có thể là string hoặc không giá trị 
+interface ErrorText {
+  [key: string]: string | undefined;
+}
+
 
 const handleImagePicker = async (setter) => {
   const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -12,16 +19,16 @@ const handleImagePicker = async (setter) => {
     alert('Cần có quyền truy cập vào thư viện phương tiện!');
     return;
   }
-
+// set 
   const result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,// chỉ được được hiển thị ảnh
     allowsEditing: true,
     aspect: [4, 3],
     quality: 1,
     base64: true,
   });
 
-  if (!result.canceled && result.assets && result.assets.length > 0) {
+  if (!result.canceled && result.assets && result.assets.length > 0) {// kiểm tra xem ảnh đã hợp lệ chưa hơp lệ thì set uri
     setter(result.assets[0].uri);
   }
 };
@@ -40,10 +47,11 @@ export default function EditAccount() {
   const [newCertification, setNewCertification] = useState(null);
   const [companyDesc, setCompanyDesc] = useState('');
   const [phone_number, setPhone_Number] = useState('');
+  const [representative, setRepresentative] = useState('');
   const [originalCompanyName, setOriginalCompanyName] = useState('');
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<ErrorText>({});
   const router = useRouter();
-
+  
   useEffect(() => {
     fetchAccountDetails();
   }, []);
@@ -51,35 +59,31 @@ export default function EditAccount() {
   const fetchAccountDetails = async () => {
     const companyId = await AsyncStorage.getItem('company_id');
     try {
-      const response = await fetch(`http://beejobs.io.vn:14307/api/companies/getCompanyById/${companyId}`, {
-        method: 'GET',
+      const response = await axios.get(`http://beejobs.io.vn:14307/api/companies/getCompanyById/${companyId}`, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data && data.data) {
-          const companyData = data.data;
-          setCompanyName(companyData.company_name || '');
-          setOriginalCompanyName(companyData.company_name || '');
-          setCompanyAddress(companyData.company_address || '');
-          setCompanyWebsite(companyData.company_website || '');
-          setCompanyScale(companyData.company_scale || '');
-          setTaxCode(companyData.taxcode || '');
-          setCompanyLogo(companyData.company_logo || '');
-          setCompanyCertification(companyData.company_certification || '');
-          setCompanyDesc(companyData.company_desc || '');
-          setPhone_Number(companyData.phone_number || '');
-        } else {
-          Alert.alert("Lỗi", "Cấu trúc dữ liệu không như mong đợi");
-        }
+  
+      // Kiểm tra xem dữ liệu có tồn tại không
+      if (response.data && response.data.data) {
+        const companyData = response.data.data;
+        setCompanyName(companyData.company_name || '');
+        setOriginalCompanyName(companyData.company_name || '');
+        setCompanyAddress(companyData.company_address || '');
+        setCompanyWebsite(companyData.company_website || '');
+        setCompanyScale(companyData.company_scale || '');
+        setTaxCode(companyData.taxcode || '');
+        setCompanyLogo(companyData.company_logo || '');
+        setCompanyCertification(companyData.company_certification || '');
+        setCompanyDesc(companyData.company_desc || '');
+        setPhone_Number(companyData.phone_number || '');
+        setRepresentative(companyData.representative || '');
       } else {
-        Alert.alert("Lỗi", `Không thể lấy thông tin chi tiết về tài khoản: ${response.statusText}`);
+        Alert.alert("Lỗi", "Cấu trúc dữ liệu không như mong đợi");
       }
     } catch (error) {
-      Alert.alert("Lỗi", `Đã xảy ra lỗi: ${error.message}`);
+      Alert.alert("Lỗi", `Đã xảy ra lỗi: ${error.response ? error.response.data.message : error.message}`);
     } finally {
       setLoading(false);
     }
@@ -87,7 +91,7 @@ export default function EditAccount() {
 
   const handleSave = async () => {
    
-    const newErrors = {};
+    const newErrors : ErrorText = {};
     if (!companyName.trim()) newErrors.companyName = "Hãy nhập tên công ty";
     if (!companyAddress.trim()) newErrors.companyAddress = "Hãy nhập địa chỉ công ty";
     if (!companyWebsite.trim()) newErrors.companyWebsite = "Hãy nhập website công ty";
@@ -97,6 +101,7 @@ export default function EditAccount() {
     if (!companyDesc.trim()) newErrors.companyDesc = "Hãy nhập mô tả công ty";
     if (!companyLogo.trim()) newErrors.companyLogo = "Hãy nhập logo công ty";
     if (!companyCertification.trim()) newErrors.companyCertification = "Hãy nhập giấy tờ công ty";
+    if (!representative.trim()) newErrors.representative = "Hãy tên người đại diện";
     if (companyName !== originalCompanyName && !newCertification) {
       Alert.alert("Thông báo", "Vui lòng cập nhật chứng nhận khi thay đổi tên công ty");
       return;
@@ -113,7 +118,7 @@ export default function EditAccount() {
 
 
 
-    const formData = new FormData();
+    const formData = new FormData();// chứa dữ liệu được gửi đến server
     formData.append('company_name', companyName);
     formData.append('company_address', companyAddress);
     formData.append('company_website', companyWebsite);
@@ -121,6 +126,7 @@ export default function EditAccount() {
     formData.append('taxcode', taxCode);
     formData.append('company_desc', companyDesc);
     formData.append('phone_number', phone_number);
+    formData.append('representative', representative);
     formData.append('active', isCompanyNameChanged ? 'false' : 'true');
     if (newLogo) {
       const response = await fetch(newLogo);
@@ -159,6 +165,8 @@ export default function EditAccount() {
     };
     xhr.send(formData);
   };
+ 
+
 
 
   const handleCancel = () => {
@@ -187,7 +195,14 @@ export default function EditAccount() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.headerContainer}>
+      <LinearGradient
+            colors={['#00ff7f' ,'#f0f0f0' ]}
+            style={styles.headerContainer}
+            start={[0, 1]}
+            end={[1, 0]}
+          >
+        <View>
+        
           <View style={styles.logoContainer}>
             {newLogo ? (
               <Image style={styles.logo} source={{ uri: newLogo }} />
@@ -201,13 +216,16 @@ export default function EditAccount() {
               <Text style={styles.buttonText}>Thay Logo</Text>
             </TouchableOpacity>
           </View>
+
           <Text style={styles.header}>Sửa Thông Tin Công Ty</Text>
+         
         </View>
+        </LinearGradient>
         <View style={styles.detailContainer}>
           <Icon name="building" size={20} color="#007bff" style={styles.icon} />
           <TextInput
-            style={styles.input}
-            placeholder="Company Name"
+            style={[styles.input, {marginLeft: 6}]}
+            placeholder="Tên công ty.."
             value={companyName}
             onChangeText={(text) => {
               setCompanyName(text);
@@ -219,20 +237,31 @@ export default function EditAccount() {
            {errors.companyName && <Text style={styles.errorText}>{errors.companyName}</Text>}
         </View>
         <View style={styles.detailContainer}>
+          <Icon name="user" size={20} color="#363636" style={styles.icon} />
+          <TextInput
+            style={[styles.input, {marginLeft: 6.5}]}
+            placeholder="Người đại diện..."
+            value={representative}
+            onChangeText={setRepresentative}
+          />
+           {errors.representative && <Text style={styles.errorText}>{errors.representative}</Text>}
+        </View>
+        <View style={styles.detailContainer}>
           <Icon name="map-marker" size={20} color="#28a745" style={styles.icon} />
           <TextInput
-            style={styles.input}
-            placeholder="Address"
+            style={[styles.input, {marginLeft: 9}]}
+            placeholder="Địa chỉ..."
             value={companyAddress}
             onChangeText={setCompanyAddress}
           />
            {errors.companyAddress && <Text style={styles.errorText}>{errors.companyAddress}</Text>}
         </View>
+
         <View style={styles.detailContainer}>
           <Icon name="globe" size={20} color="#dc3545" style={styles.icon} />
           <TextInput
-            style={styles.input}
-            placeholder="Website"
+            style={[styles.input, {marginLeft: 7}]}
+            placeholder="Website..."
             value={companyWebsite}
             onChangeText={setCompanyWebsite}
           />
@@ -241,8 +270,8 @@ export default function EditAccount() {
         <View style={styles.detailContainer}>
           <Icon name="phone" size={20} color="#dc3587" style={styles.icon} />
           <TextInput
-            style={styles.input}
-            placeholder="Số điện thoại"
+           style={[styles.input, {marginLeft: 7}]}
+            placeholder="Số điện thoại..."
             value={phone_number}
             onChangeText={setPhone_Number}
           />
@@ -251,8 +280,8 @@ export default function EditAccount() {
         <View style={styles.detailContainer}>
           <Icon name="bars" size={20} color="#ffc107" style={styles.icon} />
           <TextInput
-            style={styles.input}
-            placeholder="Scale"
+            style={[styles.input, {marginLeft: 7}]}
+            placeholder="Quy mô..."
             value={companyScale}
             onChangeText={setCompanyScale}
           />
@@ -262,7 +291,7 @@ export default function EditAccount() {
           <Icon name="id-card" size={20} color="#17a2b8" style={styles.icon} />
           <TextInput
             style={styles.input}
-            placeholder="Tax Code"
+            placeholder="Mã số thuế..."
             value={taxCode}
             onChangeText={(text) => {
               
@@ -276,8 +305,8 @@ export default function EditAccount() {
         <View style={styles.detailContainer}>
           <Icon name="file-text" size={20} color="#6c757d" style={styles.icon} />
           <TextInput
-            style={[styles.input, styles.multilineInput]}
-            placeholder="Company Description"
+            style={[styles.input, styles.multilineInput, {marginLeft: 5} ]}
+            placeholder="Mô tả công ty..."
             value={companyDesc}
             multiline
             numberOfLines={4}
@@ -325,7 +354,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignItems: 'center',
     marginBottom: 20,
-    backgroundColor: '#4CAF50',
     padding: 20,
     borderRadius: 10,
   },
@@ -360,14 +388,15 @@ const styles = StyleSheet.create({
     flex: 1,
     borderWidth: 1,
     borderColor: '#ddd',
-    borderRadius: 4,
-    padding: 10,
+    borderRadius: 10,
+    padding: 12,
     fontSize: 16,
     backgroundColor: '#fff',
   },
   multilineInput: {
     minHeight: 100,
     textAlignVertical: 'top',
+    borderRadius: 20
   },
   certificationContainer: {
     marginBottom: 16,
@@ -445,10 +474,11 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 20,
-    backgroundColor: '#fff',
+    padding: 10,
+    backgroundColor: '#f4f4f4',
     borderTopColor: '#ddd',
     borderTopWidth: 1,
+    borderRadius: 20
   },
   errorText: {
     color: '#dc3545',

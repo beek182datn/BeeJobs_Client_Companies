@@ -20,16 +20,38 @@ import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { Ionicons } from '@expo/vector-icons';
+//  gt có thể là string hoặc không giá trị 
+interface ErrorForm {
+  [key: string]: string | undefined;
+}
+interface ErrorText {
+  [key: string]: string | undefined;
+}
+interface FormEdit {
+  title?: string;
+  desc?: string;
+  form?: string;
+  majors?: string;
+  number_of_recruitments?: string;
+  requirements?: string;
+  salary?: string;
+  benefits?: string;
+  location?: string;
+  deadline?: string;
+  experience?: string;
+  working_time?: string;
+}
 
 export default function Jobs() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [selectedJob, setSelectedJob] = useState(null);
+  const [selectedJob, setSelectedJob] = useState<FormEdit | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [date, setDate] = useState(new Date());
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<ErrorText>({});
   const router = useRouter();
   const scrollViewRef = useRef();
   const [refreshing, setRefreshing] = useState(false);
@@ -38,7 +60,7 @@ export default function Jobs() {
     try {
       const companyId = await AsyncStorage.getItem("company_id");
       const response = await axios.get(
-        "http://beejobs.io.vn:14307/api/jobs/getJobsByIdCompany/" + companyId
+        "http://beejobs.io.vn:14307/api/jobs/getJobsActiveByIdCompany/" + companyId
       );
       setJobs(response.data.data);
     } catch (err) {
@@ -62,6 +84,10 @@ export default function Jobs() {
     setRefreshing(true);
     fetchJobs();
   };
+
+  const handlejobsRemoved = () =>{
+    router.push("ListJobsRemoved");
+  }
 
   const handlecheckactive = async () => {
     const companyId = await AsyncStorage.getItem("company_id");
@@ -100,26 +126,28 @@ export default function Jobs() {
   };
 
   const handleEdit = async () => {
+    // lấy các thuộc tính gán giá trị mặc định
     const {
-      title,
-      desc,
-      form,
-      majors,
-      number_of_recruitments,
-      requirements,
-      salary,
-      benefits,
-      location,
-      deadline,
-      experience,
-      working_time,
-    } = selectedJob;
+      title = '',
+      desc = '',
+      form = '',
+      majors = "",
+      number_of_recruitments = "",
+      requirements = '',
+      salary = "",
+      benefits = '',
+      location = '',
+      deadline = '',
+      experience = '',
+      working_time = '',
+    } = selectedJob || {};
+    
 
-    const newErrors = {};
+    const newErrors : ErrorForm = {};
     if (!title.trim()) newErrors.title = "Hãy nhập tiêu đề";
     if (!desc.trim()) newErrors.desc = "Hãy nhập mô tả";
     if (!form.trim()) newErrors.form = "Hãy nhập hình thức";
-    if (!majors.trim()) newErrors.form = "Hãy nhập chuyên ngành";
+    if (!majors.trim()) newErrors.majors = "Hãy nhập chuyên ngành";
     if (!number_of_recruitments.trim())
       newErrors.number_of_recruitments = "Hãy nhập số lượng";
     if (!requirements.trim()) newErrors.requirements = "Hãy nhập yêu cầu";
@@ -132,7 +160,7 @@ export default function Jobs() {
       newErrors.working_time = "Hãy nhập thời gian làm việc";
     setErrors(newErrors);
 
-    if (Object.keys(newErrors).length > 0) {
+    if (Object.keys(newErrors).length > 0) {  
       return;
     }
 
@@ -209,7 +237,12 @@ export default function Jobs() {
     });
   };
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }) => {
+    const currentDate = new Date();
+    const expiresDate = new Date(item.expires_at);
+    const timeDiff = expiresDate - currentDate;
+    const remainingDays = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+    return(
     <View style={styles.itemContainer}>
       <TouchableOpacity onPress={() => handleItemPress(item)}>
         <View style={styles.itemContent}>
@@ -247,6 +280,13 @@ export default function Jobs() {
               <Text style={styles.formText}>{item.form}</Text>
             </Text>
           </View>
+          <View style={styles.detailRow}>
+          <Ionicons name="timer" size={17} color="#ff6400" />
+            <Text style={styles.detailText}>
+              <Text style={styles.labelText}>Hạn đăng tuyển: </Text>
+              <Text style={styles.formText}> Còn {remainingDays} ngày</Text>
+            </Text>
+          </View>
         </View>
         <TouchableOpacity
           style={styles.viewDetailsButton}
@@ -256,7 +296,8 @@ export default function Jobs() {
         </TouchableOpacity>
       </TouchableOpacity>
     </View>
-  );
+    )
+  };
 
   const removeVietNameseTones = (str) => {
     return str
@@ -320,10 +361,16 @@ export default function Jobs() {
         }
       />
       <TouchableOpacity
+        style={styles.buttonContainer1}
+        onPress={handlejobsRemoved}
+      >
+        <Text style={styles.textButton}>Tin đã gỡ</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
         style={styles.buttonContainer}
         onPress={handlecheckactive}
       >
-        <Text style={styles.textButton}>Thêm công việc mới</Text>
+        <Text style={styles.textButton}>Đăng tin tuyển dụng</Text>
       </TouchableOpacity>
       {selectedJob && (
         <Modal
@@ -370,7 +417,7 @@ export default function Jobs() {
                   <TextInput
                     style={[
                       styles.modalTextInput,
-                      errors.title && styles.inputError,
+                     
                     ]}
                     value={selectedJob.title}
                     onChangeText={(text) =>
@@ -386,7 +433,7 @@ export default function Jobs() {
                   <TextInput
                     style={[
                       styles.modalTextInput,
-                      errors.desc && styles.inputError,
+                    
                     ]}
                     value={selectedJob.desc}
                     multiline
@@ -405,7 +452,7 @@ export default function Jobs() {
                   <TextInput
                     style={[
                       styles.modalTextInput,
-                      errors.majors && styles.inputError,
+                     
                     ]}
                     value={selectedJob.majors}
                     multiline
@@ -424,7 +471,7 @@ export default function Jobs() {
                   <TextInput
                     style={[
                       styles.modalTextInput,
-                      errors.form && styles.inputError,
+                     
                       styles.multilineInput,
                     ]}
                     value={selectedJob.form}
@@ -442,7 +489,7 @@ export default function Jobs() {
                   <TextInput
                     style={[
                       styles.modalTextInput,
-                      errors.number_of_recruitments && styles.inputError,
+                     
                     ]}
                     value={selectedJob.number_of_recruitments}
                     onChangeText={(text) =>
@@ -464,7 +511,6 @@ export default function Jobs() {
                   <TextInput
                     style={[
                       styles.modalTextInput,
-                      errors.requirements && styles.inputError,
                       styles.multilineInput,
                     ]}
                     value={selectedJob.requirements}
@@ -484,7 +530,7 @@ export default function Jobs() {
                   <TextInput
                     style={[
                       styles.modalTextInput,
-                      errors.experience && styles.inputError,
+                     
                       styles.multilineInput,
                     ]}
                     value={selectedJob.experience}
@@ -504,7 +550,7 @@ export default function Jobs() {
                   <TextInput
                     style={[
                       styles.modalTextInput,
-                      errors.salary && styles.inputError,
+                      
                     ]}
                     value={selectedJob.salary}
                     onChangeText={(text) =>
@@ -521,7 +567,6 @@ export default function Jobs() {
                   <TextInput
                     style={[
                       styles.modalTextInput,
-                      errors.benefits && styles.inputError,
                       styles.multilineInput,
                     ]}
                     value={selectedJob.benefits}
@@ -541,7 +586,6 @@ export default function Jobs() {
                   <TextInput
                     style={[
                       styles.modalTextInput,
-                      errors.working_time && styles.inputError,
                       styles.multilineInput,
                     ]}
                     value={selectedJob.working_time}
@@ -561,7 +605,6 @@ export default function Jobs() {
                   <TextInput
                     style={[
                       styles.modalTextInput,
-                      errors.location && styles.inputError,
                     ]}
                     value={selectedJob.location}
                     multiline
@@ -776,16 +819,27 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     backgroundColor: "#28A745",
-    padding: 15,
-    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical:10,
+    borderRadius: 5,
     position: "absolute",
     bottom: 20,
     right: 20,
+  },
+  buttonContainer1: {
+    backgroundColor: "#e12828",
+    paddingHorizontal: 15,
+    paddingVertical:10,
+    borderRadius: 5,
+    position: "absolute",
+    bottom: 20,
+    left: 20,
   },
   textButton: {
     color: "#fff",
     fontSize: 16,
     textAlign: "center",
+    fontWeight: "bold",
   },
   viewDetailsButton: {
     marginTop: 10,

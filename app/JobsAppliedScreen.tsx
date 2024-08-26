@@ -77,22 +77,28 @@ const JobDetailItem = ({ item }) => {
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>Danh sách ứng tuyển</Text>
-              <FlatList
-                data={item.applicants}
-                renderItem={({ item }) => (
-                <TouchableOpacity onPress={()=>handleWorker(item._id) }> 
-
-                  <ApplicantItem
-                    fullname={item.fullname}
-                    phone_number={item.phone_number}
-                    applied_at={item.applied_at}
-                   
-                  />
-                </TouchableOpacity>
-                )}
-                keyExtractor={(item) => item._id}
-                style={{ maxHeight: 300 }} 
-              />
+              { item.applicants.length > 0 ? (
+                         <FlatList
+                         data={item.applicants}
+                         renderItem={({ item }) => (
+                         <TouchableOpacity onPress={()=>handleWorker(item._id) }> 
+         
+                           <ApplicantItem
+                             fullname={item.fullname}
+                             phone_number={item.phone_number}
+                             applied_at={item.applied_at}
+                            
+                           />
+                         </TouchableOpacity>
+                         )}
+                         keyExtractor={(item) => item._id}
+                         style={{ maxHeight: 300 }} 
+                       />
+              ) : (
+                <Text style={styles.noApplicantsText}>Chưa có đơn ứng tuyển</Text>
+              )}
+     
+            
               <TouchableOpacity
                 style={styles.closeButton}
                 onPress={() => setModalVisible(false)}
@@ -124,8 +130,18 @@ const JobDetailItem = ({ item }) => {
   
         const jobsWithApplicants = await Promise.all(
           jobs.map(async (job) => {
-            const applicantsResponse = await axios.get(`http://beejobs.io.vn:14307/api/applyJobs/getApylyJobsByIdJob/${job._id}`);
-            return { ...job, applicants: applicantsResponse.data.data };
+            try{
+              const applicantsResponse = await axios.get(`http://beejobs.io.vn:14307/api/applyJobs/getApylyJobsByIdJob/${job._id}`);
+              return { ...job, applicants: applicantsResponse.data.data };
+            }catch(error){
+              if (error.response && error.response.status === 404) {
+                console.log(`No applicants found for job ID ${job._id}`);
+                return { ...job, applicants: [] }; // Đặt applicants thành mảng rỗng nếu lỗi 404
+              } else {
+                throw error; // Ném ra các lỗi khác để xử lý tiếp
+              }
+            }
+          
           })
         );
   
@@ -143,6 +159,13 @@ const JobDetailItem = ({ item }) => {
           <ActivityIndicator size="large" color="#007bff" />
         </SafeAreaView>
       );
+    }
+    if(jobDetails.length === 0){
+      return (
+        <SafeAreaView style={styles.container}>
+          <Text style={styles.noJobsText}>Chưa có đơn ứng tuyển</Text>
+        </SafeAreaView>
+      )
     }
   
     return (
@@ -269,7 +292,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },applicantDate: {
      fontWeight: 'bold'
-  }
+  },noApplicantsText: {
+    fontSize: width * 0.04,
+    color: '#666',
+    textAlign: 'center',
+    marginVertical: width * 0.03,
+  }, noJobsText: {
+    fontSize: width * 0.05,
+    fontWeight: 'bold',
+    color: '#DC143C',
+    textAlign: 'center',
+    marginTop: width * 0.1,
+},
 });
 
 
