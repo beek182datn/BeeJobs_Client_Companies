@@ -31,7 +31,7 @@ export default function ViewAccount() {
   const fetchAccountDetails = async () => {
     const companyId = await AsyncStorage.getItem('company_id');
     try {
-      const response = await axios.get(`http://beejobs.io.vn:14307/api/companies/getCompanyById/${companyId}`, {
+      const response = await axios.get(`http://beejobs.io.vn:14307:14307/api/companies/getCompanyById/${companyId}`, {
         headers: {
           'Content-Type': 'application/json',
         },

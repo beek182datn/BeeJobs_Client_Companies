@@ -7,6 +7,8 @@ export interface NotificationModel {
     type: string;
     isRead: boolean;
     createdAt: string;
+    job_id: string;
+    applyJob_id: string;
   }
   
   export interface NotificationResponse {

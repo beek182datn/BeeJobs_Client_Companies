@@ -58,7 +58,7 @@ export default function EditAccount() {
   const fetchAccountDetails = async () => {
     const companyId = await AsyncStorage.getItem('company_id');
     try {
-      const response = await axios.get(`http://beejobs.io.vn:14307/api/companies/getCompanyById/${companyId}`, {
+      const response = await axios.get(`http://beejobs.io.vn:14307:14307/api/companies/getCompanyById/${companyId}`, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -148,7 +148,7 @@ export default function EditAccount() {
     }
 
     const xhr = new XMLHttpRequest();
-    xhr.open('PUT', `http://beejobs.io.vn:14307/api/companies/edit/${userId}/${companyId}`);
+    xhr.open('PUT', `http://beejobs.io.vn:14307:14307/api/companies/edit/${userId}/${companyId}`);
     xhr.onload = () => {
       if (xhr.status === 200) {
         Alert.alert("Thành công", "Thông tin công ty đã được cập nhật thành công");
