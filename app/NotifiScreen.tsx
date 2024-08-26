@@ -1,57 +1,19 @@
-
-import { NotificationModel } from '@/components/Model/Model';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
+import { View, Text, StyleSheet, Image, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, SafeAreaView, FlatList, ActivityIndicator } from 'react-native';
+import axios from 'axios';
+import { useRouter } from 'expo-router';
 
-interface NotificationScreenProps {
-  userId: string;
-} 
-const API_URL = 'http://beejobs.io.vn:14307/api';
-const getUnreadNotifications = async (userId: string): Promise<NotificationModel[]> => {
-  try {
-    const response = await axios.get<NotificationModel[]>(`${API_URL}/unread/${userId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching unread notifications:', error);
-    throw error;
-  }
-};
-const NotifiScreen : React.FC<NotificationScreenProps> = ({ userId }) => {
-  const [notifications, setNotifications] = useState<NotificationModel[]>([]);
+const NotifiScreen = () => {
+  const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [storedUserId, setStoredUserId] = useState<string | null>(userId ?? null);
 
-  useEffect(() => {
-    if (!userId) {
-      fetchUserId();
-    } else {
-      fetchNotifications(userId);
-    }
-  }, [userId]);
+  const router = useRouter();
 
-  const fetchUserId = async () => {
+  const fetchNotifications = async () => {
+    const workerid = "669896b4e406fb9e61375647";
     try {
-      const user  =  await AsyncStorage.getItem("idUser");
-      if (user) {
-        setStoredUserId(user);
-        fetchNotifications(user);
-      } else {
-        console.log('Chua dang nhaps');
-        setLoading(false);
-      }
-    } catch (error) {
-      console.error('Error fetching userId from local storage:', error);
-      setLoading(false);
-    }
-  };
-
-  const fetchNotifications = async (userId: string) => {
-    try {
-      setLoading(true);
-      const unreadNotifications = await getUnreadNotifications(userId);
-      setNotifications(unreadNotifications);
+      const response = await axios.get(`http://beejobs.io.vn:14307/api/notifi/getNotifiByWorkerId/${workerid}`);
+      setNotifications(response.data.data);
     } catch (error) {
       console.error('Error fetching notifications:', error);
     } finally {
@@ -59,85 +21,91 @@ const NotifiScreen : React.FC<NotificationScreenProps> = ({ userId }) => {
     }
   };
 
-  const renderNotification = ({ item }: { item: NotificationModel }) => (
-    <View style={styles.notificationItem}>
-      <Text style={styles.notificationMessage}>{item.message}</Text>
-      <Text style={styles.notificationTime}>{new Date(item.createdAt).toLocaleString()}</Text>
-    </View>
-  );
-
-  const renderContent = () => {
-    if (loading) {
-      return <ActivityIndicator size="large" color="#0000ff" />;
-    } else if (!storedUserId) {
-      return (
-        <View style={styles.content}>
-          <Image
-            source={require('../assets/images/notification.png')}
-            style={styles.image}
-          />
-          <Text style={styles.title}>Bạn phải đăng nhập để dùng tính năng này</Text>
-          <Text style={styles.description}>
-            Đừng lo, chúng tôi sẽ thông báo ngay khi có tin mới cho bạn.
-            Hãy khám phá tính năng khác hoặc kiểm tra lại sau.
-          </Text>
-        </View>
-      );
-    } else if (notifications.length > 0) {
-      return (
-        <FlatList
-          data={notifications}
-          renderItem={renderNotification}
-          keyExtractor={(item) => item._id}
-        />
-      );
-    } else {
-      return (
-        <View style={styles.content}>
-          <Image
-            source={require('../assets/images/notification.png')}
-            style={styles.image}
-          />
-          <Text style={styles.title}>Bạn chưa có thông báo nào</Text>
-          <Text style={styles.description}>
-            Đừng lo, chúng tôi sẽ thông báo ngay khi có tin mới cho bạn.
-            Hãy khám phá tính năng khác hoặc kiểm tra lại sau.
-          </Text>
-        </View>
-      );
+  const handleReadNotifi = async (isRead, notification_id, job_id) => {
+    if(isRead){
+      router.push({
+        pathname: 'ListApplyForJob',
+        params: { jobId: job_id },
+      }); 
+    }else{
+      try {
+        console.log("ID notifi: "+notification_id);
+        const response = await axios.post('http://beejobs.io.vn:14307/api/notifi/updateIsRead', {
+          notification_id: notification_id,
+        });
+        console.log(response.data.message);
+      } catch (error) {
+        console.error('Error updating notification status:', error);
+      }
+      fetchNotifications();
+      router.push({
+        pathname: 'ListApplyForJob',
+        params: { jobId: job_id },
+      });
+  
+    };
     }
+    
+    
+    
+
+
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
+
+  const renderNotification = ({ item }) => {
+    const notificationStyle = item.isRead
+      ? styles.readNotificationItem
+      : styles.unreadNotificationItem;
+
+    return (
+      <TouchableOpacity onPress={() => handleReadNotifi(item.isRead, item._id, item.job_id)}>
+      <View style={notificationStyle}>
+        <Text style={styles.notificationMessage}>{item.message}</Text>
+        <Text style={styles.notificationTime}>{new Date(item.createdAt).toLocaleString()}</Text>
+      </View>
+      </TouchableOpacity>
+    );
   };
 
+  if (loading) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
+
+  if (notifications.length === 0) {
+    return (
+      <View style={styles.content}>
+        <Image
+          source={require('../assets/images/notification.png')}
+          style={styles.image}
+        />
+        <Text style={styles.title}>Bạn chưa có thông báo nào</Text>
+        <Text style={styles.description}>
+          Đừng lo, chúng tôi sẽ thông báo ngay khi có tin mới cho bạn.
+          Hãy khám phá tính năng khác hoặc kiểm tra lại sau.
+        </Text>
+      </View>
+    );
+  }
+
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>Thông báo</Text>
-      <View style={styles.separator} />
-      {renderContent()}
-    </SafeAreaView>
+    <FlatList
+      data={notifications}
+      renderItem={renderNotification}
+      keyExtractor={(item) => item._id}
+    />
   );
 };
 
 export default NotifiScreen;
 
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f8f9fa',
-    padding: 10,
-  },
-  header: {
-    fontSize: 24,
-    color: 'black',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 50,
-  },
   content: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 20,
-  
+    flex: 1,
   },
   image: {
     width: 150,
@@ -155,17 +123,13 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
   },
-  separator: {
-    height: 1,
-    backgroundColor: '#ddd',
-    marginVertical: 10,
-  },
-  notificationItem: {
-    backgroundColor: '#fff',
+  unreadNotificationItem: {
+    marginTop:5,
+    backgroundColor: '#b0c4de', // Màu nền cho thông báo chưa đọc
     padding: 15,
-    marginBottom: 10,
+    marginBottom: 5,
     borderRadius: 8,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -173,14 +137,32 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
     elevation: 4,
-    marginRight:10,
-    marginLeft:10
+    marginRight: 10,
+    marginLeft: 10,
+  },
+  readNotificationItem: {
+    marginTop:5,
+    backgroundColor: '#fff', // Màu nền cho thông báo đã đọc
+    padding: 15,
+    marginBottom: 5,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
+    marginRight: 10,
+    marginLeft: 10,
   },
   notificationMessage: {
     fontSize: 16,
     color: '#333',
   },
   notificationTime: {
+    alignSelf: 'flex-end',
     fontSize: 12,
     color: '#666',
     marginTop: 5,

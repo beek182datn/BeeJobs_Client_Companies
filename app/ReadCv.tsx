@@ -6,7 +6,7 @@ const ReadCv = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fileUri = 'http://beejobs.io.vn:14307/uploads/1721060095302-Phi-Dinh-Long-TopCV.vn-040724.233955.pdf'; 
+  const fileUri = 'http://beejobs.io.vn:14307:14307/uploads/1721060095302-Phi-Dinh-Long-TopCV.vn-040724.233955.pdf'; 
 
   const openPdfInBrowser = async () => {
     setLoading(true);
