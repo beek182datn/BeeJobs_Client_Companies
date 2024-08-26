@@ -6,6 +6,7 @@ import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import axios from 'axios';
+import { LinearGradient } from 'expo-linear-gradient';
 //  gt có thể là string hoặc không giá trị 
 interface ErrorText {
   [key: string]: string | undefined;
@@ -194,7 +195,14 @@ export default function EditAccount() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.headerContainer}>
+      <LinearGradient
+            colors={['#00ff7f' ,'#f0f0f0' ]}
+            style={styles.headerContainer}
+            start={[0, 1]}
+            end={[1, 0]}
+          >
+        <View>
+        
           <View style={styles.logoContainer}>
             {newLogo ? (
               <Image style={styles.logo} source={{ uri: newLogo }} />
@@ -210,11 +218,13 @@ export default function EditAccount() {
           </View>
 
           <Text style={styles.header}>Sửa Thông Tin Công Ty</Text>
+         
         </View>
+        </LinearGradient>
         <View style={styles.detailContainer}>
           <Icon name="building" size={20} color="#007bff" style={styles.icon} />
           <TextInput
-            style={styles.input}
+            style={[styles.input, {marginLeft: 6}]}
             placeholder="Tên công ty.."
             value={companyName}
             onChangeText={(text) => {
@@ -229,7 +239,7 @@ export default function EditAccount() {
         <View style={styles.detailContainer}>
           <Icon name="user" size={20} color="#363636" style={styles.icon} />
           <TextInput
-            style={styles.input}
+            style={[styles.input, {marginLeft: 6.5}]}
             placeholder="Người đại diện..."
             value={representative}
             onChangeText={setRepresentative}
@@ -239,7 +249,7 @@ export default function EditAccount() {
         <View style={styles.detailContainer}>
           <Icon name="map-marker" size={20} color="#28a745" style={styles.icon} />
           <TextInput
-            style={styles.input}
+            style={[styles.input, {marginLeft: 9}]}
             placeholder="Địa chỉ..."
             value={companyAddress}
             onChangeText={setCompanyAddress}
@@ -250,7 +260,7 @@ export default function EditAccount() {
         <View style={styles.detailContainer}>
           <Icon name="globe" size={20} color="#dc3545" style={styles.icon} />
           <TextInput
-            style={styles.input}
+            style={[styles.input, {marginLeft: 7}]}
             placeholder="Website..."
             value={companyWebsite}
             onChangeText={setCompanyWebsite}
@@ -260,7 +270,7 @@ export default function EditAccount() {
         <View style={styles.detailContainer}>
           <Icon name="phone" size={20} color="#dc3587" style={styles.icon} />
           <TextInput
-            style={styles.input}
+           style={[styles.input, {marginLeft: 7}]}
             placeholder="Số điện thoại..."
             value={phone_number}
             onChangeText={setPhone_Number}
@@ -270,7 +280,7 @@ export default function EditAccount() {
         <View style={styles.detailContainer}>
           <Icon name="bars" size={20} color="#ffc107" style={styles.icon} />
           <TextInput
-            style={styles.input}
+            style={[styles.input, {marginLeft: 7}]}
             placeholder="Quy mô..."
             value={companyScale}
             onChangeText={setCompanyScale}
@@ -295,7 +305,7 @@ export default function EditAccount() {
         <View style={styles.detailContainer}>
           <Icon name="file-text" size={20} color="#6c757d" style={styles.icon} />
           <TextInput
-            style={[styles.input, styles.multilineInput]}
+            style={[styles.input, styles.multilineInput, {marginLeft: 5} ]}
             placeholder="Mô tả công ty..."
             value={companyDesc}
             multiline
@@ -344,7 +354,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignItems: 'center',
     marginBottom: 20,
-    backgroundColor: '#4CAF50',
     padding: 20,
     borderRadius: 10,
   },
@@ -379,14 +388,15 @@ const styles = StyleSheet.create({
     flex: 1,
     borderWidth: 1,
     borderColor: '#ddd',
-    borderRadius: 4,
-    padding: 10,
+    borderRadius: 10,
+    padding: 12,
     fontSize: 16,
     backgroundColor: '#fff',
   },
   multilineInput: {
     minHeight: 100,
     textAlignVertical: 'top',
+    borderRadius: 20
   },
   certificationContainer: {
     marginBottom: 16,
@@ -464,10 +474,11 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 20,
-    backgroundColor: '#fff',
+    padding: 10,
+    backgroundColor: '#f4f4f4',
     borderTopColor: '#ddd',
     borderTopWidth: 1,
+    borderRadius: 20
   },
   errorText: {
     color: '#dc3545',
