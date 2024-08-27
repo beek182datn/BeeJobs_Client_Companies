@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, Image, FlatList, ActivityIndicator, TouchableOp
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const NotifiScreen = () => {
   const [notifications, setNotifications] = useState([]);
@@ -10,9 +11,9 @@ const NotifiScreen = () => {
   const router = useRouter();
 
   const fetchNotifications = async () => {
-    const workerid = "669896b4e406fb9e61375647";
+    const companyId = await AsyncStorage.getItem('company_id');
     try {
-      const response = await axios.get(`http://beejobs.io.vn:14307/api/notifi/getNotifiByWorkerId/${workerid}`);
+      const response = await axios.get(`http://beejobs.io.vn:14307/api/notifi/getNotifiByCompanyId/${companyId}`);
       setNotifications(response.data.data);
     } catch (error) {
       console.error('Error fetching notifications:', error);
