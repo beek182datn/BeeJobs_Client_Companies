@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { BarChart } from 'react-native-chart-kit';
 import { LinearGradient } from 'expo-linear-gradient';
+import io from 'socket.io-client'; 
 
 interface CompanyInfo {
   company_logo?: string;
@@ -27,7 +28,43 @@ const Home = () => {
   const [accountStatus, setAccountStatus] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   const [backPressCount, setBackPressCount] = useState(0);
+  const [unreadNotifiCount, setUnreadNotifiCount] = useState(0);
   const router = useRouter();
+
+
+  // const initSocket = async () => {
+  //   const companyId = await AsyncStorage.getItem('company_id');
+  //   console.log('companyId:', companyId); // Kiểm tra giá trị companyId
+    
+  //   if (companyId) {
+  //     const socket = io('http://beejobs.io.vn:14307'); // Đảm bảo rằng URL này là chính xác
+      
+  //     socket.on('connect', () => {
+  //       console.log('Đã kết nối với socket server');
+  //       socket.emit('joinRoom', companyId); // Tham gia vào room với ID là companyId
+  
+  //       socket.on('newNotification', (data) => {
+  //         console.log('Có thông báo mới:', data);
+  //         setUnreadNotifiCount(prevCount => prevCount + 1); // Cập nhật số lượng thông báo chưa đọc
+  //       });
+  //     });
+  
+  //     socket.on('connect_error', (error) => {
+  //       console.log('Kết nối socket thất bại:', error);
+  //     });
+
+  //     return () => {
+  //       console.log('Đang ngắt kết nối socket');
+  //       socket.disconnect(); // Ngắt kết nối khi component unmount
+  //     };
+  //   } else {
+  //     console.log('Không tìm thấy companyId');
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   initSocket();
+  // }, []);
 
   const fetchData = async () => {
     try {
@@ -126,6 +163,11 @@ const Home = () => {
          <Text style={styles.companyName}>{companyInfo.company_name}</Text>
          <TouchableOpacity onPress={() => router.push('/NotifiScreen')} style={styles.notificationIcon}>
             <Ionicons name="notifications" size={24} color="#1e90ff" />
+            {/* {unreadNotifiCount > 0 && (
+                <View style={styles.badge}>
+                <Text style={styles.badgeText}>{unreadNotifiCount}</Text>
+              </View>
+             )} */}
           </TouchableOpacity>
         </View>
         <View style={{flexDirection: "row", alignSelf:"flex-end"}}>
@@ -347,7 +389,21 @@ const styles = StyleSheet.create({
     alignSelf:"center",
     width:20,
     height:20,
-  }
+  },
+  badge: {
+    position: 'absolute',
+    right: -3,
+    top: -3,
+    backgroundColor: 'red',
+    borderRadius: 10,
+    paddingHorizontal: 4,
+    paddingVertical: 1,
+  },
+  badgeText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
 });
 
 export default Home;

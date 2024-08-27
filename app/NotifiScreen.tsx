@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, FlatList, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
@@ -20,6 +20,31 @@ const NotifiScreen = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDeleteNotifi = async (id) => {
+    Alert.alert(
+      "Xác nhận",
+      "Bạn có chắc chắn muốn xóa thông báo này!",
+      [
+        {
+          text: "Hủy",
+          style: "cancel",
+        },
+        {
+          text: "Đồng ý",
+          onPress: async () => {
+            try {
+               await axios.delete(`http://beejobs.io.vn:14307/delete/${id}`);
+               fetchNotifications();
+            } catch (error) {
+              console.error("Lỗi khi xóa", error);
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
   };
 
   const handleReadNotifi = async (isRead, notification_id, job_id) => {
@@ -61,7 +86,9 @@ const NotifiScreen = () => {
       : styles.unreadNotificationItem;
 
     return (
-      <TouchableOpacity onPress={() => handleReadNotifi(item.isRead, item._id, item.job_id)}>
+      <TouchableOpacity onPress={() => handleReadNotifi(item.isRead, item._id, item.job_id)}
+      onLongPress={() => handleDeleteNotifi(item._id)}
+      >
       <View style={notificationStyle}>
         <Text style={styles.notificationMessage}>{item.message}</Text>
         <Text style={styles.notificationTime}>{new Date(item.createdAt).toLocaleString()}</Text>
