@@ -150,6 +150,7 @@ const EmployerAuth = () => {
         const companyId = response.data.data._id;
         console.log("Registed Company ID: "+companyId);
         await AsyncStorage.setItem('company_id', companyId);
+        await AsyncStorage.setItem('premium', JSON.stringify(response.data.data.premium));
         setColor('green');
         setMessage('Đăng ký công ty thành công');
         Alert.alert(

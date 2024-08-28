@@ -202,6 +202,7 @@ const styles = StyleSheet.create({
   },
   historyContainer: {
     marginTop: 20,
+    flex: 1,
   },
   historyTitle: {
     fontSize: 20,
