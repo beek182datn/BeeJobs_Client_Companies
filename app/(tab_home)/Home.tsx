@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 10,
     justifyContent: 'space-between',
-    marginTop:20,
+    marginTop:30,
   },
   statContainer: {
     alignItems: 'center',
